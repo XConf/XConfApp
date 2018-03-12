@@ -1,0 +1,3 @@
+rootProject.name = 'XConf'
+
+include ':app'
