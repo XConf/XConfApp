@@ -1,4 +1,7 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
+import { app } from "./lib/js/src/app.js";
+import React from "react";
+import {
+  AppRegistry
+} from 'react-native';
 
-AppRegistry.registerComponent('XConf', () => App);
+AppRegistry.registerComponent('XConf', () => app);

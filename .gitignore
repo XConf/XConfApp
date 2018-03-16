@@ -36,6 +36,12 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# Reason
+#
+/lib/*
+.merlin
+.bsb.lock
+
 # BUCK
 buck-out/
 \.buckd/
