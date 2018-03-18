@@ -1,7 +1,4 @@
-import { app } from "./lib/js/src/app.js";
-import React from "react";
-import {
-  AppRegistry
-} from 'react-native';
+import { AppRegistry } from 'react-native'
+import { app } from './src/app.bs'
 
-AppRegistry.registerComponent('XConf', () => app);
+AppRegistry.registerComponent('XConf', () => app)

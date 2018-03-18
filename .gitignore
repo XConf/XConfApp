@@ -39,6 +39,7 @@ yarn-error.log
 # Reason
 #
 /lib/*
+*.bs.js
 .merlin
 .bsb.lock
 
