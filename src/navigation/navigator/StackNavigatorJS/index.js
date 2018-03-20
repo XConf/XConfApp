@@ -1,12 +1,34 @@
 /* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import ReactTestRenderer from 'react-test-renderer'
 import equal from 'fast-deep-equal'
 
 import {
   StackNavigator,
   addNavigationHelpers,
 } from 'react-navigation'
+
+export const defaultNavigationOptions = {
+  headerStyle: {
+    backgroundColor: '#f4511e',
+  },
+  headerTintColor: '#fff',
+}
+
+const getHeaderOptions = () => {
+  return {
+    tintColor: defaultNavigationOptions.headerTintColor,
+  }
+}
+
+const screenChildContextPropTypes = {
+  setTitleText: PropTypes.func,
+  setHeaderRightElement: PropTypes.func,
+  headerOptions: PropTypes.shape({
+    tintColor: PropTypes.string,
+  }),
+}
 
 class Screen extends Component {
   static contextTypes = {
@@ -16,28 +38,60 @@ class Screen extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
     const params = navigation.state.params || {}
 
+    const { mounted } = params
+    const paramsFromRenderingPreConstructedElements = {}
+    if (!mounted) {
+      const setTitleText = (title) => {
+        paramsFromRenderingPreConstructedElements.title = title
+      }
+      const setHeaderRightElement = (headerRight) => {
+        paramsFromRenderingPreConstructedElements.headerRight = headerRight
+      }
+
+      class ContextProvider extends Component {
+        static childContextTypes = screenChildContextPropTypes;
+
+        getChildContext() {
+          return {
+            setTitleText,
+            setHeaderRightElement,
+            headerOptions: getHeaderOptions(),
+          }
+        }
+
+        render() {
+          return this.props.children
+        }
+      }
+
+      const { preConstructedElements } = params
+
+      try {
+        if (__DEV__) console.reportErrorsAsExceptions = false
+        ReactTestRenderer.create(<ContextProvider>{preConstructedElements}</ContextProvider>)
+        if (__DEV__) console.reportErrorsAsExceptions = true
+      } catch (e) {}
+    }
+
     return {
       title: params.titleText,
       headerRight: params.headerRightElement,
+      ...paramsFromRenderingPreConstructedElements,
     }
   };
 
-  static childContextTypes = {
-    setTitleText: PropTypes.func,
-    setHeaderRightElement: PropTypes.func,
-    headerOptions: PropTypes.shape({
-      tintColor: PropTypes.string,
-    }),
-  };
+  static childContextTypes = screenChildContextPropTypes;
 
   getChildContext() {
     return {
       setTitleText: this.setTitleText,
       setHeaderRightElement: this.setHeaderRightElement,
-      headerOptions: {
-        tintColor: defaultNavigationOptions.headerTintColor,
-      },
+      headerOptions: getHeaderOptions(),
     }
+  }
+
+  componentDidMount() {
+    this.props.navigation.setParams({ mounted: true })
   }
 
   setHeaderRightElement = (headerRightElement) => {
@@ -53,14 +107,6 @@ class Screen extends Component {
     const { route } = params
     return this.context.router(route)
   }
-}
-
-export const defaultNavigationOptions = {
-  headerStyle: {
-    backgroundColor: '#f4511e',
-  },
-
-  headerTintColor: '#fff',
 }
 
 const GeneralStackNavigator = StackNavigator(
@@ -167,7 +213,8 @@ export default class WrappedStackNavigator extends Component {
       },
       routeParamsMap: {},
     }
-    this.routeParamsMap = new Map()
+
+    this.preparePreConstructElements(props)
   }
 
   getChildContext() {
@@ -183,6 +230,31 @@ export default class WrappedStackNavigator extends Component {
   //   // if (key) action.key = key // TODO: allow provide key
   //   return action
   // }
+
+  componentWillReceiveProps(nextProps) {
+    this.preparePreConstructElements(nextProps)
+    this.clearUnusedRouteParamsMapItem(nextProps)
+  }
+
+  preparePreConstructElements(props) {
+    const { state, router } = props
+    const { routes } = state
+
+    routes.forEach((routeEntry) => {
+      const rpm = this.state.routeParamsMap[routeEntry.key]
+      if (!(rpm && rpm.preConstructedElements)) {
+        const preConstructedElements = router(routeEntry.route)
+        this.state.routeParamsMap[routeEntry.key] = {
+          ...rpm,
+          preConstructedElements,
+        }
+      }
+    })
+  }
+
+  clearUnusedRouteParamsMapItem(props) {
+    // TODO
+  }
 
   handleDispatch = (action) => {
     this.setState((prevState) => {
