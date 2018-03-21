@@ -12,7 +12,7 @@ const AppButton = (props, context) => {
   return (
     <Button
       {...props}
-      onPress={context.pressEventCapturingFunction || props.onPress}
+      onPress={context.buttonPressEventCapturingFunction || props.onPress}
       color={props.color || context.buttonColor}
     />
   )
@@ -20,7 +20,7 @@ const AppButton = (props, context) => {
 
 AppButton.contextTypes = {
   buttonColor: PropTypes.string,
-  pressEventCapturingFunction: PropTypes.func,
+  buttonPressEventCapturingFunction: PropTypes.func,
   capturedButtonPressEvent: PropTypes.array,
 }
 

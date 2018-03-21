@@ -4,11 +4,17 @@ import PropTypes from 'prop-types'
 import equal from 'fast-deep-equal'
 
 import TitleText from './TitleText'
-import HeaderRight from './HeaderRight'
+import makeComponent from './makeComponent'
+
+import { getHeaderOptions } from '../utils'
+
+const Right = makeComponent('Right', 'setHeaderRightElement')
+const Left = makeComponent('Left', 'setHeaderLeftElement')
 
 export {
   TitleText,
-  HeaderRight,
+  Right,
+  Left,
 }
 
 export default class StackNavigatorHeader extends Component {
@@ -24,9 +30,21 @@ export default class StackNavigatorHeader extends Component {
     setHeaderStyle: PropTypes.func,
   };
 
+  static childContextTypes = {
+    headerOptions: PropTypes.object,
+  };
+
   constructor(props, context) {
     super(props, context)
     this.set(props, context)
+  }
+
+  getChildContext() {
+    const headerOptions = getHeaderOptions(this.props.style)
+
+    return {
+      headerOptions,
+    }
   }
 
   shouldComponentUpdate(nextProps) {

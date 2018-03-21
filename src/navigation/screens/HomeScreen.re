@@ -36,12 +36,15 @@ let make = (~onGoToDetailsPress: unit => unit, _children) => {
     let message = "Count: " ++ string_of_int(self.state.count);
     let increment = string_of_int(self.state.increment);
     <View style=styles##container>
-      <StackNavigatorHeader style="default">
-        <StackNavigatorHeader.TitleText value="Home" />
-        <StackNavigatorHeader.HeaderRight>
+      <StackNavigator.Header style="default">
+        <StackNavigator.Header.Left>
+          <Button title="Info" onPress=((_) => ()) />
+        </StackNavigator.Header.Left>
+        <StackNavigator.Header.TitleText value="Home" />
+        <StackNavigator.Header.Right>
           <Button title={j|+$increment|j} onPress=((_event) => self.send(Plus)) />
-        </StackNavigatorHeader.HeaderRight>
-      </StackNavigatorHeader>
+        </StackNavigator.Header.Right>
+      </StackNavigator.Header>
       <Text value="Home Screen" />
       <Text />
       <Text value=message />

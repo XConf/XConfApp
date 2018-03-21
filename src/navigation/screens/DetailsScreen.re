@@ -49,12 +49,12 @@ let make =
       onGoToAnotherDetailsPress(string_of_int(Random.bits()));
 
     <View style=styles##container>
-      <StackNavigatorHeader style=self.state.headerStyle>
-        <StackNavigatorHeader.TitleText value=title />
-        <StackNavigatorHeader.HeaderRight>
+      <StackNavigator.Header style=self.state.headerStyle>
+        <StackNavigator.Header.TitleText value=title />
+        <StackNavigator.Header.Right>
           <Button title=buttonTitle onPress=((_event) => self.send(ToggleEditMode)) />
-        </StackNavigatorHeader.HeaderRight>
-      </StackNavigatorHeader>
+        </StackNavigator.Header.Right>
+      </StackNavigator.Header>
       <Text value={j|Details Screen$modeMessage|j} />
       <Text />
       <Text value={j|Param: $param|j} />
