@@ -6,19 +6,32 @@ import equal from 'fast-deep-equal'
 export class HeaderRightContentWrapper extends Component {
   static propTypes = {
     buttonColor: PropTypes.string,
+    captureEvent: PropTypes.func,
+    capturedEvents: PropTypes.object,
   };
 
   static defaultProps = {
     buttonColor: null,
-  }
+    captureEvent: null,
+    capturedEvents: null,
+  };
 
   static childContextTypes = {
     buttonColor: PropTypes.string,
+    pressEventCapturingFunction: PropTypes.func,
+    capturedButtonPressEvent: PropTypes.array,
   };
 
   getChildContext() {
     return {
       buttonColor: this.props.buttonColor,
+      pressEventCapturingFunction: (
+        this.props.children &&
+        (typeof this.props.children === 'object' || this.props.children.length === 1) &&
+        this.props.captureEvent &&
+        this.props.captureEvent.bind(null, 'header-right-button-press')
+      ),
+      capturedButtonPressEvent: this.props.capturedEvents && this.props.capturedEvents['header-right-button-press'],
     }
   }
 
@@ -29,6 +42,8 @@ export class HeaderRightContentWrapper extends Component {
 
 export default class HeaderRight extends Component {
   static contextTypes = {
+    captureEvent: PropTypes.func,
+    capturedEvents: PropTypes.object,
     setHeaderRightElement: PropTypes.func,
     headerOptions: PropTypes.shape({
       tintColor: PropTypes.string,
@@ -65,6 +80,8 @@ export default class HeaderRight extends Component {
 
     const content = (
       <HeaderRightContentWrapper
+        captureEvent={c.captureEvent}
+        capturedEvents={c.capturedEvents}
         buttonColor={headerOptions.tintColor}
       >
         {p.children}

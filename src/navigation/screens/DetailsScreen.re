@@ -1,10 +1,9 @@
 type state = {
-  overrideTitle: bool,
-  title: string
+  editMode: bool
 };
 
 type action =
-  | OverrideTitle(string);
+  | ToggleEditMode;
 
 let component = ReasonReact.reducerComponent("DetailsScreen");
 
@@ -22,26 +21,26 @@ let styles =
 let make =
     (~param, ~onGoBackPress: unit => unit, ~onGoToAnotherDetailsPress: string => unit, _children) => {
   ...component,
-  initialState: () => {overrideTitle: false, title: ""},
+  initialState: () => {editMode: false},
   reducer: (action, state) =>
     switch action {
-    | OverrideTitle(t) => ReasonReact.Update({...state, overrideTitle: true, title: t})
+    | ToggleEditMode => ReasonReact.Update({...state, editMode: !state.editMode})
     },
   render: (self) => {
-    let title = switch (self.state.overrideTitle) {
-      | true => self.state.title
+    let title = switch (self.state.editMode) {
+      | true => "Editing Details"
       | false => "Details"
     };
 
-    let button = switch (self.state.overrideTitle) {
-      | true => ReasonReact.nullElement
-      | false => <Button title="Change" onPress=((_event) => self.send(OverrideTitle("Updated!"))) />
+    let buttonTitle = switch (self.state.editMode) {
+      | true => "Done"
+      | false => "Edit"
     };
 
     <View style=styles##container>
       <HeaderTitleText value=title />
       <HeaderRight>
-        {button}
+        <Button title=buttonTitle onPress=((_event) => self.send(ToggleEditMode)) />
       </HeaderRight>
       <Text value="Details Screen" />
       <Text />

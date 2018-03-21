@@ -41,6 +41,12 @@ class Screen extends Component {
     const { mounted } = params
     const paramsFromRenderingPreConstructedElements = {}
     if (!mounted) {
+      const hackyMessageStorage = params.hackyMessageStorage || {}
+
+      const capturedEvents = {}
+      const captureEvent = (type, ...args) => {
+        capturedEvents[type] = args
+      }
       const setTitleText = (title) => {
         paramsFromRenderingPreConstructedElements.title = title
       }
@@ -49,10 +55,14 @@ class Screen extends Component {
       }
 
       class ContextProvider extends Component {
-        static childContextTypes = screenChildContextPropTypes;
+        static childContextTypes = {
+          ...screenChildContextPropTypes,
+          captureEvent: PropTypes.func,
+        };
 
         getChildContext() {
           return {
+            captureEvent,
             setTitleText,
             setHeaderRightElement,
             headerOptions: getHeaderOptions(),
@@ -71,6 +81,8 @@ class Screen extends Component {
         ReactTestRenderer.create(<ContextProvider>{preConstructedElements}</ContextProvider>)
         if (__DEV__) console.reportErrorsAsExceptions = true
       } catch (e) {}
+
+      hackyMessageStorage.capturedEvents = capturedEvents
     }
 
     return {
@@ -80,14 +92,34 @@ class Screen extends Component {
     }
   };
 
-  static childContextTypes = screenChildContextPropTypes;
+  static childContextTypes = {
+    capturedEvents: PropTypes.object,
+    ...screenChildContextPropTypes,
+  };
+
+  constructor(props, context) {
+    super(props, context)
+  }
 
   getChildContext() {
-    return {
+    const context = {
       setTitleText: this.setTitleText,
       setHeaderRightElement: this.setHeaderRightElement,
       headerOptions: getHeaderOptions(),
     }
+
+    if (
+      this.props.navigation &&
+      this.props.navigation.state &&
+      this.props.navigation.state.params &&
+      this.props.navigation.state.params.hackyMessageStorage &&
+      this.props.navigation.state.params.hackyMessageStorage.capturedEvents
+    ) {
+      context.capturedEvents = this.props.navigation.state.params.hackyMessageStorage.capturedEvents
+      this.props.navigation.state.params.hackyMessageStorage.capturedEvents = undefined
+    }
+
+    return context
   }
 
   componentDidMount() {
@@ -247,6 +279,7 @@ export default class WrappedStackNavigator extends Component {
         this.state.routeParamsMap[routeEntry.key] = {
           ...rpm,
           preConstructedElements,
+          hackyMessageStorage: {},
         }
       }
     })
