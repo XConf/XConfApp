@@ -9,25 +9,37 @@ import {
   addNavigationHelpers,
 } from 'react-navigation'
 
-export const defaultNavigationOptions = {
-  headerStyle: {
-    backgroundColor: '#f4511e',
-  },
-  headerTintColor: '#fff',
+const getHeaderStyleNavigationOptions = (style) => {
+  switch (style) {
+    case 'light':
+      return {
+        headerStyle: {
+          backgroundColor: '#fff',
+        },
+        headerTintColor: '#f4511e',
+      }
+    default:
+      return {
+        headerStyle: {
+          backgroundColor: '#f4511e',
+        },
+        headerTintColor: '#fff',
+      }
+  }
 }
 
-const getHeaderOptions = () => {
+const getHeaderOptions = (style) => {
+  const navigationOptions = getHeaderStyleNavigationOptions(style)
   return {
-    tintColor: defaultNavigationOptions.headerTintColor,
+    tintColor: navigationOptions.headerTintColor,
   }
 }
 
 const screenChildContextPropTypes = {
+  setHeaderStyle: PropTypes.func,
   setTitleText: PropTypes.func,
   setHeaderRightElement: PropTypes.func,
-  headerOptions: PropTypes.shape({
-    tintColor: PropTypes.string,
-  }),
+  getHeaderOptions: PropTypes.func,
 }
 
 class Screen extends Component {
@@ -35,8 +47,9 @@ class Screen extends Component {
     router: PropTypes.func.isRequired,
   };
 
-  static navigationOptions = ({ navigation, navigationOptions }) => {
+  static navigationOptions = ({ navigation }) => {
     const params = navigation.state.params || {}
+    let { headerStyle } = params
 
     const { mounted } = params
     const paramsFromRenderingPreConstructedElements = {}
@@ -46,6 +59,9 @@ class Screen extends Component {
       const capturedEvents = {}
       const captureEvent = (type, ...args) => {
         capturedEvents[type] = args
+      }
+      const setHeaderStyle = (v) => {
+        headerStyle = v
       }
       const setTitleText = (title) => {
         paramsFromRenderingPreConstructedElements.title = title
@@ -63,9 +79,10 @@ class Screen extends Component {
         getChildContext() {
           return {
             captureEvent,
+            setHeaderStyle,
             setTitleText,
             setHeaderRightElement,
-            headerOptions: getHeaderOptions(),
+            getHeaderOptions: () => getHeaderOptions(headerStyle),
           }
         }
 
@@ -76,11 +93,14 @@ class Screen extends Component {
 
       const { preConstructedElements } = params
 
+      if (__DEV__) console.reportErrorsAsExceptions = false
       try {
-        if (__DEV__) console.reportErrorsAsExceptions = false
         ReactTestRenderer.create(<ContextProvider>{preConstructedElements}</ContextProvider>)
-        if (__DEV__) console.reportErrorsAsExceptions = true
       } catch (e) {}
+      // try {
+      //   ReactTestRenderer.create(<ContextProvider>{preConstructedElements}</ContextProvider>)
+      // } catch (e) {}
+      if (__DEV__) console.reportErrorsAsExceptions = true
 
       hackyMessageStorage.capturedEvents = capturedEvents
     }
@@ -89,6 +109,7 @@ class Screen extends Component {
       title: params.titleText,
       headerRight: params.headerRightElement,
       ...paramsFromRenderingPreConstructedElements,
+      ...getHeaderStyleNavigationOptions(headerStyle),
     }
   };
 
@@ -103,9 +124,10 @@ class Screen extends Component {
 
   getChildContext() {
     const context = {
+      setHeaderStyle: this.setHeaderStyle,
       setTitleText: this.setTitleText,
       setHeaderRightElement: this.setHeaderRightElement,
-      headerOptions: getHeaderOptions(),
+      getHeaderOptions: () => getHeaderOptions(this.headerStyle),
     }
 
     if (
@@ -126,12 +148,17 @@ class Screen extends Component {
     this.props.navigation.setParams({ mounted: true })
   }
 
-  setHeaderRightElement = (headerRightElement) => {
-    this.props.navigation.setParams({ headerRightElement })
+  setHeaderStyle = (headerStyle) => {
+    this.headerStyle = headerStyle
+    this.props.navigation.setParams({ headerStyle })
   };
 
   setTitleText = (titleText) => {
     this.props.navigation.setParams({ titleText })
+  };
+
+  setHeaderRightElement = (headerRightElement) => {
+    this.props.navigation.setParams({ headerRightElement })
   };
 
   render() {
@@ -149,7 +176,6 @@ const GeneralStackNavigator = StackNavigator(
   },
   {
     headerTransitionPreset: 'uikit',
-    navigationOptions: defaultNavigationOptions,
   },
 )
 

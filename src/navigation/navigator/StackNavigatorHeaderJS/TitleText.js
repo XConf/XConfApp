@@ -1,9 +1,13 @@
-/* eslint-disable react/no-multi-comp */
+/* eslint-disable react/no-unused-prop-types */
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 import equal from 'fast-deep-equal'
 
 export default class HeaderTitleText extends Component {
+  static propTypes = {
+    value: PropTypes.string.isRequired,
+  };
+
   static contextTypes = {
     setTitleText: PropTypes.func,
     headerOptions: PropTypes.shape({

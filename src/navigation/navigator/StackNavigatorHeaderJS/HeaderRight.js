@@ -45,9 +45,7 @@ export default class HeaderRight extends Component {
     captureEvent: PropTypes.func,
     capturedEvents: PropTypes.object,
     setHeaderRightElement: PropTypes.func,
-    headerOptions: PropTypes.shape({
-      tintColor: PropTypes.string,
-    }),
+    getHeaderOptions: PropTypes.func,
   };
 
   constructor(props, context) {
@@ -55,9 +53,9 @@ export default class HeaderRight extends Component {
     this.renderIntoPlace(props, context)
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (this.props === nextProps) return false
-    return !equal(this.props, nextProps)
+  shouldComponentUpdate(nextProps, nextContext) {
+    if (this.props === nextProps && this.context === nextContext) return false
+    return !equal(this.props, nextProps) || !equal(this.context, nextContext)
   }
 
   componentDidUpdate() {
@@ -76,7 +74,7 @@ export default class HeaderRight extends Component {
     const c = context || this.context
     if (typeof c.setHeaderRightElement !== 'function') return
 
-    const headerOptions = c.headerOptions || {}
+    const headerOptions = (c.getHeaderOptions && c.getHeaderOptions()) || {}
 
     const content = (
       <HeaderRightContentWrapper
