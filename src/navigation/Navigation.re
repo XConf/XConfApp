@@ -1,11 +1,15 @@
 module MainStackNavigator = StackNavigator.Make(MainStackRouting);
 
 type state = {
-  navigation: MainStackNavigator.navigationState
+  tabNavigationState: TabNavigator.navigationState,
+  stackNavigation1State: MainStackNavigator.navigationState,
+  stackNavigation2State: MainStackNavigator.navigationState
 };
 
 type action =
-  | Update(MainStackNavigator.navigationState);
+  | UpdateTabNavigationState(TabNavigator.navigationState)
+  | UpdateStackNavigation1State(MainStackNavigator.navigationState)
+  | UpdateStackNavigation2State(MainStackNavigator.navigationState);
 
 let component = ReasonReact.reducerComponent("Navigation");
 
@@ -13,18 +17,31 @@ let make = (_children) => {
   ...component,
 
   initialState: () => {
-    navigation: MainStackNavigator.initialStateForRoute(MainStackRouting.Home)
+    tabNavigationState: TabNavigator.initialState,
+    stackNavigation1State: MainStackNavigator.initialStateForRoute(MainStackRouting.Home),
+    stackNavigation2State: MainStackNavigator.initialStateForRoute(MainStackRouting.Home)
   },
 
   reducer: (action, state) =>
     switch (action) {
-    | Update(newState) => ReasonReact.Update({...state, navigation: newState})
+    | UpdateTabNavigationState(newState) => ReasonReact.Update({...state, tabNavigationState: newState})
+    | UpdateStackNavigation1State(newState) => ReasonReact.Update({...state, stackNavigation1State: newState})
+    | UpdateStackNavigation2State(newState) => ReasonReact.Update({...state, stackNavigation2State: newState})
     },
 
   render: self => {
-    <MainStackNavigator
-      state=self.state.navigation
-      updateState=(newState => self.send(Update(newState)))
-    />;
+    <TabNavigator
+      state=self.state.tabNavigationState
+      updateState=(newState => self.send(UpdateTabNavigationState(newState)))
+    >
+      <MainStackNavigator
+        state=self.state.stackNavigation1State
+        updateState=(newState => self.send(UpdateStackNavigation1State(newState)))
+      />
+      <MainStackNavigator
+        state=self.state.stackNavigation2State
+        updateState=(newState => self.send(UpdateStackNavigation2State(newState)))
+      />
+    </TabNavigator>;
   }
 };
