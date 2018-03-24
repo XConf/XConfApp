@@ -52,13 +52,20 @@ export default class WrappedStackNavigator extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.clearUnusedRouteParamsMapItem(nextProps)
-  }
+  // componentDidReceiveProps(nextProps) {
+  //   this.clearUnusedRouteParamsMapItem(nextProps)
+  // }
 
-  clearUnusedRouteParamsMapItem(props) {
-    // TODO: Ensure this is cleared automatically
-  }
+  // clearUnusedRouteParamsMapItem(props) {
+  //   const { routes } = props
+  //   const { routeParamsMap } = this.state
+  //   const routeParamsMapKeys = Object.keys(routeParamsMap)
+  //   if (routes.length === routeParamsMapKeys.length) return
+  //   const routeKeys = routes.map(r => r.key)
+  //   routeParamsMapKeys.forEach((key) => {
+  //     if (!routeKeys.includes(key)) delete routeParamsMap[key]
+  //   })
+  // }
 
   handleDispatch = (action) => {
     this.setState((prevState) => {
@@ -81,14 +88,18 @@ export default class WrappedStackNavigator extends Component {
         simpleState,
       } = splitComplexState(complexState)
 
-      if (!equal(this.props.state, simpleState)) {
+      if (!simpleStateEqual(this.props.state, simpleState)) {
         this.props.updateState(simpleState)
       }
 
       const state = {}
 
-      if (!equal(prevInternalState, internalState)) state.internalState = internalState
-      if (!equal(prevRouteParamsMap, routeParamsMap)) state.routeParamsMap = routeParamsMap
+      if (!internalStateEqual(prevInternalState, internalState)) {
+        state.internalState = internalState
+      }
+      if (action.type === 'Navigation/SET_PARAMS' && !routeParamsMapEqual(prevRouteParamsMap, routeParamsMap)) {
+        state.routeParamsMap = routeParamsMap
+      }
 
       if (Object.keys(state).length === 0) return false
 
@@ -175,4 +186,35 @@ const constructComplexState = ({
     index,
     routes,
   }
+}
+
+const internalStateEqual = (a, b) => {
+  return equal(a, b)
+}
+
+const routeParamsMapEqual = (a, b) => {
+  return equal(a, b)
+}
+
+const simpleStateEqual = (a, b) => {
+  // Check the type of the two states
+  if (typeof a !== typeof b) return false
+  if (typeof a !== 'object') return a === b
+
+  // Check the index of the two states
+  if (a.index !== b.index) return false
+
+  // Check the type of route of the two states
+  if (Array.isArray(a.routes) !== Array.isArray(b.routes)) return false
+  if (!Array.isArray(a.routes)) return a.routes === b.routes
+
+  // First check the length of the two routes, then loop over them and check the equality of the keys of each entry
+  if (a.routes.length !== b.routes.length) return false
+  for (let i = a.routes.length - 1; i >= 0; --i) {
+    if (typeof a.routes[i] !== typeof b.routes[i]) return false
+    if (a.routes[i].key !== b.routes[i].key) return false
+  }
+
+  // If every check passed, then we can say that the two state are equal
+  return true
 }
