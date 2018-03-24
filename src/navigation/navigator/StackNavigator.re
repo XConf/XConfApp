@@ -1,21 +1,32 @@
 [@bs.module "./StackNavigatorJS"] external jsStackNavigator : ReasonReact.reactClass = "default";
-[@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeader : ReasonReact.reactClass = "Header";
-[@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeaderTitleText : ReasonReact.reactClass = "HeaderTitleText";
-[@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeaderRight : ReasonReact.reactClass = "HeaderRight";
-[@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeaderLeft : ReasonReact.reactClass = "HeaderLeft";
+
+[@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeader : ReasonReact.reactClass =
+  "Header";
+
+[@bs.module "./StackNavigatorJS"]
+external jsStackNavigatorHeaderTitleText : ReasonReact.reactClass =
+  "HeaderTitleText";
+
+[@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeaderRight : ReasonReact.reactClass =
+  "HeaderRight";
+
+[@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeaderLeft : ReasonReact.reactClass =
+  "HeaderLeft";
+
+type routerUtils('route) = {
+  pushRoute: 'route => unit,
+  popRoute: unit => unit
+};
 
 module type Routing = {
   type route;
-  let router:
-    (route, ~pushRoute: route => unit, ~popRoute: unit => unit) => ReasonReact.reactElement;
+  let router: (route, ~utils: routerUtils(route)) => ReasonReact.reactElement;
 };
 
 module Make = (R: Routing) => {
   type routeEntry = {. "route": R.route, "key": string};
   type navigationState = {. "index": int, "routes": array(routeEntry)};
-
   let random = () : string => string_of_int(Random.bits()) ++ "-" ++ string_of_int(Random.bits());
-
   let initialStateWithRoute = (route: R.route) : navigationState => {
     "index": 0,
     "routes": [|{"key": random(), "route": route}|]
@@ -35,41 +46,34 @@ module Make = (R: Routing) => {
   let routePopToToped = (state: navigationState) : navigationState =>
     switch state##index {
     | 0 => state
-    | _ => {
-        "index": 0,
-        "routes": Array.sub(state##routes, 0, 1)
-      }
+    | _ => {"index": 0, "routes": Array.sub(state##routes, 0, 1)}
     };
-
-  let make = (~state: navigationState, ~updateState: navigationState => unit, children) => {
-    let pushRoute = (route: R.route) =>
-      routePushed(route, state)
-        |> updateState;
-    let popRoute = () =>
-      routePoped(state)
-        |> updateState;
-
+  let make =
+      (
+        ~state: navigationState,
+        ~updateState: navigationState => unit,
+        children
+      ) => {
+    let routerUtils = {
+      pushRoute: (route: R.route) => routePushed(route, state) |> updateState,
+      popRoute: () => routePoped(state) |> updateState
+    };
     ReasonReact.wrapJsForReason(
       ~reactClass=jsStackNavigator,
-      ~props={
-        "router": R.router(~pushRoute, ~popRoute),
-        "state": state,
-        "updateState": updateState
-      },
+      ~props={"router": R.router(~utils=routerUtils), "state": state, "updateState": updateState},
       children
     )
   };
 };
 
-module Header {
+module Header = {
   let make = (~style: string, children) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=jsStackNavigatorHeader,
       ~props={"style": style},
       children
     );
-
-  module TitleText {
+  module TitleText = {
     let make = (~value: string, children) =>
       ReasonReact.wrapJsForReason(
         ~reactClass=jsStackNavigatorHeaderTitleText,
@@ -77,8 +81,7 @@ module Header {
         children
       );
   };
-
-  module Right {
+  module Right = {
     let make = (children) =>
       ReasonReact.wrapJsForReason(
         ~reactClass=jsStackNavigatorHeaderRight,
@@ -86,8 +89,7 @@ module Header {
         children
       );
   };
-
-  module Left {
+  module Left = {
     let make = (children) =>
       ReasonReact.wrapJsForReason(
         ~reactClass=jsStackNavigatorHeaderLeft,
@@ -95,4 +97,4 @@ module Header {
         children
       );
   };
-}
+};

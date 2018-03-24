@@ -2,13 +2,13 @@ type route =
   | Home
   | Details(string);
 
-let router = (route: route, ~pushRoute, ~popRoute) =>
+let router = (route: route, ~utils: StackNavigator.routerUtils(route)) =>
   switch route {
-  | Home => <HomeScreen onGoToDetailsPress=(() => pushRoute(Details("first-page"))) />
+  | Home => <HomeScreen onGoToDetailsPress=(() => utils.pushRoute(Details("first-page"))) />
   | Details(param) =>
     <DetailsScreen
       param
-      onGoBackPress=popRoute
-      onGoToAnotherDetailsPress=((param) => pushRoute(Details(param)))
+      onGoBackPress=utils.popRoute
+      onGoToAnotherDetailsPress=((param) => utils.pushRoute(Details(param)))
     />
   };
