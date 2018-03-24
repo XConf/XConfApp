@@ -16,15 +16,15 @@ module Make = (R: Routing) => {
 
   let random = () : string => string_of_int(Random.bits()) ++ "-" ++ string_of_int(Random.bits());
 
-  let initialStateForRoute = (route: R.route) : navigationState => {
+  let initialStateWithRoute = (route: R.route) : navigationState => {
     "index": 0,
     "routes": [|{"key": random(), "route": route}|]
   };
-  let pushRouteToState = (route: R.route, state: navigationState) : navigationState => {
+  let routePushed = (route: R.route, state: navigationState) : navigationState => {
     "index": state##index + 1,
     "routes": Array.append(state##routes, [|{"key": random(), "route": route}|])
   };
-  let popRouteFromState = (state: navigationState) : navigationState =>
+  let routePoped = (state: navigationState) : navigationState =>
     switch state##index {
     | 0 => state
     | _ => {
@@ -32,13 +32,21 @@ module Make = (R: Routing) => {
         "routes": Array.sub(state##routes, 0, Array.length(state##routes) - 1)
       }
     };
+  let routePopToToped = (state: navigationState) : navigationState =>
+    switch state##index {
+    | 0 => state
+    | _ => {
+        "index": 0,
+        "routes": Array.sub(state##routes, 0, 1)
+      }
+    };
 
   let make = (~state: navigationState, ~updateState: navigationState => unit, children) => {
     let pushRoute = (route: R.route) =>
-      pushRouteToState(route, state)
+      routePushed(route, state)
         |> updateState;
     let popRoute = () =>
-      popRouteFromState(state)
+      routePoped(state)
         |> updateState;
 
     ReasonReact.wrapJsForReason(

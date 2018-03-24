@@ -9,6 +9,15 @@ Screen.navigationOptions = ({ navigation }) => {
     return {
       title: tabProps.title,
       tabBarIcon: tabProps.tabBarIcon,
+      tabBarOnPress: ({
+        previousScene: { index: previousIndex },
+        scene: { index },
+        jumpToIndex,
+      }) => {
+        jumpToIndex(index)
+        if (typeof tabProps.tabBarOnPress !== 'function') return
+        tabProps.tabBarOnPress({ previousIndex, index })
+      },
     }
   }
 
