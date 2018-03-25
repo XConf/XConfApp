@@ -89,7 +89,11 @@ export default class Screen extends Component {
   render() {
     const { params } = this.props.navigation.state
     const { route } = params
-    return this.context.router(route)
+    const content = this.context.router(route)
+    return {
+      ...content,
+      ref: ref => this.props.navigation.state.params.screenRef[0] = [ref],
+    }
   }
 }
 

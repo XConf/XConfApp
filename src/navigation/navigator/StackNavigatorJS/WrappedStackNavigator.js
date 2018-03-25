@@ -68,6 +68,7 @@ export default class WrappedStackNavigator extends Component {
   // }
 
   handleDispatch = (action) => {
+    // TODO: Ignore specific action.type(s) to avoid complex data flow
     this.setState((prevState) => {
       const {
         internalState: prevInternalState,
@@ -135,13 +136,14 @@ const splitComplexState = (complexState) => {
   const routeParamsMap = {}
   const routes = complexRoutes.map((complexRouteEntry) => {
     const { params, key: k } = complexRouteEntry
-    const { route } = params
+    const { route, screenRef } = params
 
     routeParamsMap[k] = params
 
     return {
       route,
       key: k,
+      screenRef,
     }
   })
 
@@ -166,7 +168,7 @@ const constructComplexState = ({
   const { routes: simpleRoutes, index } = simpleState
 
   const routes = simpleRoutes.map((simpleRouteEntry) => {
-    const { route, key } = simpleRouteEntry
+    const { route, key, screenRef } = simpleRouteEntry
 
     const params = routeParamsMap[key]
 
@@ -177,6 +179,7 @@ const constructComplexState = ({
         ...params,
         router,
         route,
+        screenRef,
       },
     }
   })

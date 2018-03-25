@@ -24,16 +24,16 @@ module type Routing = {
 };
 
 module Make = (R: Routing) => {
-  type routeEntry = {. "route": R.route, "key": string};
+  type routeEntry = {. "route": R.route, "key": string, "screenRef": ref(option(ReasonReact.reactRef))};
   type navigationState = {. "index": int, "routes": array(routeEntry)};
   let random = () : string => string_of_int(Random.bits()) ++ "-" ++ string_of_int(Random.bits());
   let initialStateWithRoute = (route: R.route) : navigationState => {
     "index": 0,
-    "routes": [|{"key": random(), "route": route}|]
+    "routes": [|{"key": random(), "route": route, "screenRef": ref(None)}|]
   };
   let routePushed = (route: R.route, state: navigationState) : navigationState => {
     "index": state##index + 1,
-    "routes": Array.append(state##routes, [|{"key": random(), "route": route}|])
+    "routes": Array.append(state##routes, [|{"key": random(), "route": route, "screenRef": ref(None)}|])
   };
   let routePoped = (state: navigationState) : navigationState =>
     switch state##index {

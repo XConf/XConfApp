@@ -89,9 +89,22 @@ let make = (_children) => {
       })
     },
   render: (self) => {
-    let tabBarOnPress = (~index) =>
+    let tabBarOnPress = ({TabNavigator.Tab.index}) =>
       if (index === self.state.tabNavigation##index) {
-        self.send(CurrentStackNavigationJumpToTop)
+        let state =
+          stackNavigationStateFromStackNavigation(
+            stackNavigationFromTabIndex(self.state.tabNavigation##index),
+            self.state.stackNavigations
+          );
+        switch state##index {
+        | 0 =>
+          switch ((state##routes)[0]##route, ((state##routes)[0]##screenRef)^) {
+          | (_, None) => ()
+          | (MainStackRouting.Home, Some(r)) => HomeScreen.scrollToTop(r)
+          | _ => ()
+          }
+        | _ => self.send(CurrentStackNavigationJumpToTop)
+        }
       };
     <TabNavigator
       state=self.state.tabNavigation

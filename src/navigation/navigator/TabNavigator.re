@@ -1,4 +1,5 @@
 [@bs.module "./TabNavigatorJS"] external jsTabNavigator : ReasonReact.reactClass = "default";
+
 [@bs.module "./TabNavigatorJS"] external jsTabNavigatorTab : ReasonReact.reactClass = "Tab";
 
 type navigationState = {. "index": int};
@@ -13,11 +14,16 @@ let make = (~state: navigationState, ~updateState: navigationState => unit, chil
   );
 
 module Tab = {
+  type tabBarOnPressPayload = {
+    index: int,
+    previousIndex: option(int)
+  };
+  let toTabBarOnPressPayload = (obj) => {index: obj##index, previousIndex: None};
   let make =
       (
         ~title: string,
         ~tabBarIcon: (~focused: bool, ~tintColor: string) => ReasonReact.reactElement,
-        ~tabBarOnPress: option(((/*~previousIndex: int, */~index: int) => unit))=?,
+        ~tabBarOnPress: option((tabBarOnPressPayload => unit))=?,
         children
       ) =>
     ReasonReact.wrapJsForReason(
@@ -32,8 +38,7 @@ module Tab = {
               fromOption(
                 switch tabBarOnPress {
                 | None => None
-                | Some(f) =>
-                  Some(((obj) => f(/*~previousIndex=obj##previousIndex, */~index=obj##index)))
+                | Some(f) => Some(((obj) => f(toTabBarOnPressPayload(obj))))
                 }
               )
           }
