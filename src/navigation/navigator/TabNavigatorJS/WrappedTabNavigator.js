@@ -13,26 +13,19 @@ export default class WrappedTabNavigator extends Component {
       index: PropTypes.number.isRequired,
     }).isRequired,
     updateState: PropTypes.func.isRequired,
+    numberOfTabs: PropTypes.number.isRequired,
   };
 
   getNavigator() {
-    if (this.Navigator) {
-      if (__DEV__) {
-        if (this.getChildrenAsArray().length !== this.Navigator.tabsCount) {
-          throw new Error('Dynamically changing the number of tabs of a TabNavigator is not allowed!')
-        }
-      }
+    if (this.Navigator) return this.Navigator
 
-      return this.Navigator
-    }
+    const { numberOfTabs } = this.props
 
     const routeConfigs = {
-      ...this.getChildrenAsArray().map((_, i) => ({ screen: Screen })),
+      ...(new Array(numberOfTabs)).fill({ screen: Screen }),
     }
 
     const Navigator = TabNavigator(routeConfigs)
-    Navigator.tabsCount = Object.keys(routeConfigs).length
-
     this.Navigator = Navigator
 
     return Navigator

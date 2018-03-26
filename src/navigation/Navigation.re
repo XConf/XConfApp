@@ -1,47 +1,26 @@
 module MainStackNavigator = StackNavigator.Make(MainStackRouting);
 
-type stackNavigation =
-  | HomeStack
-  | Home2Stack;
+module MainTabNavigator = TabNavigator.Make(MainTab);
 
-type stackNavigationStates = {
-  home: MainStackNavigator.navigationState,
-  home2: MainStackNavigator.navigationState
-};
+module StackNavigatorStateMap =
+  Map.Make(
+    {
+      type t = MainTabNavigator.tab;
+      let compare = compare;
+    }
+  );
+
+type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.navigationState);
 
 type state = {
-  tabNavigation: TabNavigator.navigationState,
-  stackNavigations: stackNavigationStates
+  tabNavigation: MainTabNavigator.navigationState,
+  stackNavigations: stackNavigationsState
 };
 
-let updatedStackNavigationState =
-    (
-      states: stackNavigationStates,
-      stackNavigation: stackNavigation,
-      state: MainStackNavigator.navigationState
-    ) =>
-  switch stackNavigation {
-  | HomeStack => {...states, home: state}
-  | Home2Stack => {...states, home2: state}
-  };
-
-let stackNavigationStateFromStackNavigation = (stackNavigation, stackNavigationStates) =>
-  switch stackNavigation {
-  | HomeStack => stackNavigationStates.home
-  | Home2Stack => stackNavigationStates.home2
-  };
-
-let stackNavigationFromTabIndex = (index) =>
-  switch index {
-  | 0 => HomeStack
-  | 1 => Home2Stack
-  | _ => HomeStack
-  };
-
 type action =
-  | UpdateTabNavigationState(TabNavigator.navigationState)
-  | UpdateStackNavigationState(stackNavigation, MainStackNavigator.navigationState)
-  | CurrentStackNavigationJumpToTop;
+  | UpdateTabNavigationState(MainTabNavigator.navigationState)
+  | UpdateStackNavigationState(MainTab.tab, MainStackNavigator.navigationState)
+  | PopCurrentStackNavigationToTop;
 
 let component = ReasonReact.reducerComponent("Navigation");
 
@@ -53,74 +32,79 @@ let tabBarIcon = (~focused, ~tintColor: string) => {
   />
 };
 
+let tabBarPress =
+    (
+      {MainTabNavigator.activedTab},
+      {ReasonReact.send, ReasonReact.state: {stackNavigations, tabNavigation: {activeTab}}}
+    ) =>
+  switch (activedTab, StackNavigatorStateMap.find(activedTab, stackNavigations)) {
+  | (
+      activedTab,
+      {index: 0, routes: [{route: MainStackRouting.Home, screenRef: {contents: Some(r)}}, ..._]}
+    )
+      when activedTab == activeTab =>
+    HomeScreen.scrollToTop(r)
+  | (activedTab, {index: i}) when activedTab == activeTab && i > 0 =>
+    send(PopCurrentStackNavigationToTop)
+  | _ => ()
+  };
+
 let make = (_children) => {
   ...component,
   initialState: () => {
-    tabNavigation: TabNavigator.initialState,
-    stackNavigations: {
-      home: MainStackNavigator.initialStateWithRoute(MainStackRouting.Home),
-      home2: MainStackNavigator.initialStateWithRoute(MainStackRouting.Home)
-    }
+    tabNavigation: MainTabNavigator.initialStateWithDefaultTab(MainTab.Home),
+    stackNavigations:
+      StackNavigatorStateMap.empty
+      |> StackNavigatorStateMap.add(
+           MainTab.Home,
+           MainStackNavigator.initialStateWithRoute(MainStackRouting.Home)
+         )
+      |> StackNavigatorStateMap.add(
+           MainTab.Home2,
+           MainStackNavigator.initialStateWithRoute(MainStackRouting.Home)
+         )
   },
   reducer: (action, state) =>
     switch action {
     | UpdateTabNavigationState(newState) => ReasonReact.Update({...state, tabNavigation: newState})
-    | UpdateStackNavigationState(stackNavigation, newState) =>
+    | UpdateStackNavigationState(tab, newState) =>
       ReasonReact.Update({
         ...state,
-        stackNavigations:
-          updatedStackNavigationState(state.stackNavigations, stackNavigation, newState)
+        stackNavigations: StackNavigatorStateMap.add(tab, newState, state.stackNavigations)
       })
-    | CurrentStackNavigationJumpToTop =>
-      let currentstackNavigation = stackNavigationFromTabIndex(state.tabNavigation##index);
+    | PopCurrentStackNavigationToTop =>
+      let currentTab = state.tabNavigation.activeTab;
       ReasonReact.Update({
         ...state,
         stackNavigations:
-          updatedStackNavigationState(
-            state.stackNavigations,
-            currentstackNavigation,
+          StackNavigatorStateMap.add(
+            currentTab,
             MainStackNavigator.routePopToToped(
-              stackNavigationStateFromStackNavigation(
-                currentstackNavigation,
-                state.stackNavigations
-              )
-            )
+              StackNavigatorStateMap.find(currentTab, state.stackNavigations)
+            ),
+            state.stackNavigations
           )
       })
     },
-  render: (self) => {
-    let tabBarOnPress = ({TabNavigator.Tab.index}) =>
-      if (index === self.state.tabNavigation##index) {
-        let state =
-          stackNavigationStateFromStackNavigation(
-            stackNavigationFromTabIndex(self.state.tabNavigation##index),
-            self.state.stackNavigations
-          );
-        switch state##index {
-        | 0 =>
-          switch ((state##routes)[0]##route, ((state##routes)[0]##screenRef)^) {
-          | (_, None) => ()
-          | (MainStackRouting.Home, Some(r)) => HomeScreen.scrollToTop(r)
-          | _ => ()
-          }
-        | _ => self.send(CurrentStackNavigationJumpToTop)
-        }
-      };
-    <TabNavigator
+  render: (self) =>
+    <MainTabNavigator
       state=self.state.tabNavigation
       updateState=((newState) => self.send(UpdateTabNavigationState(newState)))>
-      <TabNavigator.Tab title="Tab 1" tabBarIcon tabBarOnPress>
+      <MainTabNavigator.Tab title="Tab 1" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
         <MainStackNavigator
-          state=self.state.stackNavigations.home
-          updateState=((newState) => self.send(UpdateStackNavigationState(HomeStack, newState)))
+          state=(StackNavigatorStateMap.find(MainTab.Home, self.state.stackNavigations))
+          updateState=(
+            (newState) => self.send(UpdateStackNavigationState(MainTab.Home, newState))
+          )
         />
-      </TabNavigator.Tab>
-      <TabNavigator.Tab title="Tab 2" tabBarIcon tabBarOnPress>
+      </MainTabNavigator.Tab>
+      <MainTabNavigator.Tab title="Tab 2" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
         <MainStackNavigator
-          state=self.state.stackNavigations.home2
-          updateState=((newState) => self.send(UpdateStackNavigationState(Home2Stack, newState)))
+          state=(StackNavigatorStateMap.find(MainTab.Home2, self.state.stackNavigations))
+          updateState=(
+            (newState) => self.send(UpdateStackNavigationState(MainTab.Home2, newState))
+          )
         />
-      </TabNavigator.Tab>
-    </TabNavigator>
-  }
+      </MainTabNavigator.Tab>
+    </MainTabNavigator>
 };

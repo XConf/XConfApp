@@ -23,44 +23,89 @@ module type Routing = {
   let router: (route, ~utils: routerUtils(route)) => ReasonReact.reactElement;
 };
 
+let routesListFromArray = (array) => Array.fold_left((list, item) => [item, ...list], [], array);
+
+let routesArrayFromList = (list) =>
+  List.fold_left((array, item) => Array.append([|item|], array), [||], list);
+
 module Make = (R: Routing) => {
-  type routeEntry = {. "route": R.route, "key": string, "screenRef": ref(option(ReasonReact.reactRef))};
-  type navigationState = {. "index": int, "routes": array(routeEntry)};
+  type routeEntry = {
+    route: R.route,
+    key: string,
+    screenRef: ref(option(ReasonReact.reactRef))
+  };
+  type navigationState = {
+    index: int,
+    routes: list(routeEntry)
+  };
+  type jsRouteEntry = {
+    .
+    "route": R.route, "key": string, "screenRef": ref(option(ReasonReact.reactRef))
+  };
+  type jsNavigationState = {. "index": int, "routes": array(jsRouteEntry)};
+  let routeEntryFromJsRouteEntry: jsRouteEntry => routeEntry =
+    (jsRouteEntry) => {
+      route: jsRouteEntry##route,
+      key: jsRouteEntry##key,
+      screenRef: jsRouteEntry##screenRef
+    };
+  let stateFromJsState: jsNavigationState => navigationState =
+    (jsNavigationState) => {
+      let jsRoutesArray = jsNavigationState##routes;
+      let routesArray = Array.map(routeEntryFromJsRouteEntry, jsRoutesArray);
+      let routesList = routesListFromArray(routesArray);
+      {index: jsNavigationState##index, routes: routesList}
+    };
+  let jsRouteEntryFromRouteEntry: routeEntry => jsRouteEntry =
+    (routeEntry) => {
+      "route": routeEntry.route,
+      "key": routeEntry.key,
+      "screenRef": routeEntry.screenRef
+    };
+  let jsStateFromState: navigationState => jsNavigationState =
+    (navigationState) => {
+      let routesList = navigationState.routes;
+      let routesArray = routesArrayFromList(routesList);
+      let jsRoutesArray = Array.map(jsRouteEntryFromRouteEntry, routesArray);
+      {"index": navigationState.index, "routes": jsRoutesArray}
+    };
   let random = () : string => string_of_int(Random.bits()) ++ "-" ++ string_of_int(Random.bits());
   let initialStateWithRoute = (route: R.route) : navigationState => {
-    "index": 0,
-    "routes": [|{"key": random(), "route": route, "screenRef": ref(None)}|]
+    index: 0,
+    routes: [{key: random(), route, screenRef: ref(None)}]
   };
   let routePushed = (route: R.route, state: navigationState) : navigationState => {
-    "index": state##index + 1,
-    "routes": Array.append(state##routes, [|{"key": random(), "route": route, "screenRef": ref(None)}|])
+    index: state.index + 1,
+    routes: [{key: random(), route, screenRef: ref(None)}, ...state.routes]
   };
   let routePoped = (state: navigationState) : navigationState =>
-    switch state##index {
-    | 0 => state
-    | _ => {
-        "index": state##index - 1,
-        "routes": Array.sub(state##routes, 0, Array.length(state##routes) - 1)
-      }
+    switch (state.index, state.routes) {
+    | (0, _) => state
+    | (index, [_, ...leftoveredRoutes]) => {index: index - 1, routes: leftoveredRoutes}
+    | _ => state
     };
+  let rec onlyLast =
+    fun
+    | [] => []
+    | [a] => [a]
+    | [_, ...t] => onlyLast(t);
   let routePopToToped = (state: navigationState) : navigationState =>
-    switch state##index {
+    switch state.index {
     | 0 => state
-    | _ => {"index": 0, "routes": Array.sub(state##routes, 0, 1)}
+    | _ => {index: 0, routes: onlyLast(state.routes)}
     };
-  let make =
-      (
-        ~state: navigationState,
-        ~updateState: navigationState => unit,
-        children
-      ) => {
+  let make = (~state: navigationState, ~updateState: navigationState => unit, children) => {
     let routerUtils = {
       pushRoute: (route: R.route) => routePushed(route, state) |> updateState,
       popRoute: () => routePoped(state) |> updateState
     };
     ReasonReact.wrapJsForReason(
       ~reactClass=jsStackNavigator,
-      ~props={"router": R.router(~utils=routerUtils), "state": state, "updateState": updateState},
+      ~props={
+        "router": R.router(~utils=routerUtils),
+        "state": jsStateFromState(state),
+        "updateState": (jsNavigationState) => updateState(stateFromJsState(jsNavigationState))
+      },
       children
     )
   };
