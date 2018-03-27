@@ -13,14 +13,16 @@ external jsStackNavigatorHeaderTitleText : ReasonReact.reactClass =
 [@bs.module "./StackNavigatorJS"] external jsStackNavigatorHeaderLeft : ReasonReact.reactClass =
   "HeaderLeft";
 
-type routerUtils('route) = {
+type routerUtils('route, 'event) = {
   pushRoute: 'route => unit,
-  popRoute: unit => unit
+  popRoute: unit => unit,
+  sendEvent: 'event => unit
 };
 
 module type Routing = {
   type route;
-  let router: (route, ~utils: routerUtils(route)) => ReasonReact.reactElement;
+  type screenEvent;
+  let router: (route, ~utils: routerUtils(route, screenEvent)) => ReasonReact.reactElement;
 };
 
 let routesListFromArray = (array) => Array.fold_left((list, item) => [item, ...list], [], array);
@@ -94,10 +96,17 @@ module Make = (R: Routing) => {
     | 0 => state
     | _ => {index: 0, routes: onlyLast(state.routes)}
     };
-  let make = (~state: navigationState, ~updateState: navigationState => unit, children) => {
+  let make =
+      (
+        ~state: navigationState,
+        ~updateState: navigationState => unit,
+        ~handleEvent: R.screenEvent => unit=(_) => (),
+        children
+      ) => {
     let routerUtils = {
       pushRoute: (route: R.route) => routePushed(route, state) |> updateState,
-      popRoute: () => routePoped(state) |> updateState
+      popRoute: () => routePoped(state) |> updateState,
+      sendEvent: handleEvent
     };
     ReasonReact.wrapJsForReason(
       ~reactClass=jsStackNavigator,

@@ -2,9 +2,16 @@ type route =
   | Home
   | Details(string);
 
-let router = (route: route, ~utils: StackNavigator.routerUtils(route)) =>
+type screenEvent =
+  | OpenInfo;
+
+let router = (route: route, ~utils: StackNavigator.routerUtils(route, screenEvent)) =>
   switch route {
-  | Home => <HomeScreen onGoToDetailsPress=(() => utils.pushRoute(Details("first-page"))) />
+  | Home =>
+    <HomeScreen
+      onInfoPress=(() => utils.sendEvent(OpenInfo))
+      onGoToDetailsPress=(() => utils.pushRoute(Details("first-page")))
+    />
   | Details(param) =>
     <DetailsScreen
       param

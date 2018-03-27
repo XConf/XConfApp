@@ -51,6 +51,20 @@ let tabBarPress =
   | _ => ()
   };
 
+let mainStackNavigatorEvent =
+    (event: MainStackRouting.screenEvent, {ReasonReact.state, ReasonReact.send}) =>
+  switch event {
+  | MainStackRouting.OpenInfo =>
+    send(
+      UpdateModalStackNavigationState(
+        AppModalStackNavigator.State.routePushed(
+          ModalStackRouting.Info,
+          state.modalStackNavigation
+        )
+      )
+    )
+  };
+
 let make = (_children) => {
   ...component,
   initialState: () => {
@@ -104,20 +118,7 @@ let make = (_children) => {
             updateState=(
               (newState) => self.send(UpdateStackNavigationState(MainTabConfig.Home, newState))
             )
-          />
-          <Button
-            title="Open Info"
-            onPress=(
-              (_event) =>
-                self.send(
-                  UpdateModalStackNavigationState(
-                    AppModalStackNavigator.State.routePushed(
-                      ModalStackRouting.Info,
-                      self.state.modalStackNavigation
-                    )
-                  )
-                )
-            )
+            handleEvent=(self.handle(mainStackNavigatorEvent))
           />
         </MainTabNavigator.Tab>
         <MainTabNavigator.Tab title="Tab 2" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>

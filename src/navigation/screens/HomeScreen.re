@@ -51,7 +51,7 @@ let styles =
     )
   );
 
-let make = (~onGoToDetailsPress: unit => unit, _children) => {
+let make = (~onInfoPress: unit => unit, ~onGoToDetailsPress: unit => unit, _children) => {
   ...component,
   initialState: () => {count: 0, increment: 1, scrollViewRef: ref(None)},
   reducer: (action, state) =>
@@ -65,7 +65,7 @@ let make = (~onGoToDetailsPress: unit => unit, _children) => {
     <ScrollView contentContainerStyle=styles##container ref=(self.handle(setScrollViewRef))>
       <StackNavigator.Header style="default">
         <StackNavigator.Header.Left>
-          <Button title="Info" onPress=((_) => ()) />
+          <Button title="Info" onPress=onInfoPress />
         </StackNavigator.Header.Left>
         <StackNavigator.Header.TitleText value="Home" />
         <StackNavigator.Header.Right>
