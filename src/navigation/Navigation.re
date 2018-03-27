@@ -1,6 +1,6 @@
+module AppModalStackNavigator = ModalStackNavigator.Make(ModalStackRouting);
+module MainTabNavigator = TabNavigator.Make(MainTabConfig);
 module MainStackNavigator = StackNavigator.Make(MainStackRouting);
-
-module MainTabNavigator = TabNavigator.Make(MainTab);
 
 module StackNavigatorStateMap =
   Map.Make(
@@ -13,13 +13,15 @@ module StackNavigatorStateMap =
 type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.navigationState);
 
 type state = {
+  modalStackNavigation: AppModalStackNavigator.navigationState,
   tabNavigation: MainTabNavigator.navigationState,
   stackNavigations: stackNavigationsState
 };
 
 type action =
+  | UpdateModalStackNavigationState(AppModalStackNavigator.navigationState)
   | UpdateTabNavigationState(MainTabNavigator.navigationState)
-  | UpdateStackNavigationState(MainTab.tab, MainStackNavigator.navigationState)
+  | UpdateStackNavigationState(MainTabConfig.tab, MainStackNavigator.navigationState)
   | PopCurrentStackNavigationToTop;
 
 let component = ReasonReact.reducerComponent("Navigation");
@@ -52,20 +54,23 @@ let tabBarPress =
 let make = (_children) => {
   ...component,
   initialState: () => {
-    tabNavigation: MainTabNavigator.initialStateWithDefaultTab(MainTab.Home),
+    modalStackNavigation: AppModalStackNavigator.initialState,
+    tabNavigation: MainTabNavigator.initialStateWithDefaultTab(MainTabConfig.Home),
     stackNavigations:
       StackNavigatorStateMap.empty
       |> StackNavigatorStateMap.add(
-           MainTab.Home,
+           MainTabConfig.Home,
            MainStackNavigator.initialStateWithRoute(MainStackRouting.Home)
          )
       |> StackNavigatorStateMap.add(
-           MainTab.Home2,
+           MainTabConfig.Home2,
            MainStackNavigator.initialStateWithRoute(MainStackRouting.Home)
          )
   },
   reducer: (action, state) =>
     switch action {
+    | UpdateModalStackNavigationState(newState) =>
+      ReasonReact.Update({...state, modalStackNavigation: newState})
     | UpdateTabNavigationState(newState) => ReasonReact.Update({...state, tabNavigation: newState})
     | UpdateStackNavigationState(tab, newState) =>
       ReasonReact.Update({
@@ -87,24 +92,42 @@ let make = (_children) => {
       })
     },
   render: (self) =>
-    <MainTabNavigator
-      state=self.state.tabNavigation
-      updateState=((newState) => self.send(UpdateTabNavigationState(newState)))>
-      <MainTabNavigator.Tab title="Tab 1" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
-        <MainStackNavigator
-          state=(StackNavigatorStateMap.find(MainTab.Home, self.state.stackNavigations))
-          updateState=(
-            (newState) => self.send(UpdateStackNavigationState(MainTab.Home, newState))
-          )
-        />
-      </MainTabNavigator.Tab>
-      <MainTabNavigator.Tab title="Tab 2" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
-        <MainStackNavigator
-          state=(StackNavigatorStateMap.find(MainTab.Home2, self.state.stackNavigations))
-          updateState=(
-            (newState) => self.send(UpdateStackNavigationState(MainTab.Home2, newState))
-          )
-        />
-      </MainTabNavigator.Tab>
-    </MainTabNavigator>
+    <AppModalStackNavigator
+      state=self.state.modalStackNavigation
+      updateState=((newState) => self.send(UpdateModalStackNavigationState(newState)))>
+      <MainTabNavigator
+        state=self.state.tabNavigation
+        updateState=((newState) => self.send(UpdateTabNavigationState(newState)))>
+        <MainTabNavigator.Tab title="Tab 1" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
+          <MainStackNavigator
+            state=(StackNavigatorStateMap.find(MainTabConfig.Home, self.state.stackNavigations))
+            updateState=(
+              (newState) => self.send(UpdateStackNavigationState(MainTabConfig.Home, newState))
+            )
+          />
+          <Button
+            title="Open Info"
+            onPress=(
+              (_event) =>
+                self.send(
+                  UpdateModalStackNavigationState(
+                    AppModalStackNavigator.State.routePushed(
+                      ModalStackRouting.Info,
+                      self.state.modalStackNavigation
+                    )
+                  )
+                )
+            )
+          />
+        </MainTabNavigator.Tab>
+        <MainTabNavigator.Tab title="Tab 2" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
+          <MainStackNavigator
+            state=(StackNavigatorStateMap.find(MainTabConfig.Home2, self.state.stackNavigations))
+            updateState=(
+              (newState) => self.send(UpdateStackNavigationState(MainTabConfig.Home2, newState))
+            )
+          />
+        </MainTabNavigator.Tab>
+      </MainTabNavigator>
+    </AppModalStackNavigator>
 };
