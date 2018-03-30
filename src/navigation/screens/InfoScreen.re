@@ -23,7 +23,7 @@ let make = (~onClosePress: unit => unit, ~onOpenAnotherModalPress: unit => unit,
   render: (_self) =>
     <View style=styles##container>
       <Text value="Hi, this is some info for you." />
-      /*<Button title="Open Another Modal" onPress=onOpenAnotherModalPress />*/
+      <Button title="Open Another Modal" onPress=onOpenAnotherModalPress />
       <Button title="Close" onPress=onClosePress />
     </View>
 };

@@ -13,7 +13,7 @@ module StackNavigatorStateMap =
 type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.navigationState);
 
 type state = {
-  modalStackNavigation: AppModalStackNavigator.navigationState,
+  modalStackNavigation: ref(AppModalStackNavigator.navigationState),
   tabNavigation: MainTabNavigator.navigationState,
   stackNavigations: stackNavigationsState
 };
@@ -59,7 +59,7 @@ let mainStackNavigatorEvent =
       UpdateModalStackNavigationState(
         AppModalStackNavigator.State.routePushed(
           ModalStackRouting.Info,
-          state.modalStackNavigation
+          state.modalStackNavigation^
         )
       )
     )
@@ -68,7 +68,7 @@ let mainStackNavigatorEvent =
 let make = (_children) => {
   ...component,
   initialState: () => {
-    modalStackNavigation: AppModalStackNavigator.initialState,
+    modalStackNavigation: ref(AppModalStackNavigator.initialState),
     tabNavigation: MainTabNavigator.initialStateWithDefaultTab(MainTabConfig.Home),
     stackNavigations:
       StackNavigatorStateMap.empty
@@ -84,7 +84,7 @@ let make = (_children) => {
   reducer: (action, state) =>
     switch action {
     | UpdateModalStackNavigationState(newState) =>
-      ReasonReact.Update({...state, modalStackNavigation: newState})
+      ReasonReact.Update({...state, modalStackNavigation: ref(newState)})
     | UpdateTabNavigationState(newState) => ReasonReact.Update({...state, tabNavigation: newState})
     | UpdateStackNavigationState(tab, newState) =>
       ReasonReact.Update({

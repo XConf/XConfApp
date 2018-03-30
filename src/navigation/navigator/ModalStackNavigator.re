@@ -1,4 +1,4 @@
-[@bs.module "./ModalStackNavigatorJS"] external jsModalStackNavigator : ReasonReact.reactClass = "default";
+[@bs.module "./ModalStackNavigatorJS"] external jsModalStackNavigator : ReasonReact.reactClass = "ReasonModalStackNavigator";
 
 type routerUtils('route) = {
   pushRoute: 'route => unit,
@@ -49,17 +49,17 @@ module Make = (R: Routing) => {
       };
   };
 
-  let make = (~state: navigationState, ~updateState: navigationState => unit, children) => {
+  let make = (~state: ref(navigationState), ~updateState: navigationState => unit, children) => {
     let routerUtils = {
-      pushRoute: (route: R.route) => State.routePushed(route, state) |> updateState,
-      popRoute: () => State.routePoped(state) |> updateState
+      pushRoute: (route: R.route) => State.routePushed(route, state^) |> updateState,
+      popRoute: () => State.routePoped(state^) |> updateState
     };
     ReasonReact.wrapJsForReason(
       ~reactClass=jsModalStackNavigator,
       ~props={
         "router": R.router(~utils=routerUtils),
         "state": state,
-        "handleBack": routerUtils.popRoute
+        "updateState": updateState
       },
       children
     )

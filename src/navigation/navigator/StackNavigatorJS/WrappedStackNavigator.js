@@ -24,8 +24,11 @@ export default class WrappedStackNavigator extends Component {
     state: PropTypes.shape({
       index: PropTypes.number.isRequired,
       routes: PropTypes.arrayOf(PropTypes.shape({
-        route: PropTypes.any.isRequired,
         key: PropTypes.string.isRequired,
+        routeName: PropTypes.string.isRequired,
+        params: PropTypes.shape({
+          route: PropTypes.any.isRequired,
+        }),
       })).isRequired,
     }).isRequired,
     updateState: PropTypes.func.isRequired,
