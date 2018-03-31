@@ -17,7 +17,7 @@ const GeneralStackNavigator = StackNavigator(
   navigatorConfig,
 )
 
-export default class ModalStackNavigatorWrapper extends Component {
+export default class StackNavigatorWrapper extends Component {
   static propTypes = {
     router: PropTypes.func.isRequired,
     state: PropTypes.shape({
@@ -46,11 +46,14 @@ export default class ModalStackNavigatorWrapper extends Component {
   }
 
   handleDispatch = (action) => {
+    console.log(action)
     const newState = GeneralStackNavigator.router.getStateForAction(action, this.props.state)
     this.props.updateState(newState)
   };
 
   render() {
+    console.log('SNW-R')
+
     return (
       <GeneralStackNavigator
         navigation={addNavigationHelpers({

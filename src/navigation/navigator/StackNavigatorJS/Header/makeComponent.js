@@ -60,7 +60,7 @@ const makeComponent = (componentName, contextSetElementName) => {
       setTimeout(() => this.renderIntoPlace(), 1000)
     }
 
-    shouldComponentUpdate(nextProps, nextContext) {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
       if (this.props === nextProps && this.context === nextContext) return false
       return !equal(this.props, nextProps) || !equal(this.context, nextContext)
     }

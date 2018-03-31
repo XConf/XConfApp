@@ -52,7 +52,7 @@ export default class StackNavigatorHeader extends Component {
   }
 
   componentDidUpdate() {
-    this.set()
+    // this.set()
   }
 
   componentWillUnmount() {

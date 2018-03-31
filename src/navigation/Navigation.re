@@ -10,7 +10,7 @@ module StackNavigatorStateMap =
     }
   );
 
-type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.navigationState);
+type stackNavigationsState = StackNavigatorStateMap.t(ref(MainStackNavigator.navigationState));
 
 type state = {
   modalStackNavigation: ref(AppModalStackNavigator.navigationState),
@@ -42,11 +42,11 @@ let tabBarPress =
   switch (activedTab, StackNavigatorStateMap.find(activedTab, stackNavigations)) {
   | (
       activedTab,
-      {index: 0, routes: [{route: MainStackRouting.Home, screenRef: {contents: Some(r)}}, ..._]}
+      {contents: {index: 0, routes: [{route: MainStackRouting.Home, screenRef: {contents: Some(r)}}, ..._]}}
     )
       when activedTab == activeTab =>
     HomeScreen.scrollToTop(r)
-  | (activedTab, {index: i}) when activedTab == activeTab && i > 0 =>
+  | (activedTab, {contents: {index: i}}) when activedTab == activeTab && i > 0 =>
     send(PopCurrentStackNavigationToTop)
   | _ => ()
   };
@@ -74,11 +74,11 @@ let make = (_children) => {
       StackNavigatorStateMap.empty
       |> StackNavigatorStateMap.add(
            MainTabConfig.Home,
-           MainStackNavigator.initialStateWithRoute(MainStackRouting.Home)
+           ref(MainStackNavigator.initialStateWithRoute(MainStackRouting.Home))
          )
       |> StackNavigatorStateMap.add(
            MainTabConfig.Home2,
-           MainStackNavigator.initialStateWithRoute(MainStackRouting.Home)
+           ref(MainStackNavigator.initialStateWithRoute(MainStackRouting.Home))
          )
   },
   reducer: (action, state) =>
@@ -89,7 +89,7 @@ let make = (_children) => {
     | UpdateStackNavigationState(tab, newState) =>
       ReasonReact.Update({
         ...state,
-        stackNavigations: StackNavigatorStateMap.add(tab, newState, state.stackNavigations)
+        stackNavigations: StackNavigatorStateMap.add(tab, ref(newState), state.stackNavigations)
       })
     | PopCurrentStackNavigationToTop =>
       let currentTab = state.tabNavigation.activeTab;
@@ -98,9 +98,9 @@ let make = (_children) => {
         stackNavigations:
           StackNavigatorStateMap.add(
             currentTab,
-            MainStackNavigator.routePopToToped(
-              StackNavigatorStateMap.find(currentTab, state.stackNavigations)
-            ),
+            ref(MainStackNavigator.routePopToToped(
+              StackNavigatorStateMap.find(currentTab, state.stackNavigations)^
+            )),
             state.stackNavigations
           )
       })
