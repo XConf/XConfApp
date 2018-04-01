@@ -147,15 +147,6 @@ export class BsProxyUpdate {
     const options = typeof opt === 'function' ? opt() : opt
     const { type: jsType, as: bsType } = options
 
-    if (typeof bsObject === 'object' && bsObject.__bs_proxy__) {
-      switch (bsObject.__bs_type__) {
-        case 'record':
-          return bsObject.__raw__
-        case 'list':
-          return bsObject.__raw__.array
-      }
-    }
-
     let bsValue = bsObject
 
     // ref
@@ -182,6 +173,8 @@ export class BsProxyUpdate {
   }
 
   recordToObjectUpdator(properties, originalObject, record) {
+    if (record.__bs_proxy__) return record.__raw__
+
     const newObject = Object.assign({}, originalObject)
 
     properties.forEach((property, i) => {
@@ -219,10 +212,21 @@ export class BsProxyUpdate {
 
     while (i) {
       if (i.__bs_proxy__) {
+        const raw = i.__raw__
+        let arrayExtractedFromRaw = raw.array
+
+        if (raw.offset) {
+          if (reverse) {
+            arrayExtractedFromRaw = arrayExtractedFromRaw.slice(0, -raw.offset)
+          } else {
+            arrayExtractedFromRaw = arrayExtractedFromRaw.slice(raw.offset)
+          }
+        }
+
         if (reverse) {
-          newArray = i.__raw__.array.concat(newArray)
+          newArray = arrayExtractedFromRaw.concat(newArray)
         } else {
-          newArray = newArray.concat(i.__raw__.array)
+          newArray = newArray.concat(arrayExtractedFromRaw)
         }
 
         break
