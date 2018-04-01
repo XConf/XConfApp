@@ -8,7 +8,7 @@ import {
 import { navigatorConfig } from './config'
 import Screen from './Screen'
 
-const GeneralStackNavigator = StackNavigator(
+export const GeneralStackNavigator = StackNavigator(
   {
     Screen: {
       screen: Screen,
@@ -30,7 +30,7 @@ export default class StackNavigatorWrapper extends Component {
         }),
       })).isRequired,
     }).isRequired,
-    updateState: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
   };
 
   static childContextTypes = {
@@ -45,19 +45,13 @@ export default class StackNavigatorWrapper extends Component {
     }
   }
 
-  handleDispatch = (action) => {
-    console.log(action)
-    const newState = GeneralStackNavigator.router.getStateForAction(action, this.props.state)
-    this.props.updateState(newState)
-  };
-
   render() {
     console.log('SNW-R')
 
     return (
       <GeneralStackNavigator
         navigation={addNavigationHelpers({
-          dispatch: this.handleDispatch,
+          dispatch: this.props.dispatch,
           state: this.props.state,
           addListener: () => ({ remove: () => {} }),
         })}

@@ -112,9 +112,8 @@ module Make = (R: Routing) => {
       ~reactClass=jsStackNavigator,
       ~props={
         "router": R.router(~utils=routerUtils),
-        "state": state,
-        "updateState": updateState,
-        "rawState": [%bs.raw {| state[0].__raw__ |}]
+        "state": [%bs.raw {| state |}],
+        "updateState": updateState
       },
       children
     )

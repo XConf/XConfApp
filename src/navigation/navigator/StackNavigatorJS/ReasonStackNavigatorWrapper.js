@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import equal from 'fast-deep-equal'
 import { BsProxy, BsProxyUpdate } from '../../../utils/bs-proxy'
-import StackNavigatorWrapper from './StackNavigatorWrapper'
+import StackNavigatorWrapper, { GeneralStackNavigator } from './StackNavigatorWrapper'
 
 export default class ReasonStackNavigatorWrapper extends Component {
   static propTypes = {
@@ -124,16 +124,31 @@ export default class ReasonStackNavigatorWrapper extends Component {
     return changed
   }
 
-  handleUpdateState = (newState) => {
+  handleDispatch = (newState) => {
     this.props.updateState(this.proxiedState(newState))
   }
+
+  handleDispatch = (action) => {
+    const newState = GeneralStackNavigator.router.getStateForAction(action, this.props.state[0].__raw__)
+
+    switch (action.type) {
+      case 'Navigation/SET_PARAMS':
+      case 'Navigation/COMPLETE_TRANSITION':
+        this.props.state[0] = this.proxiedState(newState)
+        this.forceUpdate()
+        break
+      default:
+        this.props.updateState(this.proxiedState(newState))
+        break
+    }
+  };
 
   render() {
     return (
       <StackNavigatorWrapper
         router={this.props.router}
         state={this.props.state[0].__raw__}
-        updateState={this.handleUpdateState}
+        dispatch={this.handleDispatch}
       />
     )
   }
