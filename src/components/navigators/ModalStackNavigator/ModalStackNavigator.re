@@ -1,4 +1,5 @@
-[@bs.module "./ModalStackNavigatorJS"] external jsModalStackNavigator : ReasonReact.reactClass = "default";
+[@bs.module "./ModalStackNavigatorJS"] external jsModalStackNavigator : ReasonReact.reactClass =
+  "default";
 
 type routerUtils('route) = {
   pushRoute: 'route => unit,
@@ -13,7 +14,7 @@ module type Routing = {
 module Make = (R: Routing) => {
   type routeEntry = {
     route: R.route,
-    key: string/*,
+    key: string /*,
     screenRef: ref(option(ReasonReact.reactRef))*/
   };
   type navigationState = {
@@ -21,19 +22,15 @@ module Make = (R: Routing) => {
     routes: list(routeEntry)
   };
   let random = () : string => string_of_int(Random.bits()) ++ "-" ++ string_of_int(Random.bits());
-  let initialState: navigationState = {
-    index: -1,
-    routes: []
-  };
-
+  let initialState: navigationState = {index: (-1), routes: []};
   module State = {
     let routePushed = (route: R.route, state: navigationState) : navigationState => {
       index: state.index + 1,
-      routes: [{key: random(), route/*, screenRef: ref(None)*/}, ...state.routes]
+      routes: [{key: random(), route /*, screenRef: ref(None)*/}, ...state.routes]
     };
     let routePoped = (state: navigationState) : navigationState =>
       switch (state.index, state.routes) {
-      | (-1, _) => state
+      | ((-1), _) => state
       | (index, [_, ...leftoveredRoutes]) => {index: index - 1, routes: leftoveredRoutes}
       | _ => state
       };
@@ -44,11 +41,10 @@ module Make = (R: Routing) => {
       | [_, ...t] => onlyLast(t);
     let routePopToToped = (state: navigationState) : navigationState =>
       switch state.index {
-      | -1 => state
-      | _ => {index: -1, routes: onlyLast(state.routes)}
+      | (-1) => state
+      | _ => {index: (-1), routes: onlyLast(state.routes)}
       };
   };
-
   let make = (~state: navigationState, ~updateState: navigationState => unit, children) => {
     let routerUtils = {
       pushRoute: (route: R.route) => State.routePushed(route, state) |> updateState,
