@@ -8,6 +8,11 @@ import equal from 'fast-deep-equal'
 
 import { navigatorConfig } from './config'
 import Screen from './Screen'
+import ScreenContext from './ScreenContext'
+
+/**
+ * Construct A general StackNavigator.
+ */
 
 const GeneralStackNavigator = StackNavigator(
   {
@@ -31,10 +36,6 @@ export default class WrappedStackNavigator extends Component {
     updateState: PropTypes.func.isRequired,
   };
 
-  static childContextTypes = {
-    router: PropTypes.func.isRequired,
-  };
-
   constructor(props, context) {
     super(props, context)
 
@@ -43,29 +44,6 @@ export default class WrappedStackNavigator extends Component {
       routeParamsMap: {},
     }
   }
-
-  getChildContext() {
-    const { router } = this.props
-
-    return {
-      router,
-    }
-  }
-
-  // componentDidReceiveProps(nextProps) {
-  //   this.clearUnusedRouteParamsMapItem(nextProps)
-  // }
-
-  // clearUnusedRouteParamsMapItem(props) {
-  //   const { routes } = props
-  //   const { routeParamsMap } = this.state
-  //   const routeParamsMapKeys = Object.keys(routeParamsMap)
-  //   if (routes.length === routeParamsMapKeys.length) return
-  //   const routeKeys = routes.map(r => r.key)
-  //   routeParamsMapKeys.forEach((key) => {
-  //     if (!routeKeys.includes(key)) delete routeParamsMap[key]
-  //   })
-  // }
 
   handleDispatch = (action) => {
     // TODO: Ignore specific action.type(s) to avoid complex data flow
@@ -116,14 +94,18 @@ export default class WrappedStackNavigator extends Component {
       routeParamsMap: this.state.routeParamsMap,
     })
 
+    const { router } = this.props
+
     return (
-      <GeneralStackNavigator
-        navigation={addNavigationHelpers({
-          dispatch: this.handleDispatch,
-          state,
-          addListener: () => ({ remove: () => {} }),
-        })}
-      />
+      <ScreenContext.Provider router={router}>
+        <GeneralStackNavigator
+          navigation={addNavigationHelpers({
+            dispatch: this.handleDispatch,
+            state,
+            addListener: () => ({ remove: () => {} }),
+          })}
+        />
+      </ScreenContext.Provider>
     )
   }
 }
