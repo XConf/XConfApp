@@ -1,6 +1,6 @@
-import ModalStackNavigator from './WrappedStackNavigator'
-export default ModalStackNavigator
+import WrappedNavigator from './WrappedNavigator'
+export default WrappedNavigator
 
 export {
-  ModalStackNavigator,
+  WrappedNavigator,
 }

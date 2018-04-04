@@ -102,17 +102,25 @@ const dummyState = {
   routes: [{ routeName: 'Screen' }],
 }
 
-export default class WrappedStackNavigator extends Component {
+export default class WrappedNavigator extends Component {
   static propTypes = {
-    router: PropTypes.func.isRequired,
     state: PropTypes.array.isRequired,
-    handleBack: PropTypes.func.isRequired,
+    updateState: PropTypes.func.isRequired,
     children: PropTypes.any.isRequired,
+    getRouterUtilsFromUpdateState: PropTypes.func.isRequired,
+    getUtilsAppliedRouter: PropTypes.func.isRequired,
   };
-
 
   constructor(props, context) {
     super(props, context)
+
+    const {
+      updateState,
+      getRouterUtilsFromUpdateState,
+      getUtilsAppliedRouter,
+    } = props
+    this.routerUtils = getRouterUtilsFromUpdateState(updateState)
+    this.router = getUtilsAppliedRouter(this.routerUtils)
 
     this.cacheWeakMap = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed
 
@@ -136,7 +144,7 @@ export default class WrappedStackNavigator extends Component {
   handleDispatch = (action) => {
     switch (action.type) {
       case 'Navigation/BACK':
-        return this.props.handleBack()
+        return this.routerUtils[1/* popRoute */]()
       default:
         this.setState(({ internalState }) => ({
           internalState: GeneralStackNavigator.router.getStateForAction(action, internalState),
@@ -147,7 +155,8 @@ export default class WrappedStackNavigator extends Component {
 
   render() {
     const state = this.getState()
-    const { router, children: content } = this.props
+    const { router } = this
+    const { children: content } = this.props
 
     return (
       <BaseContentContext.Provider content={content}>

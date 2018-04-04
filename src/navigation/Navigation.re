@@ -13,13 +13,13 @@ module StackNavigatorStateMap =
 type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.navigationState);
 
 type state = {
-  modalStackNavigation: AppModalStackNavigator.navigationState,
+  modalStackNavigation: AppModalStackNavigator.State.t,
   tabNavigation: MainTabNavigator.navigationState,
   stackNavigations: stackNavigationsState
 };
 
 type action =
-  | UpdateModalStackNavigationState(AppModalStackNavigator.navigationState)
+  | UpdateModalStackNavigationState(AppModalStackNavigator.State.updator)
   | UpdateTabNavigationState(MainTabNavigator.navigationState)
   | UpdateStackNavigationState(MainTabConfig.tab, MainStackNavigator.navigationState)
   | PopCurrentStackNavigationToTop;
@@ -58,9 +58,7 @@ let mainStackNavigatorEvent =
     send(
       UpdateModalStackNavigationState(
         AppModalStackNavigator.State.routePushed(
-          ModalStackRouting.Info,
-          state.modalStackNavigation
-        )
+          ModalStackRouting.Info        )
       )
     )
   };
@@ -83,8 +81,8 @@ let make = (_children) => {
   },
   reducer: (action, state) =>
     switch action {
-    | UpdateModalStackNavigationState(newState) =>
-      ReasonReact.Update({...state, modalStackNavigation: newState})
+    | UpdateModalStackNavigationState(updator) =>
+      ReasonReact.Update({...state, modalStackNavigation: updator(state.modalStackNavigation)})
     | UpdateTabNavigationState(newState) => ReasonReact.Update({...state, tabNavigation: newState})
     | UpdateStackNavigationState(tab, newState) =>
       ReasonReact.Update({
