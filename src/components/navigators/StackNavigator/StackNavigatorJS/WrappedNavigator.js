@@ -4,7 +4,6 @@ import {
   StackNavigator,
   addNavigationHelpers,
 } from 'react-navigation'
-// import equal from 'fast-deep-equal'
 
 import { navigatorConfig } from './config'
 import Screen from './Screen'
@@ -33,7 +32,6 @@ const bsStateProxyHandler = {
     bsState,
     internalState,
     getRouteParams,
-    cacheStorage,
   }, prop) {
     switch (prop) {
       case 'index':
@@ -45,7 +43,6 @@ const bsStateProxyHandler = {
           router,
           bsRoutes,
           getRouteParams,
-          cacheStorage,
         })
         bsState.cachedRoutesArray = routesArray // eslint-disable-line no-param-reassign
         const unusedRouteParamsKeySet = new Set(Object.keys(getRouteParams()))
@@ -59,6 +56,7 @@ const bsStateProxyHandler = {
           params.routesArrayIndex = i // eslint-disable-line no-param-reassign
           unusedRouteParamsKeySet.delete(key)
         })
+        // TODO: Remove unusedRouteParamsKeySet
         return routesArray
       }
       default:
@@ -71,28 +69,20 @@ const routesFromBsRoutes = ({
   router,
   bsRoutes,
   getRouteParams,
-  cacheStorage,
 }) => {
-  let routes = cacheStorage.get(bsRoutes)
+  let routes = []
 
-  if (!routes) {
-    routes = []
-    let ptr = bsRoutes
-
-    while (Array.isArray(ptr)) {
-      routes.unshift(ptr[0])
-      ptr = ptr[1] // eslint-disable-line prefer-destructuring
-    }
-
-    routes = routes.map(bsRoute => new Proxy({
-      router,
-      bsRoute,
-      getRouteParams,
-      cacheStorage,
-    }, bsRouteProxyHandler))
-
-    if (routes.length > 1) cacheStorage.set(bsRoutes, routes)
+  let ptr = bsRoutes
+  while (Array.isArray(ptr)) {
+    routes.unshift(ptr[0])
+    ptr = ptr[1] // eslint-disable-line prefer-destructuring
   }
+
+  routes = routes.map(bsRoute => new Proxy({
+    router,
+    bsRoute,
+    getRouteParams,
+  }, bsRouteProxyHandler))
 
   return routes
 }
@@ -103,7 +93,6 @@ const bsRouteProxyHandler = {
       router,
       bsRoute,
       getRouteParams,
-      cacheStorage,
     } = obj
 
     switch (prop) {
@@ -124,16 +113,11 @@ const bsRouteProxyHandler = {
           params = {}
           getRouteParams()[key] = params // eslint-disable-line no-param-reassign
         }
-        // if (params.cachedParamsProxy) {
-        //   return params.cachedParamsProxy
-        // }
         const paramsProxy = new Proxy({
           router,
           bsRoute,
           params,
-          cacheStorage,
         }, bsRouteParamsProxyHandler)
-        // params.cachedParamsProxy = paramsProxy
         return paramsProxy
       }
       case 'setCompareCounter':
@@ -152,7 +136,6 @@ const bsRouteParamsProxyHandler = {
     router,
     bsRoute,
     params,
-    cacheStorage,
   }, prop) {
     switch (prop) {
       case 'router':
@@ -219,8 +202,6 @@ export default class WrappedNavigator extends Component {
     this.routerUtils = getRouterUtilsByUpdateStateAndHandleEvent(updateState, handleEvent)
     this.router = getUtilsAppliedRouter(this.routerUtils)
 
-    this.cacheStorage = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed
-
     this.state = {
       internalState: dummyState,
       routeParams: {},
@@ -230,7 +211,7 @@ export default class WrappedNavigator extends Component {
   getRouteParams = () => this.state.routeParams;
 
   getState = () => {
-    const { router, cacheStorage, getRouteParams } = this
+    const { router, getRouteParams } = this
     const { state: bsState } = this.props
     const { internalState } = this.state
 
@@ -239,7 +220,6 @@ export default class WrappedNavigator extends Component {
       bsState,
       internalState,
       getRouteParams,
-      cacheStorage,
     }, bsStateProxyHandler)
   };
 

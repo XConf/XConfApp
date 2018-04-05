@@ -35,7 +35,6 @@ const bsStateProxyHandler = {
   get({
     bsState,
     internalState,
-    cacheStorage,
   }, prop) {
     switch (prop) {
       case 'index':
@@ -43,7 +42,7 @@ const bsStateProxyHandler = {
       case 'routes': {
         if (bsState.cachedRoutesArray) return bsState.cachedRoutesArray
         const bsRoutes = bsState[1]
-        const routesArray = routesFromBsRoutes({ bsRoutes, cacheStorage })
+        const routesArray = routesFromBsRoutes({ bsRoutes })
         bsState.cachedRoutesArray = routesArray // eslint-disable-line no-param-reassign
         return routesArray
       }
@@ -53,22 +52,16 @@ const bsStateProxyHandler = {
   },
 }
 
-const routesFromBsRoutes = ({ bsRoutes, cacheStorage }) => {
-  let routes = cacheStorage.get(bsRoutes)
+const routesFromBsRoutes = ({ bsRoutes }) => {
+  let routes = []
 
-  if (!routes) {
-    routes = []
-    let ptr = bsRoutes
-
-    while (Array.isArray(ptr)) {
-      routes.unshift(ptr[0])
-      ptr = ptr[1] // eslint-disable-line prefer-destructuring
-    }
-
-    routes = routes.map(v => new Proxy(v, bsRouteProxyHandler))
-
-    if (routes.length > 1) cacheStorage.set(bsRoutes, routes)
+  let ptr = bsRoutes
+  while (Array.isArray(ptr)) {
+    routes.unshift(ptr[0])
+    ptr = ptr[1] // eslint-disable-line prefer-destructuring
   }
+
+  routes = routes.map(v => new Proxy(v, bsRouteProxyHandler))
 
   const baseRoute = {
     routeName: 'BaseContent',
@@ -122,8 +115,6 @@ export default class WrappedNavigator extends Component {
     this.routerUtils = getRouterUtilsForUpdateState(updateState)
     this.router = getUtilsAppliedRouter(this.routerUtils)
 
-    this.cacheStorage = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed
-
     this.state = {
       internalState: dummyState,
     }
@@ -132,12 +123,10 @@ export default class WrappedNavigator extends Component {
   getState = () => {
     const { state: bsState } = this.props
     const { internalState } = this.state
-    const { cacheStorage } = this
 
     return new Proxy({
       bsState,
       internalState,
-      cacheStorage,
     }, bsStateProxyHandler)
   };
 
