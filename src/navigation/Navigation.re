@@ -10,7 +10,7 @@ module StackNavigatorStateMap =
     }
   );
 
-type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.navigationState);
+type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.State.t);
 
 type state = {
   modalStackNavigation: AppModalStackNavigator.State.t,
@@ -21,7 +21,7 @@ type state = {
 type action =
   | UpdateModalStackNavigationState(AppModalStackNavigator.State.updator)
   | UpdateTabNavigationState(MainTabNavigator.navigationState)
-  | UpdateStackNavigationState(MainTabConfig.tab, MainStackNavigator.updator)
+  | UpdateStackNavigationState(MainTabConfig.tab, MainStackNavigator.State.updator)
   | PopCurrentStackNavigationToTop;
 
 let component = ReasonReact.reducerComponent("Navigation");
@@ -96,7 +96,7 @@ let make = (_children) => {
         stackNavigations:
           StackNavigatorStateMap.add(
             currentTab,
-            MainStackNavigator.routePopToToped(
+            MainStackNavigator.State.routePopToToped(
               StackNavigatorStateMap.find(currentTab, state.stackNavigations)
             ),
             state.stackNavigations

@@ -25,100 +25,70 @@ module type Routing = {
   let router: (route, ~utils: routerUtils(route, screenEvent)) => ReasonReact.reactElement;
 };
 
-/*let routesListFromArray = (array) => Array.fold_left((list, item) => [item, ...list], [], array);
+let randomKey = () : string => string_of_int(Random.bits()) ++ "-" ++ string_of_int(Random.bits());
 
-let routesArrayFromList = (list) =>
-  List.fold_left((array, item) => Array.append([|item|], array), [||], list);
-*/
 module Make = (R: Routing) => {
-  type routeEntry = {
-    route: R.route,
-    key: string,
-    screenRef: ref(option(ReasonReact.reactRef))
-  };
-  type navigationState = {
-    index: int,
-    routes: list(routeEntry)
-  };
-  type updator = navigationState => navigationState;
-/*  type jsRouteEntry = {
-    .
-    "route": R.route, "key": string, "screenRef": ref(option(ReasonReact.reactRef))
-  };
-  type jsNavigationState = {. "index": int, "routes": array(jsRouteEntry)};
-  let routeEntryFromJsRouteEntry: jsRouteEntry => routeEntry =
-    (jsRouteEntry) => {
-      route: jsRouteEntry##route,
-      key: jsRouteEntry##key,
-      screenRef: jsRouteEntry##screenRef
+  module State = {
+    type routeEntry = {
+      route: R.route,
+      key: string,
+      screenRef: ref(option(ReasonReact.reactRef))
     };
-  let stateFromJsState: jsNavigationState => navigationState =
-    (jsNavigationState) => {
-      let jsRoutesArray = jsNavigationState##routes;
-      let routesArray = Array.map(routeEntryFromJsRouteEntry, jsRoutesArray);
-      let routesList = routesListFromArray(routesArray);
-      {index: jsNavigationState##index, routes: routesList}
+    type t = {
+      index: int,
+      routes: list(routeEntry)
     };
-  let jsRouteEntryFromRouteEntry: routeEntry => jsRouteEntry =
-    (routeEntry) => {
-      "route": routeEntry.route,
-      "key": routeEntry.key,
-      "screenRef": routeEntry.screenRef
+    type updator = t => t;
+    let routePushed = (route: R.route, state: t) : t => {
+      index: state.index + 1,
+      routes: [{key: randomKey(), route, screenRef: ref(None)}, ...state.routes]
     };
-  let jsStateFromState: navigationState => jsNavigationState =
-    (navigationState) => {
-      let routesList = navigationState.routes;
-      let routesArray = routesArrayFromList(routesList);
-      let jsRoutesArray = Array.map(jsRouteEntryFromRouteEntry, routesArray);
-      {"index": navigationState.index, "routes": jsRoutesArray}
-    };*/
-  let random = () : string => string_of_int(Random.bits()) ++ "-" ++ string_of_int(Random.bits());
-  let initialStateWithRoute = (route: R.route) : navigationState => {
+    let routePoped = (state: t) : t =>
+      switch (state.index, state.routes) {
+      | ((-1), _) => state
+      | (index, [_, ...leftoveredRoutes]) => {index: index - 1, routes: leftoveredRoutes}
+      | _ => state
+      };
+    let rec onlyLast =
+      fun
+      | [] => []
+      | [a] => [a]
+      | [_, ...t] => onlyLast(t);
+    let routePopToToped = (state: t) : t =>
+      switch state.index {
+      | 0 => state
+      | _ => {index: 0, routes: onlyLast(state.routes)}
+      };
+  };
+  let initialStateWithRoute = (route: R.route) : State.t => {
     index: 0,
-    routes: [{key: random(), route, screenRef: ref(None)}]
+    routes: [{key: randomKey(), route, screenRef: ref(None)}]
   };
-  let routePushed = (route: R.route, state: navigationState) : navigationState => {
-    index: state.index + 1,
-    routes: [{key: random(), route, screenRef: ref(None)}, ...state.routes]
+  let getRouterUtilsByUpdateStateAndHandleEvent = (updateState, handleEvent) => {
+    pushRoute: (route: R.route) => State.routePushed(route) |> updateState,
+    popRoute: () => State.routePoped |> updateState,
+    sendEvent: handleEvent
   };
-  let routePoped = (state: navigationState) : navigationState =>
-    switch (state.index, state.routes) {
-    | (0, _) => state
-    | (index, [_, ...leftoveredRoutes]) => {index: index - 1, routes: leftoveredRoutes}
-    | _ => state
-    };
-  let rec onlyLast =
-    fun
-    | [] => []
-    | [a] => [a]
-    | [_, ...t] => onlyLast(t);
-  let routePopToToped = (state: navigationState) : navigationState =>
-    switch state.index {
-    | 0 => state
-    | _ => {index: 0, routes: onlyLast(state.routes)}
-    };
+  let getUtilsAppliedRouter = (utils) => R.router(~utils);
   let make =
       (
-        ~state: navigationState,
-        ~updateState: updator => unit,
+        ~state: State.t,
+        ~updateState: State.updator => unit,
         ~handleEvent: R.screenEvent => unit=(_) => (),
         children
-      ) => {
-    let routerUtils = {
-      pushRoute: (route: R.route) => routePushed(route) |> updateState,
-      popRoute: () => routePoped |> updateState,
-      sendEvent: handleEvent
-    };
+      ) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=jsStackNavigator,
       ~props={
-        "router": R.router(~utils=routerUtils),
+        "router": R.router,
         "state": state,
-        "updateState": updateState
+        "updateState": updateState,
+        "handleEvent": handleEvent,
+        "getRouterUtilsByUpdateStateAndHandleEvent": getRouterUtilsByUpdateStateAndHandleEvent,
+        "getUtilsAppliedRouter": getUtilsAppliedRouter
       },
       children
-    )
-  };
+    );
 };
 
 module Header = {

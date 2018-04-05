@@ -67,21 +67,6 @@ const bsStateProxyHandler = {
   },
 }
 
-const routeParamsUpdated = ({ bsState, routeParams, key }) => {
-  const cachedRoutesArray = bsState.cachedRoutesArray // eslint-disable-line prefer-destructuring
-  if (!cachedRoutesArray) return
-  const params = routeParams[key]
-  if (!params) return
-  const routesArrayIndex = params.routesArrayIndex // eslint-disable-line prefer-destructuring
-  if (typeof routesArrayIndex !== 'number') return
-
-  const route = cachedRoutesArray[routesArrayIndex]
-  const newRoute = new Proxy(route.__obj__, bsRouteProxyHandler)
-  newRoute.setCompareCounter()
-
-  cachedRoutesArray[routesArrayIndex] = newRoute
-}
-
 const routesFromBsRoutes = ({
   router,
   bsRoutes,
@@ -182,6 +167,28 @@ const bsRouteParamsProxyHandler = {
   },
 }
 
+// Handles route params update so that the navigator can let the correct scene be updated.
+const routeParamsUpdated = ({ bsState, routeParams, key }) => {
+  // If the scene is rendered, it must have the routes cached, which will be passed into the navigator.
+  const cachedRoutesArray = bsState.cachedRoutesArray // eslint-disable-line prefer-destructuring
+  if (!cachedRoutesArray) return
+
+  // Find out the index of the updated route.
+  const params = routeParams[key]
+  if (!params) return
+  const routesArrayIndex = params.routesArrayIndex // eslint-disable-line prefer-destructuring
+  if (typeof routesArrayIndex !== 'number') return
+
+  // Clone the proxy and set the compare counter to ensure that the new route
+  // will be compared as a different object, that triggers the scene to be updated.
+  const route = cachedRoutesArray[routesArrayIndex]
+  const newRoute = new Proxy(route.__obj__, bsRouteProxyHandler)
+  newRoute.setCompareCounter()
+
+  // Insert the new route into cached routes
+  cachedRoutesArray[routesArrayIndex] = newRoute
+}
+
 /**
  * A wrapped StackNavigator for Reason.
  */
@@ -193,19 +200,24 @@ const dummyState = {
 
 export default class WrappedNavigator extends Component {
   static propTypes = {
-    router: PropTypes.func.isRequired,
-    state: PropTypes.shape({
-      index: PropTypes.number.isRequired,
-      routes: PropTypes.arrayOf(PropTypes.shape({
-        route: PropTypes.any.isRequired,
-        key: PropTypes.string.isRequired,
-      })).isRequired,
-    }).isRequired,
+    state: PropTypes.array.isRequired,
     updateState: PropTypes.func.isRequired,
+    handleEvent: PropTypes.func.isRequired,
+    getRouterUtilsByUpdateStateAndHandleEvent: PropTypes.func.isRequired,
+    getUtilsAppliedRouter: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
     super(props, context)
+
+    const {
+      updateState,
+      handleEvent,
+      getRouterUtilsByUpdateStateAndHandleEvent,
+      getUtilsAppliedRouter,
+    } = props
+    this.routerUtils = getRouterUtilsByUpdateStateAndHandleEvent(updateState, handleEvent)
+    this.router = getUtilsAppliedRouter(this.routerUtils)
 
     this.cacheStorage = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed
 
@@ -218,9 +230,9 @@ export default class WrappedNavigator extends Component {
   getRouteParams = () => this.state.routeParams;
 
   getState = () => {
-    const { router, state: bsState } = this.props
+    const { router, cacheStorage, getRouteParams } = this
+    const { state: bsState } = this.props
     const { internalState } = this.state
-    const { cacheStorage, getRouteParams } = this
 
     return new Proxy({
       router,
@@ -253,8 +265,8 @@ export default class WrappedNavigator extends Component {
           }
         })
       }
-      // case 'Navigation/BACK':
-      //   return this.routerUtils[1/* popRoute */]()
+      case 'Navigation/BACK':
+        return this.routerUtils[1/* popRoute */]()
       default:
         this.setState(({ internalState }) => ({
           internalState: GeneralStackNavigator.router.getStateForAction(action, internalState),
@@ -264,9 +276,8 @@ export default class WrappedNavigator extends Component {
   };
 
   render() {
+    const { router } = this
     const state = this.getState()
-
-    const { router } = this.props
 
     return (
       <ScreenContext.Provider router={router}>

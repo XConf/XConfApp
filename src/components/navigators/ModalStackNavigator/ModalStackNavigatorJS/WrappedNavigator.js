@@ -107,7 +107,7 @@ export default class WrappedNavigator extends Component {
     state: PropTypes.array.isRequired,
     updateState: PropTypes.func.isRequired,
     children: PropTypes.any.isRequired,
-    getRouterUtilsFromUpdateState: PropTypes.func.isRequired,
+    getRouterUtilsForUpdateState: PropTypes.func.isRequired,
     getUtilsAppliedRouter: PropTypes.func.isRequired,
   };
 
@@ -116,10 +116,10 @@ export default class WrappedNavigator extends Component {
 
     const {
       updateState,
-      getRouterUtilsFromUpdateState,
+      getRouterUtilsForUpdateState,
       getUtilsAppliedRouter,
     } = props
-    this.routerUtils = getRouterUtilsFromUpdateState(updateState)
+    this.routerUtils = getRouterUtilsForUpdateState(updateState)
     this.router = getUtilsAppliedRouter(this.routerUtils)
 
     this.cacheStorage = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed

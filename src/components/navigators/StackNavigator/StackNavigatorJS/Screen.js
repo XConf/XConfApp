@@ -69,7 +69,6 @@ export default class Screen extends Component {
   }
 }
 
-/* eslint-disable react/no-multi-comp */
 const collectHeaderParamsFromElements = (elements, key) => {
   const params = {}
 

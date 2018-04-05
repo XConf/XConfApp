@@ -13,24 +13,26 @@ module type Routing = {
 module Make:
   (R: Routing) =>
   {
-    type routeEntry = {
-      route: R.route,
-      key: string,
-      screenRef: ref(option(ReasonReact.reactRef))
+    module State: {
+      type routeEntry = {
+        route: R.route,
+        key: string,
+        screenRef: ref(option(ReasonReact.reactRef))
+      };
+      type t = {
+        index: int,
+        routes: list(routeEntry)
+      };
+      type updator = t => t;
+      let routePushed: (R.route, t) => t;
+      let routePoped: t => t;
+      let routePopToToped: t => t;
     };
-    type navigationState = {
-      index: int,
-      routes: list(routeEntry)
-    };
-    type updator = navigationState => navigationState;
-    let initialStateWithRoute: R.route => navigationState;
-    let routePushed: (R.route, navigationState) => navigationState;
-    let routePoped: navigationState => navigationState;
-    let routePopToToped: navigationState => navigationState;
+    let initialStateWithRoute: R.route => State.t;
     let make:
       (
-        ~state: navigationState,
-        ~updateState: updator => unit,
+        ~state: State.t,
+        ~updateState: State.updator => unit,
         ~handleEvent: R.screenEvent => unit=?,
         array(ReasonReact.reactElement)
       ) =>
