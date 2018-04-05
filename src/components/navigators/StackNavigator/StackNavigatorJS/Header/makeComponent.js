@@ -17,9 +17,8 @@ const makeComponent = (componentName, elementName) => {
       this.capturePressEventKey = `${elementName}-press`
     }
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-      if (this.props === nextProps && this.context === nextContext) return false
-      return !equal(this.props, nextProps) || !equal(this.context, nextContext)
+    shouldComponentUpdate(nextProps) {
+      return !equal(this.props, nextProps)
     }
 
     render() {
