@@ -28,14 +28,14 @@ const GeneralStackNavigator = StackNavigator(
 )
 
 /**
- * Proxy handlers to provide state for React Navigation.
+ * Proxy handlers to wrap Reason navigation state for React Navigation.
  */
 
 const bsStateProxyHandler = {
   get({
     bsState,
     internalState,
-    cacheWeakMap,
+    cacheStorage,
   }, prop) {
     switch (prop) {
       case 'index':
@@ -43,7 +43,7 @@ const bsStateProxyHandler = {
       case 'routes': {
         if (bsState.cachedRoutesArray) return bsState.cachedRoutesArray
         const bsRoutes = bsState[1]
-        const routesArray = routesFromBsRoutes({ bsRoutes, cacheWeakMap })
+        const routesArray = routesFromBsRoutes({ bsRoutes, cacheStorage })
         bsState.cachedRoutesArray = routesArray // eslint-disable-line no-param-reassign
         return routesArray
       }
@@ -53,8 +53,8 @@ const bsStateProxyHandler = {
   },
 }
 
-const routesFromBsRoutes = ({ bsRoutes, cacheWeakMap }) => {
-  let routes = cacheWeakMap.get(bsRoutes)
+const routesFromBsRoutes = ({ bsRoutes, cacheStorage }) => {
+  let routes = cacheStorage.get(bsRoutes)
 
   if (!routes) {
     routes = []
@@ -67,7 +67,7 @@ const routesFromBsRoutes = ({ bsRoutes, cacheWeakMap }) => {
 
     routes = routes.map(v => new Proxy(v, bsRouteProxyHandler))
 
-    if (routes.length > 1) cacheWeakMap.set(bsRoutes, routes)
+    if (routes.length > 1) cacheStorage.set(bsRoutes, routes)
   }
 
   const baseRoute = {
@@ -122,7 +122,7 @@ export default class WrappedNavigator extends Component {
     this.routerUtils = getRouterUtilsFromUpdateState(updateState)
     this.router = getUtilsAppliedRouter(this.routerUtils)
 
-    this.cacheWeakMap = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed
+    this.cacheStorage = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed
 
     this.state = {
       internalState: dummyState,
@@ -132,12 +132,12 @@ export default class WrappedNavigator extends Component {
   getState = () => {
     const { state: bsState } = this.props
     const { internalState } = this.state
-    const { cacheWeakMap } = this
+    const { cacheStorage } = this
 
     return new Proxy({
       bsState,
       internalState,
-      cacheWeakMap,
+      cacheStorage,
     }, bsStateProxyHandler)
   };
 

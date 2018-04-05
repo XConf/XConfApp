@@ -1,0 +1,283 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {
+  StackNavigator,
+  addNavigationHelpers,
+} from 'react-navigation'
+// import equal from 'fast-deep-equal'
+
+import { navigatorConfig } from './config'
+import Screen from './Screen'
+import ScreenContext from './ScreenContext'
+
+/**
+ * Construct A general StackNavigator.
+ */
+
+const GeneralStackNavigator = StackNavigator(
+  {
+    Screen: {
+      screen: Screen,
+    },
+  },
+  navigatorConfig,
+)
+
+/**
+ * Proxy handlers to wrap Reason navigation state for React Navigation.
+ */
+
+const bsStateProxyHandler = {
+  get({
+    router,
+    bsState,
+    internalState,
+    getRouteParams,
+    cacheStorage,
+  }, prop) {
+    switch (prop) {
+      case 'index':
+        return bsState[0]
+      case 'routes': {
+        if (bsState.cachedRoutesArray) return bsState.cachedRoutesArray
+        const bsRoutes = bsState[1]
+        const routesArray = routesFromBsRoutes({
+          router,
+          bsRoutes,
+          getRouteParams,
+          cacheStorage,
+        })
+        bsState.cachedRoutesArray = routesArray // eslint-disable-line no-param-reassign
+        const unusedRouteParamsKeySet = new Set(Object.keys(getRouteParams()))
+        bsState.cachedRoutesArray.forEach((r, i) => {
+          const { key } = r
+          let params = getRouteParams()[key]
+          if (!params) {
+            params = {}
+            getRouteParams()[key] = params // eslint-disable-line no-param-reassign
+          }
+          params.routesArrayIndex = i // eslint-disable-line no-param-reassign
+          unusedRouteParamsKeySet.delete(key)
+        })
+        return routesArray
+      }
+      default:
+        return internalState[prop]
+    }
+  },
+}
+
+const routeParamsUpdated = ({ bsState, routeParams, key }) => {
+  const cachedRoutesArray = bsState.cachedRoutesArray // eslint-disable-line prefer-destructuring
+  if (!cachedRoutesArray) return
+  const params = routeParams[key]
+  if (!params) return
+  const routesArrayIndex = params.routesArrayIndex // eslint-disable-line prefer-destructuring
+  if (typeof routesArrayIndex !== 'number') return
+
+  const route = cachedRoutesArray[routesArrayIndex]
+  const newRoute = new Proxy(route.__obj__, bsRouteProxyHandler)
+  newRoute.setCompareCounter()
+
+  cachedRoutesArray[routesArrayIndex] = newRoute
+}
+
+const routesFromBsRoutes = ({
+  router,
+  bsRoutes,
+  getRouteParams,
+  cacheStorage,
+}) => {
+  let routes = cacheStorage.get(bsRoutes)
+
+  if (!routes) {
+    routes = []
+    let ptr = bsRoutes
+
+    while (Array.isArray(ptr)) {
+      routes.unshift(ptr[0])
+      ptr = ptr[1] // eslint-disable-line prefer-destructuring
+    }
+
+    routes = routes.map(bsRoute => new Proxy({
+      router,
+      bsRoute,
+      getRouteParams,
+      cacheStorage,
+    }, bsRouteProxyHandler))
+
+    if (routes.length > 1) cacheStorage.set(bsRoutes, routes)
+  }
+
+  return routes
+}
+
+const bsRouteProxyHandler = {
+  get(obj, prop) {
+    const {
+      router,
+      bsRoute,
+      getRouteParams,
+      cacheStorage,
+    } = obj
+
+    switch (prop) {
+      case '__obj__':
+        return obj
+      case 'rid':
+        return obj.rid
+      case 'routeName':
+        return 'Screen'
+      case 'key': {
+        const key = bsRoute[1]
+        return key
+      }
+      case 'params': {
+        const key = bsRoute[1]
+        let params = getRouteParams()[key]
+        if (!params) {
+          params = {}
+          getRouteParams()[key] = params // eslint-disable-line no-param-reassign
+        }
+        // if (params.cachedParamsProxy) {
+        //   return params.cachedParamsProxy
+        // }
+        const paramsProxy = new Proxy({
+          router,
+          bsRoute,
+          params,
+          cacheStorage,
+        }, bsRouteParamsProxyHandler)
+        // params.cachedParamsProxy = paramsProxy
+        return paramsProxy
+      }
+      case 'setCompareCounter':
+        return (c = 2) => { obj.compareCounter = c } // eslint-disable-line no-param-reassign
+      case 'compareCounter':
+        if (obj.compareCounter > 0) --obj.compareCounter // eslint-disable-line no-param-reassign
+        return obj.compareCounter
+      default:
+        return undefined
+    }
+  },
+}
+
+const bsRouteParamsProxyHandler = {
+  get({
+    router,
+    bsRoute,
+    params,
+    cacheStorage,
+  }, prop) {
+    switch (prop) {
+      case 'router':
+        return router
+      case 'route':
+        return bsRoute[0]
+      case 'screenRef':
+        return bsRoute[2]
+      default:
+        return params[prop]
+    }
+  },
+}
+
+/**
+ * A wrapped StackNavigator for Reason.
+ */
+
+const dummyState = {
+  index: 0,
+  routes: [{ routeName: 'Screen' }],
+}
+
+export default class WrappedNavigator extends Component {
+  static propTypes = {
+    router: PropTypes.func.isRequired,
+    state: PropTypes.shape({
+      index: PropTypes.number.isRequired,
+      routes: PropTypes.arrayOf(PropTypes.shape({
+        route: PropTypes.any.isRequired,
+        key: PropTypes.string.isRequired,
+      })).isRequired,
+    }).isRequired,
+    updateState: PropTypes.func.isRequired,
+  };
+
+  constructor(props, context) {
+    super(props, context)
+
+    this.cacheStorage = new WeakMap() // TODO: Ensure the contents of this cache will be GC-ed
+
+    this.state = {
+      internalState: dummyState,
+      routeParams: {},
+    }
+  }
+
+  getRouteParams = () => this.state.routeParams;
+
+  getState = () => {
+    const { router, state: bsState } = this.props
+    const { internalState } = this.state
+    const { cacheStorage, getRouteParams } = this
+
+    return new Proxy({
+      router,
+      bsState,
+      internalState,
+      getRouteParams,
+      cacheStorage,
+    }, bsStateProxyHandler)
+  };
+
+  handleDispatch = (action) => {
+    switch (action.type) {
+      case 'Navigation/SET_PARAMS': {
+        const { key, params } = action
+        return this.setState(({ routeParams }) => {
+          const { state: bsState } = this.props
+          routeParamsUpdated({ bsState, routeParams, key })
+
+          const newParams = {
+            ...routeParams[key],
+            ...params,
+            cachedParamsProxy: null,
+          }
+
+          return {
+            routeParams: {
+              ...routeParams,
+              [key]: newParams,
+            },
+          }
+        })
+      }
+      // case 'Navigation/BACK':
+      //   return this.routerUtils[1/* popRoute */]()
+      default:
+        this.setState(({ internalState }) => ({
+          internalState: GeneralStackNavigator.router.getStateForAction(action, internalState),
+        }))
+        return null
+    }
+  };
+
+  render() {
+    const state = this.getState()
+
+    const { router } = this.props
+
+    return (
+      <ScreenContext.Provider router={router}>
+        <GeneralStackNavigator
+          navigation={addNavigationHelpers({
+            dispatch: this.handleDispatch,
+            state,
+            addListener: () => ({ remove: () => {} }),
+          })}
+        />
+      </ScreenContext.Provider>
+    )
+  }
+}

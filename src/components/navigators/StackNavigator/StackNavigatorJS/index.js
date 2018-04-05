@@ -1,14 +1,14 @@
-import StackNavigator from './WrappedStackNavigator'
+import WrappedNavigator from './WrappedNavigator'
 import Header, {
   TitleText as HeaderTitleText,
   Right as HeaderRight,
   Left as HeaderLeft,
 } from './Header'
 
-export default StackNavigator
+export default WrappedNavigator
 
 export {
-  StackNavigator,
+  WrappedNavigator,
   Header,
   HeaderTitleText,
   HeaderRight,

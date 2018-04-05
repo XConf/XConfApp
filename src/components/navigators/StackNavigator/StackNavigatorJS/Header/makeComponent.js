@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import equal from 'fast-deep-equal'
+import equal from 'fast-deep-equal'
 
 import { getHeaderOptions } from '../utils'
 
@@ -17,10 +17,10 @@ const makeComponent = (componentName, elementName) => {
       this.capturePressEventKey = `${elementName}-press`
     }
 
-    // shouldComponentUpdate(nextProps, nextState, nextContext) {
-    //   if (this.props === nextProps && this.context === nextContext) return false
-    //   return !equal(this.props, nextProps) || !equal(this.context, nextContext)
-    // }
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+      if (this.props === nextProps && this.context === nextContext) return false
+      return !equal(this.props, nextProps) || !equal(this.context, nextContext)
+    }
 
     render() {
       const { children } = this.props

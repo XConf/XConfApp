@@ -21,7 +21,7 @@ type state = {
 type action =
   | UpdateModalStackNavigationState(AppModalStackNavigator.State.updator)
   | UpdateTabNavigationState(MainTabNavigator.navigationState)
-  | UpdateStackNavigationState(MainTabConfig.tab, MainStackNavigator.navigationState)
+  | UpdateStackNavigationState(MainTabConfig.tab, MainStackNavigator.updator)
   | PopCurrentStackNavigationToTop;
 
 let component = ReasonReact.reducerComponent("Navigation");
@@ -84,10 +84,10 @@ let make = (_children) => {
     | UpdateModalStackNavigationState(updator) =>
       ReasonReact.Update({...state, modalStackNavigation: updator(state.modalStackNavigation)})
     | UpdateTabNavigationState(newState) => ReasonReact.Update({...state, tabNavigation: newState})
-    | UpdateStackNavigationState(tab, newState) =>
+    | UpdateStackNavigationState(tab, updator) =>
       ReasonReact.Update({
         ...state,
-        stackNavigations: StackNavigatorStateMap.add(tab, newState, state.stackNavigations)
+        stackNavigations: StackNavigatorStateMap.add(tab, updator(StackNavigatorStateMap.find(tab, state.stackNavigations)), state.stackNavigations)
       })
     | PopCurrentStackNavigationToTop =>
       let currentTab = state.tabNavigation.activeTab;

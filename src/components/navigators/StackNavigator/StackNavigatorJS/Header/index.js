@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import equal from 'fast-deep-equal'
+import equal from 'fast-deep-equal'
 
 import HeaderContext from '../HeaderContext'
 
@@ -27,9 +27,9 @@ export default class StackNavigatorHeader extends Component {
     style: 'default',
   };
 
-  // shouldComponentUpdate(nextProps) {
-  //   return !equal(this.props, nextProps)
-  // }
+  shouldComponentUpdate(nextProps) {
+    return !equal(this.props, nextProps)
+  }
 
   render() {
     const { style, children } = this.props

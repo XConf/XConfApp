@@ -22,6 +22,7 @@ module Make:
       index: int,
       routes: list(routeEntry)
     };
+    type updator = navigationState => navigationState;
     let initialStateWithRoute: R.route => navigationState;
     let routePushed: (R.route, navigationState) => navigationState;
     let routePoped: navigationState => navigationState;
@@ -29,7 +30,7 @@ module Make:
     let make:
       (
         ~state: navigationState,
-        ~updateState: navigationState => unit,
+        ~updateState: updator => unit,
         ~handleEvent: R.screenEvent => unit=?,
         array(ReasonReact.reactElement)
       ) =>
