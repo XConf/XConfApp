@@ -159,6 +159,7 @@ const routeParamsUpdated = ({ bsState, routeParams, key }) => {
   // Find out the index of the updated route.
   const params = routeParams[key]
   if (!params) return
+  if (params.willUnmount) return
   const routesArrayIndex = params.routesArrayIndex // eslint-disable-line prefer-destructuring
   if (typeof routesArrayIndex !== 'number') return
 

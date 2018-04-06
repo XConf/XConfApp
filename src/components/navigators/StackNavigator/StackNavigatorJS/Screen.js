@@ -38,6 +38,10 @@ export default class Screen extends Component {
     this.props.navigation.setParams({ mounted: true })
   }
 
+  componentWillUnmount() {
+    this.props.navigation.setParams({ willUnmount: true })
+  }
+
   setNavigationParams = (params) => {
     this.props.navigation.setParams(params)
   };
