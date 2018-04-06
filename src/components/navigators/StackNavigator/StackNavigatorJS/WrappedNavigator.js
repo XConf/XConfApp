@@ -165,6 +165,7 @@ const routeParamsUpdated = ({ bsState, routeParams, key }) => {
   // Clone the proxy and set the compare counter to ensure that the new route
   // will be compared as a different object, that triggers the scene to be updated.
   const route = cachedRoutesArray[routesArrayIndex]
+  if (!route) return
   const newRoute = new Proxy(route.__obj__, bsRouteProxyHandler)
   newRoute.setCompareCounter()
 
