@@ -45,7 +45,7 @@ module Make = (R: Routing) => {
     };
     let routePoped = (state: t) : t =>
       switch (state.index, state.routes) {
-      | ((-1), _) => state
+      | ((0), _) => state
       | (index, [_, ...leftoveredRoutes]) => {index: index - 1, routes: leftoveredRoutes}
       | _ => state
       };
