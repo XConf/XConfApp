@@ -7,7 +7,9 @@ type routerUtils('route, 'event) = {
 module type Routing = {
   type route;
   type screenEvent;
-  let router: (route, ~utils: routerUtils(route, screenEvent)) => ReasonReact.reactElement;
+  let router:
+    (route, ~utils: routerUtils(route, screenEvent)) =>
+    ReasonReact.reactElement;
 };
 
 module Make:

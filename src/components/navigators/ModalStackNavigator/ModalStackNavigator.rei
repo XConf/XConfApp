@@ -14,7 +14,7 @@ module Make:
     module State: {
       type routeEntry = {
         route: R.route,
-        key: string /*,
+        key: string/*,
         screenRef: ref(option(ReasonReact.reactRef))*/
       };
       type t = {

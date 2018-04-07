@@ -14,7 +14,11 @@ module Make:
       previousActiveTab: option(tab)
     };
     let make:
-      (~state: State.t, ~updateState: State.updator => unit, array(ReasonReact.reactElement)) =>
+      (
+        ~state: State.t,
+        ~updateState: State.updator => unit,
+        array(ReasonReact.reactElement)
+      ) =>
       ReasonReact.component(
         ReasonReact.stateless,
         ReasonReact.noRetainedProps,
@@ -24,7 +28,8 @@ module Make:
       let make:
         (
           ~title: string,
-          ~tabBarIcon: (~focused: bool, ~tintColor: string) => ReasonReact.reactElement,
+          ~tabBarIcon: (~focused: bool, ~tintColor: string) =>
+                       ReasonReact.reactElement,
           ~tabBarOnPress: tabBarOnPressPayload => unit=?,
           array(ReasonReact.reactElement)
         ) =>
