@@ -11,7 +11,13 @@ yarn install
 Start the Reason compiler by running:
 
 ```bash
-npm run watch
+yarn run watch
+```
+
+and Metro Bundler:
+
+```
+yarn start
 ```
 
 then, run `react-native run-ios` or `react-native run-android`.
