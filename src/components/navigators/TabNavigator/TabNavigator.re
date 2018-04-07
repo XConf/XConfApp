@@ -8,24 +8,25 @@ type jsState = {. "index": int};
 
 module Make = (C: Config) => {
   type tab = C.tab;
-  type navigationState = {activeTab: tab};
-  let initialStateWithDefaultTab: tab => navigationState = (tab) => {activeTab: tab};
+  module State = {
+    type t = {activeTab: tab};
+    type updator = t => t;
+    let tabFromInt: int => tab = [%bs.raw {| a => a |}];
+    let intFromTab: tab => int = [%bs.raw {| a => a |}];
+    let jsStateFromState: t => jsState = (state) => {"index": intFromTab(state.activeTab)};
+    let stateFromJsState: jsState => t = (jsState) => {activeTab: tabFromInt(jsState##index)};
+  };
+  let initialStateWithDefaultTab: tab => State.t = (tab) => {activeTab: tab};
   type tabBarOnPressPayload = {
     activedTab: tab,
     previousActiveTab: option(tab)
   };
-  let tabFromInt: int => tab = [%bs.raw {| a => a |}];
-  let intFromTab: tab => int = [%bs.raw {| a => a |}];
-  let jsStateFromState: navigationState => jsState =
-    (state) => {"index": intFromTab(state.activeTab)};
-  let stateFromJsState: jsState => navigationState =
-    (jsState) => {activeTab: tabFromInt(jsState##index)};
-  let make = (~state: navigationState, ~updateState: navigationState => unit, children) =>
+  let make = (~state: State.t, ~updateState: State.updator => unit, children) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=jsTabNavigator,
       ~props={
-        "state": jsStateFromState(state),
-        "updateState": (jsState) => updateState(stateFromJsState(jsState)),
+        "state": State.jsStateFromState(state),
+        "updateState": (jsState) => updateState((_) => State.stateFromJsState(jsState)),
         "numberOfTabs": C.numberOfTabs
       },
       children

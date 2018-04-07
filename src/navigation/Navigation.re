@@ -14,13 +14,13 @@ type stackNavigationsState = StackNavigatorStateMap.t(MainStackNavigator.State.t
 
 type state = {
   modalStackNavigation: AppModalStackNavigator.State.t,
-  tabNavigation: MainTabNavigator.navigationState,
+  tabNavigation: MainTabNavigator.State.t,
   stackNavigations: stackNavigationsState
 };
 
 type action =
   | UpdateModalStackNavigationState(AppModalStackNavigator.State.updator)
-  | UpdateTabNavigationState(MainTabNavigator.navigationState)
+  | UpdateTabNavigationState(MainTabNavigator.State.updator)
   | UpdateStackNavigationState(MainTabConfig.tab, MainStackNavigator.State.updator)
   | PopCurrentStackNavigationToTop;
 
@@ -83,7 +83,7 @@ let make = (_children) => {
     switch action {
     | UpdateModalStackNavigationState(updator) =>
       ReasonReact.Update({...state, modalStackNavigation: updator(state.modalStackNavigation)})
-    | UpdateTabNavigationState(newState) => ReasonReact.Update({...state, tabNavigation: newState})
+    | UpdateTabNavigationState(updator) => ReasonReact.Update({...state, tabNavigation: updator(state.tabNavigation)})
     | UpdateStackNavigationState(tab, updator) =>
       ReasonReact.Update({
         ...state,
@@ -106,15 +106,15 @@ let make = (_children) => {
   render: (self) =>
     <AppModalStackNavigator
       state=self.state.modalStackNavigation
-      updateState=((newState) => self.send(UpdateModalStackNavigationState(newState)))>
+      updateState=((updator) => self.send(UpdateModalStackNavigationState(updator)))>
       <MainTabNavigator
         state=self.state.tabNavigation
-        updateState=((newState) => self.send(UpdateTabNavigationState(newState)))>
+        updateState=((updator) => self.send(UpdateTabNavigationState(updator)))>
         <MainTabNavigator.Tab title="Tab 1" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
           <MainStackNavigator
             state=(StackNavigatorStateMap.find(MainTabConfig.Home, self.state.stackNavigations))
             updateState=(
-              (newState) => self.send(UpdateStackNavigationState(MainTabConfig.Home, newState))
+              (updator) => self.send(UpdateStackNavigationState(MainTabConfig.Home, updator))
             )
             handleEvent=(self.handle(mainStackNavigatorEvent))
           />
@@ -123,7 +123,7 @@ let make = (_children) => {
           <MainStackNavigator
             state=(StackNavigatorStateMap.find(MainTabConfig.Home2, self.state.stackNavigations))
             updateState=(
-              (newState) => self.send(UpdateStackNavigationState(MainTabConfig.Home2, newState))
+              (updator) => self.send(UpdateStackNavigationState(MainTabConfig.Home2, updator))
             )
           />
         </MainTabNavigator.Tab>
