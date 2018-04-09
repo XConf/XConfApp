@@ -1,17 +1,19 @@
 type route =
-  | Home
+  | Schedule
+  | Information
   | Details(string);
 
 type screenEvent =
-  | OpenInfo;
+  | OpenMap;
 
 let router = (route: route, ~utils: StackNavigator.routerUtils(route, screenEvent)) =>
   switch route {
-  | Home =>
-    <HomeScreen
-      onInfoPress=(() => utils.sendEvent(OpenInfo))
-      onGoToDetailsPress=(() => utils.pushRoute(Details("first-page")))
+  | Schedule =>
+    <ScheduleScreen
+      onMapPress=(() => utils.sendEvent(OpenMap))
     />
+  | Information =>
+    <InformationScreen />
   | Details(param) =>
     <DetailsScreen
       param

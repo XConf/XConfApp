@@ -55,13 +55,25 @@ let tabBarPress =
       {
         index: 0,
         routes: [
-          {route: MainStackRouting.Home, screenRef: {contents: Some(r)}},
+          {route: MainStackRouting.Schedule, screenRef: {contents: Some(r)}},
           ..._
         ]
       }
     )
       when activedTab == activeTab =>
-    HomeScreen.scrollToTop(r)
+    ScheduleScreen.scrollToTop(r)
+  | (
+      activedTab,
+      {
+        index: 0,
+        routes: [
+          {route: MainStackRouting.Information, screenRef: {contents: Some(r)}},
+          ..._
+        ]
+      }
+    )
+      when activedTab == activeTab =>
+    InformationScreen.scrollToTop(r)
   | (activedTab, {index: i}) when activedTab == activeTab && i > 0 =>
     send(PopCurrentStackNavigationToTop)
   | _ => ()
@@ -73,10 +85,10 @@ let appStackNavigatorEvent =
       {ReasonReact.send}
     ) =>
   switch event {
-  | MainStackRouting.OpenInfo =>
+  | MainStackRouting.OpenMap =>
     send(
       UpdateModalStackNavigationState(
-        AppModalStackNavigator.State.routePushed(ModalStackRouting.Info)
+        AppModalStackNavigator.State.routePushed(ModalStackRouting.Map)
       )
     )
   };
@@ -86,16 +98,16 @@ let make = (_children) => {
   initialState: () => {
     modalStackNavigation: AppModalStackNavigator.initialState,
     tabNavigation:
-      AppTabNavigator.initialStateWithDefaultTab(MainTabConfig.Home),
+      AppTabNavigator.initialStateWithDefaultTab(MainTabConfig.Schedule),
     stackNavigations:
       StackNavigatorStateMap.empty
       |> StackNavigatorStateMap.add(
-           MainTabConfig.Home,
-           AppStackNavigator.initialStateWithRoute(MainStackRouting.Home)
+           MainTabConfig.Schedule,
+           AppStackNavigator.initialStateWithRoute(MainStackRouting.Schedule)
          )
       |> StackNavigatorStateMap.add(
-           MainTabConfig.Home2,
-           AppStackNavigator.initialStateWithRoute(MainStackRouting.Home)
+           MainTabConfig.Information,
+           AppStackNavigator.initialStateWithRoute(MainStackRouting.Information)
          )
   },
   reducer: (action, state) =>
@@ -144,36 +156,36 @@ let make = (_children) => {
         state=self.state.tabNavigation
         updateState=((updator) => self.send(UpdateTabNavigationState(updator)))>
         <AppTabNavigator.Tab
-          title="Tab 1" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
+          title="Schedule" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
           <AppStackNavigator
             state=(
               StackNavigatorStateMap.find(
-                MainTabConfig.Home,
+                MainTabConfig.Schedule,
                 self.state.stackNavigations
               )
             )
             updateState=(
               (updator) =>
                 self.send(
-                  UpdateStackNavigationState(MainTabConfig.Home, updator)
+                  UpdateStackNavigationState(MainTabConfig.Schedule, updator)
                 )
             )
             handleEvent=(self.handle(appStackNavigatorEvent))
           />
         </AppTabNavigator.Tab>
         <AppTabNavigator.Tab
-          title="Tab 2" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
+          title="Information" tabBarIcon tabBarOnPress=(self.handle(tabBarPress))>
           <AppStackNavigator
             state=(
               StackNavigatorStateMap.find(
-                MainTabConfig.Home2,
+                MainTabConfig.Information,
                 self.state.stackNavigations
               )
             )
             updateState=(
               (updator) =>
                 self.send(
-                  UpdateStackNavigationState(MainTabConfig.Home2, updator)
+                  UpdateStackNavigationState(MainTabConfig.Information, updator)
                 )
             )
           />

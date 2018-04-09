@@ -1,4 +1,4 @@
 type tab =
-  | Home
-  | Home2;
+  | Schedule
+  | Information;
 let numberOfTabs = 2;
