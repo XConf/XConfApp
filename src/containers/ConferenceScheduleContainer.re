@@ -1,21 +1,32 @@
-module ConferenceInformationQuery = [%graphql
-  {|
-  query queryConferenceInformation($conferenceCode: String!) {
+module ConferenceScheduleQuery = [%graphql {|
+  query queryConferenceSchedule($conferenceCode: String!) {
     conference(code: $conferenceCode) {
       name
+      schedule {
+        id
+        event {
+          title
+        }
+        timePeriods {
+          start
+          end
+        }
+        locations {
+          name
+        }
+      }
     }
   }
-|}
-];
+|}];
 
-let component = ReasonReact.statelessComponent("InformationContainer");
+let component = ReasonReact.statelessComponent("ConferenceScheduleContainer");
 
-let make = (~conferenceCode, ~componentRef, _children) => {
+let make = (~conferenceCode, ~componentRef, ~onScheduleItemPress, _children) => {
   ...component,
   render: _self => {
-    let conferenceInformationQuery =
-      ConferenceInformationQuery.make(~conferenceCode, ());
-    <Query query=conferenceInformationQuery>
+    let conferenceScheduleQuery =
+      ConferenceScheduleQuery.make(~conferenceCode, ());
+    <Query query=conferenceScheduleQuery>
       ...(
            (response, {parse, refetch, fetching}) =>
              switch (response) {
@@ -44,9 +55,10 @@ let make = (~conferenceCode, ~componentRef, _children) => {
              | Loaded(result) =>
                switch (parse(result)##conference) {
                | Some(conference) =>
-                 <Information
+                 <Schedule
                    ref=componentRef
-                   conference
+                   schedule=conference##schedule
+                   onItemPress=onScheduleItemPress
                    onRefresh=refetch
                    refreshing=fetching
                  />
@@ -56,5 +68,5 @@ let make = (~conferenceCode, ~componentRef, _children) => {
              }
          )
     </Query>;
-  },
+  }
 };

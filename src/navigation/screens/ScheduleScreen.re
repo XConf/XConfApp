@@ -1,58 +1,40 @@
-type state = {
-  scrollViewRef: ref(option(ReasonReact.reactRef))
-};
+type state = {componentRef: ref(option(ReasonReact.reactRef))};
 
-type action = NoAction;
+type action =
+  | NoAction;
 
 let component = ReasonReact.reducerComponent("ScheduleScreen");
 
-let setScrollViewRef = (r, {ReasonReact.state}) => state.scrollViewRef := Js.Nullable.toOption(r);
+let setComponentRef = (r, {ReasonReact.state}) =>
+  state.componentRef := Js.Nullable.toOption(r);
 
-let scrollScrollViewToTop = (_, {ReasonReact.state}) =>
-  switch state.scrollViewRef^ {
+let componentScrollToTop = (_, {ReasonReact.state}) =>
+  switch (state.componentRef^) {
   | None => ()
-  | Some(r) => ScrollView.scrollTo(r, ~x=0, ~y=0, ~animated=true)
+  | Some(r) => Schedule.scrollToTop(r)
   };
 
-let scrollToTop = (r) => {
+let scrollToTop = r => {
   let self = ReasonReactUtils.refToSelf(r);
-  self.handle(scrollScrollViewToTop, ())
+  self.handle(componentScrollToTop, ());
 };
 
-let styles =
-  BsReactNative.(
-    StyleSheet.create(
-      Style.(
-        {
-          "container": style([]),
-          "content":
-            style([
-              flex(1.),
-              paddingVertical(Pt(128.)),
-              paddingHorizontal(Pt(16.)),
-              justifyContent(Center),
-              alignItems(Center)
-            ])
-        }
-      )
-    )
-  );
-
-let make = (~onMapPress: unit => unit, _children) => {
+let make = (~onMapPress: unit => unit, ~onScheduleItemPress, _children) => {
   ...component,
-  initialState: () => {scrollViewRef: ref(None)},
+  initialState: () => {componentRef: ref(None)},
   reducer: (_action: action, _state) => ReasonReact.NoUpdate,
-  render: (self) => {
-    <ScrollView contentContainerStyle=styles##container ref=(self.handle(setScrollViewRef))>
+  render: self =>
+    <View style=Style.(style([flex(1.)]))>
       <StackNavigator.Header style="default">
         <StackNavigator.Header.Left>
           <Button title="Map" onPress=onMapPress />
         </StackNavigator.Header.Left>
         <StackNavigator.Header.TitleText value="Schedule" />
       </StackNavigator.Header>
-      <View style=styles##content>
-        <Text value="Schedule Screen" />
-      </View>
-    </ScrollView>
-  }
+      <ConferenceScheduleContainer
+        conferenceCode="2016"
+        componentRef=(self.handle(setComponentRef))
+        onScheduleItemPress
+      />
+    </View>,
 };

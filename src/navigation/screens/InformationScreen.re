@@ -11,7 +11,7 @@ let setComponentRef = (r, {ReasonReact.state}) =>
 let componentScrollToTop = (_, {ReasonReact.state}) =>
   switch (state.componentRef^) {
   | None => ()
-  | Some(r) => Information.scrollToTop(r)
+  | Some(r) => ConferenceInformation.scrollToTop(r)
   };
 
 let scrollToTop = r => {
@@ -28,7 +28,7 @@ let make = _children => {
       <StackNavigator.Header style="default">
         <StackNavigator.Header.TitleText value="Information" />
       </StackNavigator.Header>
-      <InformationContainer
+      <ConferenceInformationContainer
         conferenceCode="2016"
         componentRef=(self.handle(setComponentRef))
       />

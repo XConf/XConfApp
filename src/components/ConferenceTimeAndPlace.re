@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent("ConferenceTimeAndPlace");
 
-type conference = {. "name": string};
+type conference('a) = {.. "name": string} as 'a;
 
 let styles =
   StyleSheet.create(
@@ -18,7 +18,7 @@ let styles =
     ),
   );
 
-let make = (~conference: conference, _children) => {
+let make = (~conference: conference('a), _children) => {
   ...component,
   render: _self =>
     <View style=styles##content> <Text value=conference##name /> </View>,
