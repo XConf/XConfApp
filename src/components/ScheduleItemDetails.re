@@ -30,6 +30,21 @@ let make = (~scheduleItem, ~onRefresh, ~refreshing, _children) => {
       ref=(self.handle(setScrollViewRef))
       style=styles##scrollView
       refreshControl={<RefreshControl refreshing onRefresh />}>
-      <Text value=scheduleItem##event##title />
+      (
+        switch (scheduleItem##eventInterface) {
+        | `Activity(activity) =>
+          <View>
+            <Text value="Activity:" />
+            <Text value=activity##title />
+          </View>
+        | `Session(session) =>
+          <View>
+            <Text value="Session:" />
+            <Text value=session##title />
+            <Text value=session##speaker##name />
+            <Text value=session##description />
+          </View>
+        }
+      )
     </ScrollView>,
 };

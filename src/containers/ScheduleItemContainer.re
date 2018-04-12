@@ -3,8 +3,17 @@ module ScheduleItemQuery = [%graphql
   query queryScheduleItem($scheduleItemId: ID!) {
     scheduleItem(id: $scheduleItemId) {
       id
-      event {
-        title
+      eventInterface @bsVariant {
+        activity {
+          title
+        }
+        session {
+          title
+          description
+          speaker {
+            name
+          }
+        }
       }
     }
   }
