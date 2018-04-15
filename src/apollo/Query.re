@@ -1,125 +1,52 @@
-external castResponse : string => {. "data": Js.Json.t} = "%identity";
+[@bs.module "./Query"] external jsQuery : ReasonReact.reactClass = "default";
 
-external asJsObject : 'a => Js.t({..}) = "%identity";
-
-[@bs.module] external gql : ReasonApolloTypes.gql = "graphql-tag";
-
-[@bs.module]
-external shallowEqual : (Js.t({..}), Js.t({..})) => bool =
-  "fbjs/lib/shallowEqual";
-
-type response =
+type response('a) =
   | Loading
-  | Loaded(Js.Json.t)
+  | Loaded('a)
   | Failed(string);
 
-type state = {
-  response,
-  variables: Js.Json.t,
-  fetching: bool,
-  error: option(string),
-};
-
-type action =
-  | Result(string)
-  | Error(string)
-  | Refetch;
-
-let a = [%bs.raw {| 1 |}];
-
-type utils('a) = {
-  parse: 'a,
+type utils = {
   refetch: unit => unit,
   fetching: bool,
   error: option(string),
 };
 
-let makeQueryObject: (ApolloClient.queryObj, 'a) => ApolloClient.queryObj = [%bs.raw
-  {|
-  (a, b) => ({ ...a, ...b })
-|}
-];
-
-let sendQuery = (~query, ~reduce, ~fetchPolicy="cache-first", ()) => {
-  let queryObj =
-    makeQueryObject(
-      {"query": gql(. query##query), "variables": query##variables},
-      {"fetchPolicy": fetchPolicy},
-    );
-  Js.Promise.(
-    resolve(Apollo.Client.apolloClient##query(queryObj))
-    |> then_(value => {
-         reduce(() => Result(value), ());
-         resolve();
-       })
-    |> catch(_value => {
-         reduce(() => Error("an error happened"), ());
-         resolve();
-       })
-  );
-  ();
-};
-
-let refetch = (~query, ~reduce) => {
-  reduce(() => Refetch, ());
-  sendQuery(~query, ~reduce, ~fetchPolicy="network-only");
-};
-
-let component = ReasonReact.reducerComponent("Query");
-
-let make = (~query as q, children) => {
-  ...component,
-  initialState: () => {
-    response: Loading,
-    variables: q##variables,
-    fetching: true,
-    error: None,
-  },
-  reducer: (action, state) =>
-    switch (action) {
-    | Result(result) =>
-      let typedResult = castResponse(result)##data;
-      ReasonReact.Update({
-        ...state,
-        response: Loaded(typedResult),
-        fetching: false,
-      });
-    | Error(error) =>
-      switch (state.response) {
-      | Loaded(_) =>
-        ReasonReact.Update({...state, fetching: false, error: Some(error)})
-      | _ =>
-        ReasonReact.Update({
-          ...state,
-          response: Failed(error),
-          fetching: false,
-          error: Some(error),
-        })
-      }
-    | Refetch => ReasonReact.Update({...state, fetching: true, error: None})
-    },
-  willReceiveProps: ({state, reduce}) =>
-    if (!
-          shallowEqual(
-            asJsObject(q##variables),
-            asJsObject(state.variables),
-          )) {
-      sendQuery(~query=q, ~reduce);
-      {...state, variables: q##variables};
-    } else {
-      state;
-    },
-  didMount: (_) =>
-    ReasonReact.SideEffects(
-      ({reduce}) => sendQuery(~query=q, ~reduce, ()),
-    ),
-  render: ({state, reduce}) => {
-    let utils = {
-      parse: q##parse,
-      refetch: () => refetch(~query=q, ~reduce, ()),
-      error: state.error,
-      fetching: state.fetching,
+let jsStateToResponse = (~parse, jsState) => {
+  let fetching = Js.to_bool(jsState##fetching);
+  let data = Js.Nullable.toOption(jsState##data);
+  switch (fetching, data) {
+  | (_, Some(d)) => Loaded(parse(d))
+  | (true, None) => Loading
+  | (false, None) =>
+    let errorMessage = Js.Nullable.toOption(jsState##errorMessage);
+    switch (errorMessage) {
+    | None => Failed("Unknown error")
+    | Some(m) => Failed(m)
     };
-    children(state.response, utils);
-  },
+  };
 };
+
+let jsStateAndUtilsToUtils = (jsState, jsUtils) => ({
+  refetch: jsUtils##refetch,
+  fetching: Js.to_bool(jsState##fetching),
+  error: Js.Nullable.toOption(jsState##errorMessage)
+});
+
+let make =
+    (
+      ~query,
+      children: (response('a), utils) => ReasonReact.reactElement,
+    ) =>
+  ReasonReact.wrapJsForReason(
+    ~reactClass=jsQuery,
+    ~props={
+      "apolloClient": Apollo.Client.apolloClient,
+      "query": query
+    },
+    (jsState, jsUtils) => {
+      let response = jsStateToResponse(~parse=query##parse, jsState);
+      let utils = jsStateAndUtilsToUtils(jsState, jsUtils);
+
+      children(response, utils);
+    }
+  );

@@ -1,10 +1,12 @@
 module ConferenceScheduleQuery = [%graphql {|
   query queryConferenceSchedule($conferenceCode: String!) {
     conference(code: $conferenceCode) {
+      id
       name
       schedule {
         id
         event {
+          id
           title
         }
         timePeriods {
@@ -28,7 +30,7 @@ let make = (~conferenceCode, ~componentRef, ~onScheduleItemPress, _children) => 
       ConferenceScheduleQuery.make(~conferenceCode, ());
     <Query query=conferenceScheduleQuery>
       ...(
-           (response, {parse, refetch, fetching}) =>
+           (response, {refetch, fetching}) =>
              switch (response) {
              | Loading =>
                <View
@@ -53,7 +55,7 @@ let make = (~conferenceCode, ~componentRef, ~onScheduleItemPress, _children) => 
                  <Text value={j|Error: $error|j} />
                </View>
              | Loaded(result) =>
-               switch (parse(result)##conference) {
+               switch (result##conference) {
                | Some(conference) =>
                  <Schedule
                    ref=componentRef

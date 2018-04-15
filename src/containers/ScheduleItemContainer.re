@@ -5,12 +5,15 @@ module ScheduleItemQuery = [%graphql
       id
       eventInterface @bsVariant {
         activity {
+          id
           title
         }
         session {
+          id
           title
           description
           speaker {
+            id
             name
           }
         }
@@ -28,7 +31,7 @@ let make = (~scheduleItem, _children) => {
     let scheduleItemQuery = ScheduleItemQuery.make(~scheduleItemId=scheduleItem##id, ());
     <Query query=scheduleItemQuery>
       ...(
-           (response, {parse, refetch, fetching}) =>
+           (response, {refetch, fetching}) =>
              switch (response) {
              | Loading =>
                <View
@@ -53,7 +56,7 @@ let make = (~scheduleItem, _children) => {
                  <Text value={j|Error: $error|j} />
                </View>
              | Loaded(result) =>
-               switch (parse(result)##scheduleItem) {
+               switch (result##scheduleItem) {
                | Some(scheduleItem) =>
                  <ScheduleItemDetails
                    scheduleItem

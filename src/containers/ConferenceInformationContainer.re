@@ -2,6 +2,7 @@ module ConferenceInformationQuery = [%graphql
   {|
   query queryConferenceInformation($conferenceCode: String!) {
     conference(code: $conferenceCode) {
+      id
       name
     }
   }
@@ -17,7 +18,7 @@ let make = (~conferenceCode, ~componentRef, _children) => {
       ConferenceInformationQuery.make(~conferenceCode, ());
     <Query query=conferenceInformationQuery>
       ...(
-           (response, {parse, refetch, fetching}) =>
+           (response, {refetch, fetching}) =>
              switch (response) {
              | Loading =>
                <View
@@ -42,7 +43,7 @@ let make = (~conferenceCode, ~componentRef, _children) => {
                  <Text value={j|Error: $error|j} />
                </View>
              | Loaded(result) =>
-               switch (parse(result)##conference) {
+               switch (result##conference) {
                | Some(conference) =>
                  <ConferenceInformation
                    ref=componentRef
