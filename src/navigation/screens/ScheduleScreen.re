@@ -22,7 +22,7 @@ let scrollToTop = r => {
 let make = (~onMapPress: unit => unit, ~onScheduleItemPress, _children) => {
   ...component,
   initialState: () => {componentRef: ref(None)},
-  reducer: (_action: action, _state) => ReasonReact.NoUpdate,
+  reducer: (_action: action, _state: state) => ReasonReact.NoUpdate,
   render: self =>
     <View style=Style.(style([flex(1.)]))>
       <StackNavigator.Header style="default">

@@ -39,7 +39,7 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
       refreshControl={<RefreshControl refreshing onRefresh />}>
       ...(
         Array.map((scheduleItem) => {
-          <ScheduleItem scheduleItem onPress=onItemPress />
+          <ScheduleItem key=scheduleItem##id scheduleItem onPress=onItemPress />
         }, schedule)
       )
     </ScrollView>,

@@ -73,6 +73,26 @@ export default class Screen extends Component {
   }
 }
 
+// eslint-disable-next-line react/no-multi-comp
+class TestRendererWrapper extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { mounted: false }
+  }
+
+  componentDidCatch() {
+    this.setState({ hasError: true })
+  }
+
+  render() {
+    if (this.state.mounted || this.state.hasError) {
+      return null
+    }
+    this.setState({ mounted: true })
+    return this.props.children
+  }
+}
+
 const collectHeaderParamsFromElements = (elements, key) => {
   const params = {}
 
@@ -85,19 +105,20 @@ const collectHeaderParamsFromElements = (elements, key) => {
   }
 
   const elementsWithContext = (
-    <React.Fragment>
+    <TestRendererWrapper>
       <HeaderContext.Provider
         setNavigationParams={setNavigationParams}
         eventCapturingFunction={eventCapturingFunction}
       >
         {elements}
       </HeaderContext.Provider>
-    </React.Fragment>
+    </TestRendererWrapper>
   )
 
   if (__DEV__) console.reportErrorsAsExceptions = false
   try {
-    ReactTestRenderer.create(elementsWithContext)
+    const testRenderer = ReactTestRenderer.create(elementsWithContext)
+    testRenderer.unmount()
   } catch (e) {}
   if (__DEV__) console.reportErrorsAsExceptions = true
 
