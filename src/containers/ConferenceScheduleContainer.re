@@ -4,17 +4,24 @@ module ConferenceScheduleQuery = [%graphql {|
       id
       name
       schedule {
-        id
-        event {
+        items {
           id
-          title
-        }
-        timePeriods {
-          start
-          end
-        }
-        locations {
-          name
+          date {
+            name
+          }
+          event {
+            id
+            title
+          }
+          periods {
+            id
+            start
+            end
+          }
+          places {
+            id
+            name
+          }
         }
       }
     }

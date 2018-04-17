@@ -40,7 +40,7 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
       ...(
         Array.map((scheduleItem) => {
           <ScheduleItem key=scheduleItem##id scheduleItem onPress=onItemPress />
-        }, schedule)
+        }, schedule##items)
       )
     </ScrollView>,
 };
