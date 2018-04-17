@@ -4,6 +4,9 @@ module ConferenceScheduleQuery = [%graphql {|
       id
       name
       schedule {
+        places {
+          id
+        }
         items {
           id
           date {
@@ -15,7 +18,7 @@ module ConferenceScheduleQuery = [%graphql {|
           }
           periods {
             id
-            start
+            start @bsDecoder(fn: "Decoder.dateFnsFromGql")
             end
           }
           places {
