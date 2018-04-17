@@ -27,7 +27,7 @@ let group = (f: 'a => 'b, l: list('a)) => {
     | [] => acc
     | [hd, ...tl] =>
       let c = f(hd);
-      let (l1, l2) = List.partition(i => f(i) == c, tl);
+      let (l1, l2) = List.partition(i => f(i) === c, tl);
       grouping([(c, [hd, ...l1]), ...acc], l2);
     };
   grouping([], l);
