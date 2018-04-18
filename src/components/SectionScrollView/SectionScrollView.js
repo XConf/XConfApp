@@ -13,6 +13,7 @@ export default class SectionScrollView extends Component {
         renderItem={({ item }) => item}
         renderSectionHeader={({ section: { header } }) => header}
         sections={sections}
+        keyExtractor={item => item.key}
       />
     )
   }

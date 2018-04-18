@@ -21,13 +21,13 @@ let scrollToTop = r => {
 
 let styles = StyleSheet.create(Style.({"scrollView": style([flex(1.)])}));
 
-let group = (f: 'a => 'b, l: list('a)) => {
+let group = (~same=((a, b) => a == b), f: 'a => 'b, l: list('a)) => {
   let rec grouping = (acc, list) =>
     switch (list) {
     | [] => acc
     | [hd, ...tl] =>
       let c = f(hd);
-      let (l1, l2) = List.partition(i => f(i) === c, tl);
+      let (l1, l2) = List.partition(i => same(f(i), c), tl);
       grouping([(c, [hd, ...l1]), ...acc], l2);
     };
   grouping([], l);
@@ -54,7 +54,7 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
       ...(
            schedule##items
            |> Array.to_list
-           |> group(a => (a##periods)[0]##start)
+           |> group(~same=((a, b) => DateFns.isEqual(a, b)), a => (a##periods)[0]##start)
            |> List.sort(((startA, _), (startB, _)) => DateFns.compareAsc(startA, startB))
            |> List.map(((start, items)) =>
                 (
@@ -73,7 +73,7 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
                   Array.map(
                     item =>
                       <ScheduleItem
-                        key=item##id
+                        /*key=item##id*/
                         scheduleItem=item
                         onPress=onItemPress
                       />,
