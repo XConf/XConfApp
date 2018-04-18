@@ -12,8 +12,10 @@ export default class SectionScrollView extends Component {
         {...props}
         renderItem={({ item }) => item}
         renderSectionHeader={({ section: { header } }) => header}
-        sections={sections}
         keyExtractor={item => item.key}
+        // Add a blank section at the top to make scrollToTop work
+        // (won't ignore the first section header)
+        sections={[{ header: null, data: [] }, ...sections]}
       />
     )
   }
