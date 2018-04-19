@@ -18,6 +18,7 @@ let styles =
           ]),
         "text":
           style([
+            color(Theme.Color.darkerGrey),
             fontSize(Float(12.)),
             fontFamily("Roboto Mono"),
             fontWeight(`_300)

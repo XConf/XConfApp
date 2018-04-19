@@ -19,7 +19,7 @@ module ConferenceScheduleQuery = [%graphql {|
           periods {
             id
             start @bsDecoder(fn: "Decoder.dateFnsFromGql")
-            end
+            end @bsDecoder(fn: "Decoder.dateFnsFromGql")
           }
           places {
             id

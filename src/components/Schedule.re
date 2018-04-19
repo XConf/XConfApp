@@ -27,7 +27,7 @@ let styles =
           style([
             flex(1.),
             paddingVertical(Pt(4.)),
-            backgroundColor("#fff"),
+            backgroundColor(Theme.Color.background),
           ]),
         "afterTimeLabel":
           style([
