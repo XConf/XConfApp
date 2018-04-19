@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { SectionList } from 'react-native'
+import { View, SectionList } from 'react-native'
+
+class CellRenderer extends Component {
+  render() {
+    return this.props.children
+  }
+}
 
 export default class SectionScrollView extends Component {
   render() {
@@ -16,6 +22,7 @@ export default class SectionScrollView extends Component {
         // Add a blank section at the top to make scrollToTop work
         // (won't ignore the first section header)
         sections={[{ header: null, data: [] }, ...sections]}
+        CellRendererComponent={CellRenderer}
       />
     )
   }

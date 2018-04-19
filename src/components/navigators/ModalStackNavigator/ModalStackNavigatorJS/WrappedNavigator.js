@@ -61,7 +61,16 @@ const routesFromBsRoutes = ({ bsRoutes }) => {
     ptr = ptr[1] // eslint-disable-line prefer-destructuring
   }
 
-  routes = routes.map(v => new Proxy(v, bsRouteProxyHandler))
+  if (typeof PolyfilledProxy !== 'undefined') {
+    routes = routes.map(v => new PolyfilledProxy({
+      routeName: true,
+      key: true,
+      params: true,
+      ...v,
+    }, bsRouteProxyHandler))
+  } else {
+    routes = routes.map(v => new Proxy(v, bsRouteProxyHandler))
+  }
 
   const baseRoute = {
     routeName: 'BaseContent',
@@ -124,10 +133,20 @@ export default class WrappedNavigator extends Component {
     const { state: bsState } = this.props
     const { internalState } = this.state
 
-    return new Proxy({
-      bsState,
-      internalState,
-    }, bsStateProxyHandler)
+    if (typeof PolyfilledProxy !== 'undefined') {
+      return new PolyfilledProxy({
+        ...Object.keys(internalState).reduce((o, k) => { o[k] = true; return o; }, {}),
+        index: true,
+        routes: true,
+        bsState,
+        internalState,
+      }, bsStateProxyHandler)
+    } else {
+      return new Proxy({
+        bsState,
+        internalState,
+      }, bsStateProxyHandler)
+    }
   };
 
   handleDispatch = (action) => {

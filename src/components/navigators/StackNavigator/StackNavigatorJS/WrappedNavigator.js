@@ -78,11 +78,26 @@ const routesFromBsRoutes = ({
     ptr = ptr[1] // eslint-disable-line prefer-destructuring
   }
 
-  routes = routes.map(bsRoute => new Proxy({
-    router,
-    bsRoute,
-    getRouteParams,
-  }, bsRouteProxyHandler))
+  if (typeof PolyfilledProxy !== 'undefined') {
+    routes = routes.map(bsRoute => new PolyfilledProxy({
+      __obj__: true,
+      rid: true,
+      routeName: true,
+      key: true,
+      params: true,
+      setCompareCounter: true,
+      compareCounter: true,
+      router,
+      bsRoute,
+      getRouteParams,
+    }, bsRouteProxyHandler))
+  } else {
+    routes = routes.map(bsRoute => new Proxy({
+      router,
+      bsRoute,
+      getRouteParams,
+    }, bsRouteProxyHandler))
+  }
 
   return routes
 }
@@ -113,11 +128,21 @@ const bsRouteProxyHandler = {
           params = {}
           getRouteParams()[key] = params // eslint-disable-line no-param-reassign
         }
-        const paramsProxy = new Proxy({
-          router,
-          bsRoute,
-          params,
-        }, bsRouteParamsProxyHandler)
+        const paramsProxy = (typeof PolyfilledProxy !== 'undefined') ?
+          new PolyfilledProxy({
+            ...Object.keys(params).reduce((o, k) => { o[k] = true; return o; }, {}),
+            route: true,
+            screenRef: true,
+            router,
+            bsRoute,
+            params,
+          }, bsRouteParamsProxyHandler)
+          :
+          new Proxy({
+            router,
+            bsRoute,
+            params,
+          }, bsRouteParamsProxyHandler)
         return paramsProxy
       }
       case 'setCompareCounter':
@@ -167,7 +192,10 @@ const routeParamsUpdated = ({ bsState, routeParams, key }) => {
   // will be compared as a different object, that triggers the scene to be updated.
   const route = cachedRoutesArray[routesArrayIndex]
   if (!route) return
-  const newRoute = new Proxy(route.__obj__, bsRouteProxyHandler)
+  const newRoute = (typeof PolyfilledProxy !== 'undefined') ?
+    new PolyfilledProxy(route.__obj__, bsRouteProxyHandler)
+    :
+    new Proxy(route.__obj__, bsRouteProxyHandler)
   newRoute.setCompareCounter()
 
   // Insert the new route into cached routes
@@ -217,12 +245,24 @@ export default class WrappedNavigator extends Component {
     const { state: bsState } = this.props
     const { internalState } = this.state
 
-    return new Proxy({
-      router,
-      bsState,
-      internalState,
-      getRouteParams,
-    }, bsStateProxyHandler)
+    if (typeof PolyfilledProxy !== 'undefined') {
+      return new PolyfilledProxy({
+        ...Object.keys(internalState).reduce((o, k) => { o[k] = true; return o; }, {}),
+        index: true,
+        routes: true,
+        router,
+        bsState,
+        internalState,
+        getRouteParams,
+      }, bsStateProxyHandler)
+    } else {
+      return new Proxy({
+        router,
+        bsState,
+        internalState,
+        getRouteParams,
+      }, bsStateProxyHandler)
+    }
   };
 
   handleDispatch = (action) => {
