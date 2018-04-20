@@ -1345,9 +1345,9 @@ bs-date-fns@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/bs-date-fns/-/bs-date-fns-0.1.4.tgz#9b621e97118f1205c73749e8b07f566fc967e5d9"
 
-bs-platform@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-2.2.2.tgz#95ff37719771bbf310e8376fedd1148865c0da19"
+bs-platform@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-3.0.0.tgz#38f200730db52fdea37819376b6ac3dfb20244c0"
 
 bs-react-native@^0.5.0:
   version "0.5.0"
