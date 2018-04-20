@@ -29,6 +29,10 @@ let styles =
             paddingVertical(Pt(4.)),
             backgroundColor(Theme.Color.background),
           ]),
+        "scrollViewContent":
+          style([
+            paddingBottom(Pt(16.)),
+          ]),
         "afterTimeLabel":
           style([
             marginTop(Pt(-. ScheduleTimeLabel.ptHeight))
@@ -144,6 +148,7 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
     <ScrollView
       ref=(self.handle(setScrollViewRef))
       style=styles##scrollView
+      contentContainerStyle=styles##scrollViewContent
       refreshControl={<RefreshControl refreshing onRefresh />}
       stickyHeaderIndices=labelIndexes>
       ...elements

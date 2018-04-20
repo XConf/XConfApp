@@ -26,7 +26,7 @@ let styles =
             height(Pt(6.)),
             borderWidth(1.),
             borderColor(Theme.Color.lightGrey),
-            backgroundColor(Theme.Color.lightGrey),
+            backgroundColor(Theme.Color.background),
             borderRadius(100.),
           ]),
         "content":
@@ -80,19 +80,30 @@ let make = (~scheduleItem, ~onPress, _children) => {
       <TouchableOpacity style=styles##content onPress=(() => onPress(scheduleItem))>
         <Text style=styles##titleText value=scheduleItem##event##title />
         <Text>
-          ...(
-            scheduleItem##places
-            |> Array.to_list
-            |> List.map((places) => <Text style=styles##text value=places##name />)
-            |> insertSeparates(<Text style=styles##sideText value={j| · |j} />)
-            |> Array.of_list
+          <Text>
+            ...(
+              scheduleItem##places
+              |> Array.to_list
+              |> List.map((places) => <Text style=styles##text value=places##name />)
+              |> insertSeparates(<Text style=styles##sideText value=" & " />)
+              |> Array.of_list
+            )
+          </Text>
+          (
+            switch (scheduleItem##places) {
+            | a when Array.length(a) > 1 => <Text value="\n" />
+            | _ => <Text style=styles##sideText value={j| · |j} />
+            }
           )
+          <Text style=styles##text value=Js.String.replace(
+            "minute",
+            "min",
+            DateFns.distanceInWordsStrict(
+              (scheduleItem##periods)[0]##start,
+              (scheduleItem##periods)[Array.length(scheduleItem##periods) - 1]##_end,
+            )
+          ) />
         </Text>
-        <Text style=styles##text value=DateFns.distanceInWords(
-          (scheduleItem##periods)[0]##start,
-          (scheduleItem##periods)[Array.length(scheduleItem##periods) - 1]##_end,
-        ) />
-        /*<Text style=styles##text value="Place" />*/
       </TouchableOpacity>
     </View>,
 };
