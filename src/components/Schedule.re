@@ -33,6 +33,10 @@ let styles =
           style([
             paddingBottom(Pt(16.)),
           ]),
+        "content":
+          style([
+            flex(1.),
+          ]),
         "afterTimeLabel":
           style([
             marginTop(Pt(-. ScheduleTimeLabel.ptHeight))
@@ -41,6 +45,15 @@ let styles =
           zIndex(20),
           marginLeft(Pt(ScheduleTimeLabel.ptWidth))
         ]),
+        "timeLine":
+          style([
+            position(Absolute),
+            top(Pt(14.)),
+            left(Pt(ScheduleTimeLabel.ptWidth +. 3.5)),
+            width(Pt(1.)),
+            height(Pt(10000.)),
+            backgroundColor(Theme.Color.lightGrey),
+          ]),
       }
     ),
   );
@@ -151,7 +164,7 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
       contentContainerStyle=styles##scrollViewContent
       refreshControl={<RefreshControl refreshing onRefresh />}
       stickyHeaderIndices=labelIndexes>
-      ...elements
+      ...(Array.append(elements, [|<View style=styles##timeLine />|]))
     </ScrollView>;
   },
 };

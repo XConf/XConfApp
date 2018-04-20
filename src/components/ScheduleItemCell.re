@@ -9,7 +9,7 @@ let styles =
       {
         "container":
           style([
-            flexDirection(Row)
+            flexDirection(Row),
           ]),
         "timeLine":
           style([
@@ -34,7 +34,7 @@ let styles =
         "content":
           style([
             flex(1.),
-            paddingVertical(Pt(4.)),
+            paddingVertical(Pt(8.)),
             paddingHorizontal(Pt(16.)),
           ]),
         "titleText":
