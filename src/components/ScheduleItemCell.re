@@ -1,6 +1,8 @@
 let component = ReasonReact.statelessComponent("ScheduleItemCell");
 
-/*type conference('a) = {.. "name": string} as 'a;*/
+[@bs.get] external getStart : 'a => Js.Date.t = "start";
+[@bs.get] external getEnd : 'a => Js.Date.t = "end";
+
 let styles =
   StyleSheet.create(
     Style.(
@@ -95,13 +97,9 @@ let make = (~scheduleItem, ~onPress, _children) => {
             | _ => <Text style=styles##sideText value={j| · |j} />
             }
           )
-          <Text style=styles##text value=Js.String.replace(
-            "minute",
-            "min",
-            DateFns.distanceInWordsStrict(
-              (scheduleItem##periods)[0]##start,
-              (scheduleItem##periods)[Array.length(scheduleItem##periods) - 1]##_end,
-            )
+          <Text style=styles##text value=DateFns.distanceInWords(
+            getStart((scheduleItem##periods)[0]),
+            getEnd((scheduleItem##periods)[Array.length(scheduleItem##periods) - 1]),
           ) />
         </Text>
       </TouchableOpacity>
