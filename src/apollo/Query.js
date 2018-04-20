@@ -23,22 +23,9 @@ export default class Query extends Component {
       networkStatus: null,
       stale: null,
     }
-    this.orgSetState = this.setState
-    this.setState = (state) => {
-      if (typeof state === 'function') {
-        const newState = state(this.state)
-        this.state = {
-          ...this.state,
-          ...newState,
-        }
-      } else {
-        this.state = {
-          ...this.state,
-          ...state,
-        }
-      }
-    }
+  }
 
+  componentDidMount() {
     const { query, variables } = this.props.query
     const observable = this.props.apolloClient.watchQuery({
       query: gql(query),
@@ -55,24 +42,19 @@ export default class Query extends Component {
       })
     })
 
-    this.state = {
-      ...this.state,
-      observable,
-      subscription,
-    }
-  }
-
-  componentDidMount() {
-    this.setState = this.orgSetState
+    this.observable = observable
+    this.subscription = subscription
   }
 
   componentWillUnmount() {
-    this.state.subscription.unsubscribe()
+    if (this.subscription) return
+    this.subscription.unsubscribe()
   }
 
   refetch = async () => {
+    if (!this.observable) return
     this.setState({ fetching: true })
-    await this.state.observable.refetch()
+    await this.observable.refetch()
     this.setState({ fetching: false })
   }
 
