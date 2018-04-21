@@ -927,7 +927,7 @@
               "deprecationReason": null,
               "description": "",
               "isDeprecated": false,
-              "name": "CHT"
+              "name": "ZH_TW"
             }
           ],
           "fields": null,
@@ -970,10 +970,10 @@
                 {
                   "defaultValue": null,
                   "description": "",
-                  "name": "dateID",
+                  "name": "date",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
+                    "kind": "INPUT_OBJECT",
+                    "name": "ConferenceDateInput",
                     "ofType": null
                   }
                 }
@@ -1029,10 +1029,10 @@
                 {
                   "defaultValue": null,
                   "description": "",
-                  "name": "dateID",
+                  "name": "date",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
+                    "kind": "INPUT_OBJECT",
+                    "name": "ConferenceDateInput",
                     "ofType": null
                   }
                 }
@@ -1064,6 +1064,27 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "Schedule",
+          "possibleTypes": null
+        },
+        {
+          "description": "",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "",
+              "name": "id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "ConferenceDateInput",
           "possibleTypes": null
         },
         {

@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent("ScheduleTimeLabel");
 
-let ptHeight = 28.;
+let ptHeight = 32.;
 let ptWidth = 84.;
 
 let styles =
@@ -13,8 +13,10 @@ let styles =
             left(Pt(0.)),
             height(Pt(ptHeight)),
             width(Pt(ptWidth)),
+            paddingVertical(Pt(4.)),
+            paddingHorizontal(Pt(8.)),
             justifyContent(Center),
-            alignItems(Center),
+            alignItems(FlexEnd),
           ]),
         "text":
           style([

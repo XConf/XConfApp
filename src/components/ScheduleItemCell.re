@@ -21,7 +21,7 @@ let styles =
           ]),
         "timeLineDot":
           style([
-            top(Pt(11.)),
+            top(Pt(13.)),
             marginRight(Pt(-6.)),
             marginBottom(Pt(-6.)),
             width(Pt(6.)),
@@ -60,6 +60,10 @@ let styles =
             fontFamily("Roboto"),
             fontWeight(`_300),
             color(Theme.Color.darkGrey),
+          ]),
+        "tags":
+          style([
+            flexDirection(Row),
           ]),
       }
     ),
@@ -109,6 +113,14 @@ let make = (~scheduleItem, ~onPress, _children) => {
             )
           />
         </Text>
+        <View style=styles##tags>
+          (
+            switch (scheduleItem##eventInterface) {
+            | `Session(s) => <Tag value=s##language />
+            | _ => ReasonReact.nullElement
+            }
+          )
+        </View>
       </TouchableOpacity>
     </View>,
 };

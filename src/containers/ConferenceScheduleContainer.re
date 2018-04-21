@@ -13,6 +13,15 @@ module ConferenceScheduleQuery = [%graphql {|
             id
             title
           }
+          eventInterface @bsVariant {
+            activity {
+              id
+            }
+            session {
+              id
+              language
+            }
+          }
           periods {
             id
             date {
