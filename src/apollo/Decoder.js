@@ -1,3 +1,3 @@
 import dateFnsParse from 'date-fns/parse'
 
-export const dateFnsFromGql = s => dateFnsParse(s)
+export const date = s => dateFnsParse(s)

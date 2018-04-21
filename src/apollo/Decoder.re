@@ -1,4 +1,4 @@
 [@bs.module "./Decoder"]
-external jsDateFnsFromGql : Js.Json.t => Js.Date.t = "dateFnsFromGql";
+external jsDate : 'a => Js.Date.t = "date";
 
-let dateFnsFromGql: Js.Json.t => Js.Date.t = jsDateFnsFromGql;
+let date: 'a => Js.Date.t = jsDate;

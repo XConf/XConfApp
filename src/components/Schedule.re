@@ -86,33 +86,45 @@ module DataProcessor = {
     (sortingDict, itemA, itemB) => sortingDict[itemA.places[0].id] > sortingDict[itemB.places[0].id] ? 1 : -1
   |}];
 
-  type listItem('a) =
-    | StartDate(Js.Date.t)
-    | Item('a);
+  type listItem('a, 'b) =
+    | OptionPeriod('a)
+    | Item('b);
 
-  let periodSectionedListOfSchedule = schedule => {
+  let periodItemsListOfSchedule = schedule => {
     let sortingDict = sortingDictFromPlaces(schedule##places);
 
     schedule##items
     |> Array.to_list
     |> group(
-         ~same=(a, b) => DateFns.isEqual(a, b),
-         a => (a##periods)[0]##start,
+         ~same=(a, b) => switch (a, b) {
+         | (Some(dateA), Some(dateB)) => dateA##id === dateB##id
+         | _ => false
+         },
+         a => ArrayUtils.safeGet(a##periods, 0),
        )
-    |> List.sort(((startA, _), (startB, _)) =>
-         DateFns.compareAsc(startA, startB)
+    |> List.sort(((optionDateA, _), (optionDateB, _)) =>
+        switch (optionDateA, optionDateB) {
+        | (Some(dateA), Some(dateB)) => DateFns.compareAsc(dateA##start, dateB##start)
+        | (None, Some(_)) => 1
+        | (Some(_), None) => -1
+        | _ => 0
+        }
        )
-    |> List.map(((startDate, items)) =>
+    |> List.map(((period, items)) =>
          (
-           startDate,
+           period,
            List.sort(
              compareScheduleItemsWithSortingDict(sortingDict),
              items,
            ),
          )
-       )
-    |> List.map(((startDate, items)) =>
-         [StartDate(startDate), ...List.map(i => Item(i), items)]
+       );
+  };
+
+  let flattenPeriodItemsList = periodItemsList => {
+    periodItemsList
+    |> List.map(((period, items)) =>
+         [OptionPeriod(period), ...List.map(i => Item(i), items)]
        )
     |> List.flatten;
   };
@@ -123,18 +135,36 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
   initialState: () => {scrollViewRef: ref(None)},
   reducer: (_action: action, _state: state) => ReasonReact.NoUpdate,
   render: self => {
-    let periodSectionedList =
-      DataProcessor.periodSectionedListOfSchedule(schedule);
+    let periodItemsList =
+      DataProcessor.periodItemsListOfSchedule(schedule);
 
-    let elements =
+    let dateGroupedPeriodItemsList =
       DataProcessor.(
-        periodSectionedList
+        periodItemsList
+        |> group(((optionPeriod, _)) => switch (optionPeriod) {
+        | Some(period) => Some(period##date)
+        | None => None
+        })
+        |> List.sort(((optionDateA, _), (optionDateB, _)) =>
+            switch (optionDateA, optionDateB) {
+            | (Some(dateA), Some(dateB)) => DateFns.compareAsc(dateA##date, dateB##date)
+            | (None, Some(_)) => 1
+            | (Some(_), None) => -1
+            | _ => 0
+            }
+           )
+      );
+
+    let elementsOfFlattenedStartDateItemsList = (flattenedPeriodItemsList) =>
+      DataProcessor.(
+        flattenedPeriodItemsList
         |> List.map(
              fun
-             | StartDate(startDate) => [
-                 <ScheduleTimeLabel time=startDate />,
+             | OptionPeriod(Some(period)) => [
+                 <ScheduleTimeLabel time=period##start />,
                  <View style=styles##afterTimeLabel />,
                ]
+             | OptionPeriod(None) => []
              | Item(item) => [
                  <View style=styles##cellContainer>
                    <ScheduleItemCell scheduleItem=item onPress=onItemPress />
@@ -145,26 +175,46 @@ let make = (~schedule, ~onItemPress, ~onRefresh, ~refreshing, _children) => {
         |> Array.of_list
       );
 
-    let labelIndexes =
+    let labelIndexesOfFlattenedStartDateItemsList = (flattenedPeriodItemsList) =>
       DataProcessor.(
-        periodSectionedList
+        flattenedPeriodItemsList
         |> List.map(
              fun
-             | StartDate(_) => [true, false]
+             | OptionPeriod(_) => [true, false]
              | _ => [false],
            )
         |> List.flatten
-        |> List.mapi((i, isDate) => (i, isDate))
-        |> filter(((_, isDate)) => isDate)
+        |> List.mapi((i, isPeriod) => (i, isPeriod))
+        |> filter(((_, isPeriod)) => isPeriod)
         |> List.map(((i, _)) => i)
       );
-    <ScrollView
-      ref=(self.handle(setScrollViewRef))
-      style=styles##scrollView
-      contentContainerStyle=styles##scrollViewContent
-      refreshControl={<RefreshControl refreshing onRefresh />}
-      stickyHeaderIndices=labelIndexes>
-      ...(Array.append(elements, [|<View style=styles##timeLine />|]))
-    </ScrollView>;
+
+    let tabs = dateGroupedPeriodItemsList
+      |> List.map(((optionDate, periodItemsList)) => {
+        let flattenedPeriodItemsList = DataProcessor.flattenPeriodItemsList(periodItemsList);
+        let elements = elementsOfFlattenedStartDateItemsList(flattenedPeriodItemsList);
+        let labelIndexes = labelIndexesOfFlattenedStartDateItemsList(flattenedPeriodItemsList);
+
+        <SwipeableTabView.Tab
+          title=(switch (optionDate) {
+          | None => "General"
+          | Some(date) => date##name
+          })
+        >
+          <ScrollView
+            ref=(self.handle(setScrollViewRef))
+            style=styles##scrollView
+            contentContainerStyle=styles##scrollViewContent
+            refreshControl={<RefreshControl refreshing onRefresh />}
+            stickyHeaderIndices=labelIndexes>
+            ...(Array.append(elements, [|<View style=styles##timeLine />|]))
+          </ScrollView>
+        </SwipeableTabView.Tab>
+      })
+      |> Array.of_list;
+
+    <SwipeableTabView>
+      ...tabs
+    </SwipeableTabView>;
   },
 };

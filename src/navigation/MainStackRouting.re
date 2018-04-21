@@ -12,7 +12,7 @@ let router = (route: route, ~utils: StackNavigator.routerUtils(route, screenEven
   | Schedule =>
     <ScheduleScreen
       onMapPress=(() => utils.sendEvent(OpenMap))
-      onScheduleItemPress=((scheduleItem) => utils.pushRoute(ScheduleItem({"id": scheduleItem##id, "date": {"name": scheduleItem##date##name} , "event": {"title": scheduleItem##event##title}})))
+      onScheduleItemPress=((scheduleItem) => utils.pushRoute(ScheduleItem({"id": scheduleItem##id, "date": {"name": "scheduleItem##date##name"} , "event": {"title": scheduleItem##event##title}})))
     />
   | ScheduleItem(scheduleItem) =>
     <ScheduleItemScreen
