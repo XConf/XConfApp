@@ -114,12 +114,16 @@ let make = (~scheduleItem, ~onPress, _children) => {
           />
         </Text>
         <View style=styles##tags>
-          (
+          ...(Array.append(
             switch (scheduleItem##eventInterface) {
-            | `Session(s) => <Tag value=s##language />
-            | _ => ReasonReact.nullElement
-            }
-          )
+            | `Session(session) => [|<Tag value=Tag.Language(session##language) />|]
+            | _ => [|ReasonReact.nullElement|]
+            },
+            switch (scheduleItem##eventInterface) {
+            | `Session(session) => Array.map(tag => <Tag value=Tag.Other(tag##name) />, session##tags)
+            | _ => [|ReasonReact.nullElement|]
+            },
+          ))
         </View>
       </TouchableOpacity>
     </View>,

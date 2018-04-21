@@ -20,6 +20,9 @@ module ConferenceScheduleQuery = [%graphql {|
             session {
               id
               language
+              tags {
+                name
+              }
             }
           }
           periods {
