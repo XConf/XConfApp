@@ -97,10 +97,17 @@ let make = (~scheduleItem, ~onPress, _children) => {
             | _ => <Text style=styles##sideText value={j| · |j} />
             }
           )
-          <Text style=styles##text value=DateFns.distanceInWords(
-            getStart((scheduleItem##periods)[0]),
-            getEnd((scheduleItem##periods)[Array.length(scheduleItem##periods) - 1]),
-          ) />
+          <Text
+            style=styles##text
+            value=Js.String.replace(
+              "minute",
+              "min",
+              DateFns.distanceInWordsStrict(
+                getStart((scheduleItem##periods)[0]),
+                getEnd((scheduleItem##periods)[Array.length(scheduleItem##periods) - 1]),
+              ),
+            )
+          />
         </Text>
       </TouchableOpacity>
     </View>,
