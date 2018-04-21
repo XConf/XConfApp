@@ -1,12 +1,13 @@
+import React from 'react'
+import AppHeader from './Header/AppHeader'
+
 export const navigatorConfig = {
   headerTransitionPreset: 'uikit',
 }
 
 export const navigationOptions = {
   default: {
-    headerStyle: {
-      backgroundColor: '#f4511e',
-    },
+    header: props => <AppHeader {...props} />,
     headerTintColor: '#fff',
   },
   light: {
@@ -14,5 +15,9 @@ export const navigationOptions = {
       backgroundColor: '#fff',
     },
     headerTintColor: '#f4511e',
+  },
+  'default-nops': {
+    header: props => <AppHeader {...props} removePlatformContainerStyles={true} />,
+    headerTintColor: '#fff',
   },
 }

@@ -1,8 +1,39 @@
 import React, { Component } from 'react'
+import { Platform, StyleSheet } from 'react-native'
 import { TabNavigator, TabBarTop } from 'react-navigation'
+import LinearGradient from 'react-native-linear-gradient'
 // import equal from 'fast-deep-equal'
 
 const ChildrenContext = React.createContext()
+
+let tabBarPlatformContainerStyles
+if (Platform.OS === 'ios') {
+  tabBarPlatformContainerStyles = {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#A7A7AA',
+  }
+} else {
+  tabBarPlatformContainerStyles = {
+    shadowColor: 'black',
+    shadowOpacity: 0.1,
+    shadowRadius: StyleSheet.hairlineWidth,
+    shadowOffset: {
+      height: StyleSheet.hairlineWidth,
+    },
+    elevation: 4,
+  }
+}
+
+const TabBar = props => (
+  <LinearGradient
+    colors={['#cc1d23', '#652f8b']}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 1, y: 0 }}
+    style={tabBarPlatformContainerStyles}
+  >
+    <TabBarTop {...props} />
+  </LinearGradient>
+)
 
 export default class SlideableTabView extends Component {
   constructor(props) {
@@ -47,7 +78,7 @@ export default class SlideableTabView extends Component {
         return { screen }
       }),
     }, {
-      tabBarComponent: TabBarTop,
+      tabBarComponent: TabBar,
       tabBarPosition: 'top',
       swipeEnabled: true,
       animationEnabled: true,
@@ -56,10 +87,13 @@ export default class SlideableTabView extends Component {
       tabBarOptions: {
         activeTintColor: '#fff',
         labelStyle: {
-          fontSize: 12,
+          // fontSize: 12,
         },
         style: {
-          backgroundColor: '#f4511e',
+          backgroundColor: 'transparent',
+        },
+        indicatorStyle: {
+          backgroundColor: '#fdc689',
         },
       },
     })

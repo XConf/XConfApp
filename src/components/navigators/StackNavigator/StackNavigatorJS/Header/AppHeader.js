@@ -8,15 +8,17 @@ import {
   StyleSheet,
   View,
   ViewPropTypes,
+  StatusBar,
 } from 'react-native';
-import { MaskedViewIOS } from '../../PlatformHelpers';
+import LinearGradient from 'react-native-linear-gradient';
+import { MaskedViewIOS } from 'react-navigation/src/PlatformHelpers.native';
 import SafeAreaView from 'react-native-safe-area-view';
 
-import HeaderTitle from './HeaderTitle';
-import HeaderBackButton from './HeaderBackButton';
-import ModularHeaderBackButton from './ModularHeaderBackButton';
-import HeaderStyleInterpolator from './HeaderStyleInterpolator';
-import withOrientation from '../withOrientation';
+import HeaderTitle from 'react-navigation/src/views/Header/HeaderTitle';
+import HeaderBackButton from 'react-navigation/src/views/Header/HeaderBackButton';
+import ModularHeaderBackButton from 'react-navigation/src/views/Header/ModularHeaderBackButton';
+import HeaderStyleInterpolator from 'react-navigation/src/views/Header/HeaderStyleInterpolator';
+import withOrientation from 'react-navigation/src/views/withOrientation';
 
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
@@ -401,7 +403,7 @@ class Header extends React.PureComponent {
           maskElement={
             <View style={styles.iconMaskContainer}>
               <Image
-                source={require('../assets/back-icon-mask.png')}
+                source={require('react-navigation/src/views/assets/back-icon-mask.png')}
                 style={styles.iconMask}
               />
               <View style={styles.iconMaskFillerRect} />
@@ -480,10 +482,17 @@ class Header extends React.PureComponent {
     const forceInset = headerForceInset || { top: 'always', bottom: 'never' };
 
     return (
-      <SafeAreaView forceInset={forceInset} style={containerStyles}>
-        <View style={StyleSheet.absoluteFill}>{options.headerBackground}</View>
-        <View style={{ flex: 1 }}>{appBar}</View>
-      </SafeAreaView>
+      <LinearGradient
+        colors={['#cc1d23', '#652f8b']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      >
+        <StatusBar barStyle="light-content" />
+        <SafeAreaView forceInset={forceInset} style={[containerStyles, !this.props.removePlatformContainerStyles && platformContainerStyles]}>
+          <View style={StyleSheet.absoluteFill}>{options.headerBackground}</View>
+          <View style={{ flex: 1 }}>{appBar}</View>
+        </SafeAreaView>
+      </LinearGradient>
     );
   }
 }
@@ -515,16 +524,12 @@ if (Platform.OS === 'ios') {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Platform.OS === 'ios' ? '#F7F7F7' : '#FFF',
-    ...platformContainerStyles,
-  },
+  container: {},
   transparentContainer: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    ...platformContainerStyles,
   },
   header: {
     ...StyleSheet.absoluteFillObject,

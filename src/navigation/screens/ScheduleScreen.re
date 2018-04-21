@@ -24,8 +24,8 @@ let make = (~onMapPress: unit => unit, ~onScheduleItemPress, _children) => {
   initialState: () => {componentRef: ref(None)},
   reducer: (_action: action, _state: state) => ReasonReact.NoUpdate,
   render: self =>
-    <View style=Style.(style([flex(1.)]))>
-      <StackNavigator.Header style="default">
+    <View style=Style.(style([flex(1.), marginTop(Pt(-8.))]))>
+      <StackNavigator.Header style="default-nops">
         <StackNavigator.Header.Left>
           <Button title="Map" onPress=onMapPress />
         </StackNavigator.Header.Left>
