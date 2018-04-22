@@ -42,23 +42,24 @@ let styles =
           ]),
         "scrollViewContent":
           style([
-            paddingVertical(Pt(4.)),
+            paddingVertical(Pt(1.)),
             paddingHorizontal(Pt(24.)),
             paddingBottom(Pt(16.)),
           ]),
         "timeAndPlaceText":
           style([
             paddingVertical(Pt(12.)),
-            fontSize(Float(14.)),
+            fontSize(Float(12.9)),
             fontFamily("Roboto Mono"),
             fontWeight(`_300),
+            lineHeight(14.),
             letterSpacing(-0.55),
             color(Theme.Color.darkerGrey),
           ]),
         "titleText":
           style([
             paddingBottom(Pt(2.)),
-            fontSize(Float(18.)),
+            fontSize(Float(20.)),
             lineHeight(24.),
             fontFamily("Roboto"),
             fontWeight(`_400),
@@ -179,7 +180,12 @@ let make = (~scheduleItem, ~onRefresh, ~refreshing, _children) => {
             <Text style=styles##sessionDescriptionText value=session##description />
             <Text style=styles##wordSpeakerText value="SPEAKER" />
             <Text style=styles##sessionSpeakerNameText value=session##speaker##name />
-            <Text style=styles##sessionSpeakerTitleText value=session##speaker##title />
+            (
+              switch (session##speaker##title) {
+              | None => ReasonReact.nullElement
+              | Some(title) => <Text style=styles##sessionSpeakerTitleText value=title />
+              }
+            )
           </View>
         }
       )
