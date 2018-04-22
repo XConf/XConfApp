@@ -1,6 +1,6 @@
 type route =
   | Schedule
-  | ScheduleItem({. "id": string, "date": {. "name": string}, "event": {. "title": string}})
+  | ScheduleItem(NavigationTypes.scheduleItemData)
   | Information
   | Details(string);
 
@@ -12,12 +12,17 @@ let router = (route: route, ~utils: StackNavigator.routerUtils(route, screenEven
   | Schedule =>
     <ScheduleScreen
       onMapPress=(() => utils.sendEvent(OpenMap))
-      onScheduleItemPress=((scheduleItem) => utils.pushRoute(ScheduleItem({"id": scheduleItem##id, "date": {"name": "scheduleItem##date##name"} , "event": {"title": scheduleItem##event##title}})))
+      onScheduleItemPress=(scheduleItem => utils.pushRoute(ScheduleItem({
+        id: scheduleItem##id,
+        eventTypeName: switch (scheduleItem##eventInterface) {
+        | `Session(_) => "Session"
+        | `Activity(_) => "Activity"
+        },
+        eventTitle: scheduleItem##event##title
+      })))
     />
-  | ScheduleItem(scheduleItem) =>
-    <ScheduleItemScreen
-      scheduleItem
-    />
+  | ScheduleItem(scheduleItemData) =>
+    <ScheduleItemScreen scheduleItemData />
   | Information =>
     <InformationScreen />
   | Details(param) =>

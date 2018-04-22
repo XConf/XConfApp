@@ -21,7 +21,7 @@ let styles =
           ]),
         "timeLineDot":
           style([
-            top(Pt(13.)),
+            top(Pt(14.)),
             marginRight(Pt(-6.)),
             marginBottom(Pt(-6.)),
             width(Pt(6.)),

@@ -7,7 +7,7 @@
 /*let component = ReasonReact.reducerComponent("ScheduleItemScreen");*/
 let component = ReasonReact.statelessComponent("ScheduleItemScreen");
 
-let make = (~scheduleItem, _children) => {
+let make = (~scheduleItemData, _children) => {
   ...component,
   /*initialState: () => {title: "Schedule"},
     reducer: (action, state) =>
@@ -15,12 +15,12 @@ let make = (~scheduleItem, _children) => {
       | SetTitle(title) => ReasonReact.Update({...state, title})
       },*/
   render: self => {
-    let dateName = scheduleItem##date##name;
+    let eventTypeName = NavigationTypes.(scheduleItemData.eventTypeName);
     <View style=Style.(style([flex(1.)]))>
       <StackNavigator.Header style="default">
-        <StackNavigator.Header.TitleText value={j|$dateName Event|j} />
+        <StackNavigator.Header.TitleText value=eventTypeName />
       </StackNavigator.Header>
-      <ScheduleItemContainer scheduleItem />
+      <ScheduleItemContainer scheduleItemId=scheduleItemData.id />
     </View>;
   },
 };

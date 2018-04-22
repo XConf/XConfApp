@@ -3,6 +3,23 @@ module ScheduleItemQuery = [%graphql
   query queryScheduleItem($scheduleItemId: ID!) {
     scheduleItem(id: $scheduleItemId) {
       id
+      date {
+        id
+        name
+      }
+      places {
+        id
+        name
+      }
+      periods {
+        id
+        start
+        end
+      }
+      event {
+        id
+        title
+      }
       eventInterface @bsVariant {
         activity {
           id
@@ -15,7 +32,20 @@ module ScheduleItemQuery = [%graphql
           speaker {
             id
             name
+            title
+            pictureUrl
+            bio
+            homepageUrl
+            twitterUsername
+            githubUsername
           }
+          language
+          tags {
+            id
+            name
+          }
+          slideUrl
+          videoUrl
         }
       }
     }
@@ -25,10 +55,10 @@ module ScheduleItemQuery = [%graphql
 
 let component = ReasonReact.statelessComponent("ScheduleItemContainer");
 
-let make = (~scheduleItem, _children) => {
+let make = (~scheduleItemId, ~scheduleItemEventTitle=?, _children) => {
   ...component,
   render: _self => {
-    let scheduleItemQuery = ScheduleItemQuery.make(~scheduleItemId=scheduleItem##id, ());
+    let scheduleItemQuery = ScheduleItemQuery.make(~scheduleItemId=scheduleItemId, ());
     <Query query=scheduleItemQuery>
       ...(
            (response, {refetch, fetching}) =>
