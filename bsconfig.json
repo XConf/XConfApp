@@ -8,7 +8,8 @@
       "bs-react-native",
       "reason-react",
       "bs-date-fns",
-      "reason-apollo"
+      "reason-apollo",
+      "bs-react-native-vector-icons"
     ],
     "ppx-flags": [
         "graphql_ppx/ppx"

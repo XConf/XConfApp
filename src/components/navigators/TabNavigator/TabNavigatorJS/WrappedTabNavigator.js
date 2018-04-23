@@ -25,7 +25,11 @@ export default class WrappedTabNavigator extends Component {
       ...(new Array(numberOfTabs)).fill({ screen: Screen }),
     }
 
-    const Navigator = TabNavigator(routeConfigs)
+    const Navigator = TabNavigator(routeConfigs, {
+      tabBarOptions: {
+        activeTintColor: '#3f4e6b',
+      },
+    })
     this.Navigator = Navigator
 
     return Navigator
