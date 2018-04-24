@@ -4,6 +4,18 @@ module ConferenceInformationQuery = [%graphql
     conference(code: $conferenceCode) {
       id
       name
+      keyVisionUrl @bsDecoder(fn: "Decoder.url")
+      dates {
+        date @bsDecoder(fn: "Decoder.date")
+      }
+      location {
+        name
+        address
+      }
+      wifiNetwork {
+        ssid
+        password
+      }
     }
   }
 |}
