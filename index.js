@@ -8,4 +8,4 @@ if (__DEV__) {
   require('./initializers/yello-box')
 }
 
-AppRegistry.registerComponent('XConf', () => app)
+AppRegistry.registerComponent('RubyElixirConf', () => app)

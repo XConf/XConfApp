@@ -1,4 +1,4 @@
-package com.xconf;
+package com.rubyelixirconf;
 
 import android.app.Application;
 
