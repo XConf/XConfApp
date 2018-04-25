@@ -29,7 +29,7 @@ let make = _children => {
         <StackNavigator.Header.TitleText value="Information" />
       </StackNavigator.Header>
       <ConferenceInformationContainer
-        conferenceCode="2016"
+        conferenceCode="2018"
         componentRef=(self.handle(setComponentRef))
       />
     </View>,

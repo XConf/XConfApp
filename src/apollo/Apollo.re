@@ -8,7 +8,7 @@ let inMemoryCache = createInMemoryCache(~dataIdFromObject=(obj: dataObject) => o
 
 /* Create an HTTP Link */
 let httpLink =
- ApolloLinks.createHttpLink(~uri="https://p0n3w91zk0.lp.gql.zone/graphql", ());
+ ApolloLinks.createHttpLink(~uri="https://lkj5r97vmq.lp.gql.zone/graphql", ());
 
 module Client =
  ReasonApollo.CreateClient(

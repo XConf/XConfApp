@@ -23,6 +23,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		15ADF4CAF4614279817BD73A /* RobotoMono-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B15794982C5F416CA39F65A4 /* RobotoMono-MediumItalic.ttf */; };
+		1909EF18208F9937007F2327 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1909EF17208F9937007F2327 /* Icon.png */; };
 		28015FDC944E475A8B899954 /* Righteous-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D14ABD4ADDF45F8A7ACD90B /* Righteous-Regular.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -398,6 +399,7 @@
 		15E4C0D7B0D14D64A6B6ABB9 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		16F4624B0384446999FA3010 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		16FA486C291C43B88373CEA7 /* RobotoMono-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RobotoMono-Italic.ttf"; path = "../assets/fonts/RobotoMono-Italic.ttf"; sourceTree = "<group>"; };
+		1909EF17208F9937007F2327 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		1DF8C192C5064184AC851BD0 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BoldItalic.ttf"; path = "../assets/fonts/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		1E18E10BA66346849F068F8A /* RobotoMono-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RobotoMono-Thin.ttf"; path = "../assets/fonts/RobotoMono-Thin.ttf"; sourceTree = "<group>"; };
 		1FFC7456866446698F0E315E /* RobotoMono-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RobotoMono-LightItalic.ttf"; path = "../assets/fonts/RobotoMono-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -618,6 +620,7 @@
 		13B07FAE1A68108700A75B9A /* RubyElixirConf */ = {
 			isa = PBXGroup;
 			children = (
+				1909EF17208F9937007F2327 /* Icon.png */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -857,6 +860,9 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = PRYVD988FA;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1265,6 +1271,7 @@
 				FEA879685AAF496486635D5E /* RobotoMono-LightItalic.ttf in Resources */,
 				89D86B108C994F48856B2227 /* RobotoMono-Medium.ttf in Resources */,
 				15ADF4CAF4614279817BD73A /* RobotoMono-MediumItalic.ttf in Resources */,
+				1909EF18208F9937007F2327 /* Icon.png in Resources */,
 				67EE63C91E5C4B5BB2F80157 /* RobotoMono-Regular.ttf in Resources */,
 				E7409777A723455DA5D01202 /* RobotoMono-Thin.ttf in Resources */,
 				F1FF2E2F8F5F4C418CF2FCB8 /* RobotoMono-ThinItalic.ttf in Resources */,
@@ -1456,7 +1463,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = PRYVD988FA;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
@@ -1469,6 +1476,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.z72.ruby-tw.RubyElixirConf";
 				PRODUCT_NAME = RubyElixirConf;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1479,7 +1487,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = PRYVD988FA;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
@@ -1492,6 +1500,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.z72.ruby-tw.RubyElixirConf";
 				PRODUCT_NAME = RubyElixirConf;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
