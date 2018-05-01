@@ -3,6 +3,8 @@ type state = {componentRef: ref(option(ReasonReact.reactRef))};
 type action =
   | NoAction;
 
+type scheduleItem = ConferenceScheduleContainer.scheduleItem;
+
 let component = ReasonReact.reducerComponent("ScheduleScreen");
 
 let setComponentRef = (r, {ReasonReact.state}) =>

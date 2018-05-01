@@ -45,6 +45,9 @@ module ConferenceScheduleQuery = [%graphql {|
   }
 |}];
 
+type t = ConferenceScheduleQuery.t;
+type scheduleItem = 'a constraint t = {.. "conference": option({.. "schedule": {.. "items": array('a)}})};
+
 let component = ReasonReact.statelessComponent("ConferenceScheduleContainer");
 
 let make = (~conferenceCode, ~componentRef, ~onScheduleItemPress, _children) => {

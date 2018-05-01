@@ -1,26 +1,20 @@
-/*type state = {
-    title: string
-  };
-
-  type action =
-    | SetTitle(string);*/
-/*let component = ReasonReact.reducerComponent("ScheduleItemScreen");*/
 let component = ReasonReact.statelessComponent("ScheduleItemScreen");
 
-let make = (~scheduleItemData, _children) => {
+let eventTypeNameOfScheduleItem = scheduleItem =>
+  switch (scheduleItem##eventInterface) {
+  | `Activity(_) => "Activity"
+  | `Session(_) => "Session"
+  };
+
+let make = (~scheduleItem, _children) => {
   ...component,
-  /*initialState: () => {title: "Schedule"},
-    reducer: (action, state) =>
-      switch action {
-      | SetTitle(title) => ReasonReact.Update({...state, title})
-      },*/
-  render: self => {
-    let eventTypeName = NavigationTypes.(scheduleItemData.eventTypeName);
+  render: _self =>
     <View style=Style.(style([flex(1.)]))>
       <StackNavigator.Header style="default">
-        <StackNavigator.Header.TitleText value=eventTypeName />
+        <StackNavigator.Header.TitleText
+          value=(eventTypeNameOfScheduleItem(scheduleItem))
+        />
       </StackNavigator.Header>
-      <ScheduleItemContainer scheduleItemId=scheduleItemData.id />
-    </View>;
-  },
+      <ScheduleItemContainer scheduleItemId=scheduleItem##id />
+    </View>,
 };
