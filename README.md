@@ -4,6 +4,7 @@
 
 - [Node.js](https://nodejs.org/)
 - [Yarn](https://yarnpkg.com/)
+- Ruby
 - macOS with Xcode
 - JDK and Android development environment
 

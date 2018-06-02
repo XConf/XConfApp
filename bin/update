@@ -17,7 +17,25 @@ if [ ! "$node_version_int" -ge "$required_node_version_int" ]; then
   exit -1
 fi
 
-# Setup Node.js dependencies via install
+# Detect Ruby version
+required_ruby_version="$(grep "ruby" < .tool-versions | cut -d ' ' -f2)"
+required_ruby_version_int=$(echo "$required_ruby_version" | awk 'match($0, /[0-9]+/) {print substr($0,RSTART,RLENGTH)}')
+ruby_version=$(ruby -v | cut -d ' ' -f2)
+ruby_version_int=$(echo "$ruby_version" | awk 'match($0, /[0-9]+/) {print substr($0,RSTART,RLENGTH)}')
+if [ ! "$ruby_version_int" -ge "$required_ruby_version_int" ]; then
+  echo "You're using an obsolete version of Ruby: $ruby_version. The recommend version is $required_ruby_version. Please upgrade."
+  exit -1
+fi
+
+# Setup Node.js dependencies via yarn install
 echo '== Running yarn install =='
 yarn install
+echo ''
+
+# Setup Ruby dependencies for iOS via bundle install
+echo '== Running bundle install under ios/ =='
+(
+  cd ios || (echo 'Cannot cd to ios/' && exit -2)
+  bundle install
+)
 echo ''
