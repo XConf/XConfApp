@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Setup app. Run this script after cloning the codebase.
+
+# Exit if any subcommand fails
+set -e
+
+# Switch to the project directory
+cd "$(dirname "$0")/.."
+
+# Update dependencies
+bin/update
+
+# Copy sample config files
+echo '== Copying sample config files =='
+copy_sample_file() {
+  sample_file="$1"
+  target_file=${2:-"${sample_file/.sample/}"}
+  if [ ! -f "$target_file" ]; then
+    echo "Copying $sample_file → $target_file"
+    cp config.sample.js config.js
+  else
+    echo "File $target_file already exists"
+  fi
+}
+# copy_sample_file "config.sample.js"
+echo ''
+
+# Only if this isn't CI
+# if [ -z "$CI" ]; then
+# fi
+
+echo 'Setup done'

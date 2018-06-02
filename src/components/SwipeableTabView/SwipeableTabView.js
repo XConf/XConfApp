@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { TabNavigator, TabBarTop } from 'react-navigation'
@@ -71,7 +73,7 @@ export default class SlideableTabView extends Component {
           const c = Array.isArray(this.props.children) ? this.props.children : [this.props.children]
 
           return {
-            title: c[i] && c[i].props && c[i].props.title
+            title: c[i] && c[i].props && c[i].props.title,
           }
         }
 

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -135,18 +137,17 @@ export default class WrappedNavigator extends Component {
 
     if (typeof PolyfilledProxy !== 'undefined') {
       return new PolyfilledProxy({
-        ...Object.keys(internalState).reduce((o, k) => { o[k] = true; return o; }, {}),
+        ...Object.keys(internalState).reduce((o, k) => { o[k] = true; return o }, {}),
         index: true,
         routes: true,
         bsState,
         internalState,
       }, bsStateProxyHandler)
-    } else {
-      return new Proxy({
-        bsState,
-        internalState,
-      }, bsStateProxyHandler)
     }
+    return new Proxy({
+      bsState,
+      internalState,
+    }, bsStateProxyHandler)
   };
 
   handleDispatch = (action) => {

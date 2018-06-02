@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { createContext } from 'react'
 
 const SetNavigationParamsContext = createContext()

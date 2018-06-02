@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react'
 import ReactTestRenderer from 'react-test-renderer'
 
