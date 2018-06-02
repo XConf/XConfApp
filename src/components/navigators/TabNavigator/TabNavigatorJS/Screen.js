@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import Tab from './Tab'
 
 const Screen = props => props.navigation.state.params.content

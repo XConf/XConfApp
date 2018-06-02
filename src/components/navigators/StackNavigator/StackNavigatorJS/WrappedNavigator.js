@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -130,7 +132,7 @@ const bsRouteProxyHandler = {
         }
         const paramsProxy = (typeof PolyfilledProxy !== 'undefined') ?
           new PolyfilledProxy({
-            ...Object.keys(params).reduce((o, k) => { o[k] = true; return o; }, {}),
+            ...Object.keys(params).reduce((o, k) => { o[k] = true; return o }, {}),
             route: true,
             screenRef: true,
             router,
@@ -247,7 +249,7 @@ export default class WrappedNavigator extends Component {
 
     if (typeof PolyfilledProxy !== 'undefined') {
       return new PolyfilledProxy({
-        ...Object.keys(internalState).reduce((o, k) => { o[k] = true; return o; }, {}),
+        ...Object.keys(internalState).reduce((o, k) => { o[k] = true; return o }, {}),
         index: true,
         routes: true,
         router,
@@ -255,14 +257,13 @@ export default class WrappedNavigator extends Component {
         internalState,
         getRouteParams,
       }, bsStateProxyHandler)
-    } else {
-      return new Proxy({
-        router,
-        bsState,
-        internalState,
-        getRouteParams,
-      }, bsStateProxyHandler)
     }
+    return new Proxy({
+      router,
+      bsState,
+      internalState,
+      getRouteParams,
+    }, bsStateProxyHandler)
   };
 
   handleDispatch = (action) => {

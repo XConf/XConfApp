@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import TabNavigator from './WrappedTabNavigator'
 import Tab from './Tab'
 

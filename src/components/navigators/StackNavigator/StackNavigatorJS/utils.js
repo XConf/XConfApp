@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { navigationOptions } from './config'
 
 export const getHeaderStyleNavigationOptions = style => (
