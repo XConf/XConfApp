@@ -1,5 +1,7 @@
 # XConf App
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/XConf/XConfApp.svg)](https://greenkeeper.io/)
+
 ## System Requirements
 
 - [Node.js](https://nodejs.org/)
