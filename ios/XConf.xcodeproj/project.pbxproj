@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		19C45CCE20C3225F00FCAE09 /* Generate Info.plist Preprocessor Prefix File */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 19C45CCF20C3225F00FCAE09 /* Build configuration list for PBXAggregateTarget "Generate Info.plist Preprocessor Prefix File" */;
+			buildPhases = (
+				19C45CD420C3228100FCAE09 /* Generate Info.plist Preprocessor Prefix File */,
+			);
+			dependencies = (
+			);
+			name = "Generate Info.plist Preprocessor Prefix File";
+			productName = "Generate Info.plist Preprocessor Prefix File";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -215,6 +229,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 5DBEB1501B18CEA900B34395;
 			remoteInfo = RNVectorIcons;
+		};
+		19C45CD220C3226F00FCAE09 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 19C45CCE20C3225F00FCAE09;
+			remoteInfo = "Generate Info.plist Preprocessor Prefix File";
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -803,6 +824,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				19C45CD320C3226F00FCAE09 /* PBXTargetDependency */,
 			);
 			name = XConf;
 			productName = "Hello World";
@@ -857,6 +879,10 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					19C45CCE20C3225F00FCAE09 = {
+						CreatedOnToolsVersion = 9.3.1;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -944,6 +970,7 @@
 				00E356ED1AD99517003FC87E /* XConfTests */,
 				2D02E47A1E0B4A5D006451C7 /* XConf-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* XConf-tvOSTests */,
+				19C45CCE20C3225F00FCAE09 /* Generate Info.plist Preprocessor Prefix File */,
 			);
 		};
 /* End PBXProject section */
@@ -1314,6 +1341,20 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
+		19C45CD420C3228100FCAE09 /* Generate Info.plist Preprocessor Prefix File */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Info.plist Preprocessor Prefix File";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/../scripts/generate-ios-info-plist-preprocessor-prefix-file\" > \"${SRCROOT}\"/InfoPlistPreprocessorPrefix.h";
+		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1372,6 +1413,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* XConf */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		19C45CD320C3226F00FCAE09 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 19C45CCE20C3225F00FCAE09 /* Generate Info.plist Preprocessor Prefix File */;
+			targetProxy = 19C45CD220C3226F00FCAE09 /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1462,6 +1508,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = XConf/Info.plist;
+				INFOPLIST_PREFIX_HEADER = InfoPlistPreprocessorPrefix.h;
+				INFOPLIST_PREPROCESS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1484,6 +1532,8 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = XConf/Info.plist;
+				INFOPLIST_PREFIX_HEADER = InfoPlistPreprocessorPrefix.h;
+				INFOPLIST_PREPROCESS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1712,6 +1762,15 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		19C45CCF20C3225F00FCAE09 /* Build configuration list for PBXAggregateTarget "Generate Info.plist Preprocessor Prefix File" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				19C45CD020C3225F00FCAE09 /* Debug */,
+				19C45CD120C3225F00FCAE09 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

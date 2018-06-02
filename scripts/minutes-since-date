@@ -1,0 +1,19 @@
+#!/bin/bash
+# Modified from https://gist.github.com/hborders/cf29e4a6878a72c14a0898578ac92538
+
+set -euo pipefail
+
+if [ ${#} -eq 0 ]
+then
+# read from STDIN
+DATE=$( cat )
+else
+DATE="${1}"
+fi
+
+SECONDS_FROM_EPOCH_TO_NOW=$( date "+%s" )
+SECONDS_FROM_EPOCH_TO_DATE=$( date -j -f "%Y-%M-%d" "${DATE}" "+%s" )
+
+MINUTES_SINCE_DATE=$(( $(( ${SECONDS_FROM_EPOCH_TO_NOW}-${SECONDS_FROM_EPOCH_TO_DATE} ))/60 ))
+
+echo "${MINUTES_SINCE_DATE}"

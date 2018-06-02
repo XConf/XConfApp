@@ -17,12 +17,12 @@ copy_sample_file() {
   target_file=${2:-"${sample_file/.sample/}"}
   if [ ! -f "$target_file" ]; then
     echo "Copying $sample_file → $target_file"
-    cp config.sample.js config.js
+    cp "$sample_file" "$target_file"
   else
     echo "File $target_file already exists"
   fi
 }
-# copy_sample_file "config.sample.js"
+copy_sample_file "build-config.sample.json"
 echo ''
 
 # Only if this isn't CI

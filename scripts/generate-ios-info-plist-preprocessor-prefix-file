@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'time'
+
+package_file_path = File.join(File.dirname(__FILE__), '..', 'package.json')
+package_file = File.read(package_file_path)
+package = JSON.parse(package_file)
+
+build_config_file_path = File.join(File.dirname(__FILE__), '..', 'build-config.json')
+build_config_file = File.read(build_config_file_path)
+build_config = JSON.parse(build_config_file)
+
+bundle_name = build_config['bundleName']
+bundle_identifier = build_config['ios']['bundleIdentifier']
+bundle_display_name = build_config['displayName']
+
+version = package['version']
+version_date_string = package['versionDate']
+bundle_version = Dir.chdir(File.dirname(__FILE__)) { `./cfbundleversion-from-git-hash-and-date "$(git rev-parse --short=7 HEAD)" #{version_date_string}` }
+
+print <<-EOF
+#define BUNDLE_NAME #{bundle_name}
+#define BUNDLE_IDENTIFIER #{bundle_identifier}
+#define BUNDLE_DISPLAY_NAME #{bundle_display_name}
+#define BUNDLE_SHORT_VERSION_STRING #{version}
+#define BUNDLE_VERSION #{bundle_version}
+EOF

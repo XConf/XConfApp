@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -euo pipefail
+cd "$(dirname "$0")"
+
+if [ ${#} -eq 0 ]
+then
+# read from STDIN
+MAYBE_GIT_HASH_AND_DATE=$( cat )
+else
+MAYBE_GIT_HASH_AND_DATE="${1} ${2}"
+fi
+
+GIT_HASH="$(echo "$MAYBE_GIT_HASH_AND_DATE" | cut -d ' ' -f1)"
+DATE="$(echo "$MAYBE_GIT_HASH_AND_DATE" | cut -d ' ' -f2)"
+
+MINUTES_SINCE_DATE="$(./minutes-since-date "$DATE")"
+
+# decimalized git hash is guaranteed to be 10 characters or fewer because
+# the biggest short=7 git hash we can get is FFFFFFF and
+# $ ./decimalize-git-hash.bash FFFFFFF | wc -c
+# > 10
+DECIMALIZED_GIT_HASH="$(./decimalize-git-hash "$GIT_HASH")"
+
+echo "${MINUTES_SINCE_DATE}"."${DECIMALIZED_GIT_HASH}"

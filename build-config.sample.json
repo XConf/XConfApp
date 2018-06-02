@@ -1,0 +1,7 @@
+{
+  "bundleName": "XConf",
+  "displayName": "XConf",
+  "ios": {
+    "bundleIdentifier": "org.reactjs.native.example.XConf"
+  }
+}

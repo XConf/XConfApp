@@ -1,6 +1,7 @@
 {
   "name": "XConf",
-  "version": "0.0.1",
+  "version": "1.0.1",
+  "versionDate": "2018-05-01",
   "private": true,
   "scripts": {
     "start": "concurrently \"yarn run bsb-watch\" \"yarn run start-packager\" --names=\"BSB,PAK\" --prefix-colors=\"magenta.dim,cyan.dim\" --kill-others --raw",
