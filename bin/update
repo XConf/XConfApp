@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Updates the dependencies. Run this script after pulling an update.
+
+# Exit if any subcommand fails
+set -e
+
+# Switch to the project directory
+cd "$(dirname "$0")/.."
+
+# Detect Node.js version
+required_node_version="$(grep "nodejs" < .tool-versions | cut -d ' ' -f2)"
+required_node_version_int=$(echo "$required_node_version" | awk 'match($0, /[0-9]+/) {print substr($0,RSTART,RLENGTH)}')
+node_version=$(node -v)
+node_version_int=$(echo "$node_version" | awk 'match($0, /[0-9]+/) {print substr($0,RSTART,RLENGTH)}')
+if [ ! "$node_version_int" -ge "$required_node_version_int" ]; then
+  echo "You're using an obsolete version of Node.js: $node_version. The recommend version is $required_node_version. Please upgrade."
+  exit -1
+fi
+
+# Setup Node.js dependencies via install
+echo '== Running yarn install =='
+yarn install
+echo ''

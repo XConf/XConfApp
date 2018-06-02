@@ -13,8 +13,7 @@
   "extends" : [
     "eslint:recommended",
     "plugin:react/recommended",
-    "airbnb-base",
-    "react-app"
+    "airbnb-base"
   ],
   "rules" : {
     "semi": ["error", "never"],

@@ -8,7 +8,8 @@
     "watch": "bsb -make-world -clean-world -w",
     "clean": "bsb -clean-world",
     "test": "jest",
-    "lint": "eslint src"
+    "build-ios": "echo 'Nothing yet.'",
+    "eslint": "eslint src"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",

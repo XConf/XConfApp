@@ -1,0 +1,21 @@
+language: node_js
+node_js: '9.11.1'
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: false
+      env: TEST='eslint'
+    - os: osx
+      osx_image: xcode9.3
+      env: TEST='build-ios'
+cache:
+  directories:
+    - node_modules
+before_install:
+install:
+  - bin/setup
+before_script:
+  - 'echo "Test: ${TEST:="test"}"'
+script:
+  - yarn run $TEST
