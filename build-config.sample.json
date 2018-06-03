@@ -2,6 +2,13 @@
   "bundleName": "XConf",
   "displayName": "XConf",
   "ios": {
-    "bundleIdentifier": "org.reactjs.native.example.XConf"
+    // The bundle identifier of your app
+    "bundleIdentifier": "org.reactjs.native.example.XConf",
+    // Your Apple email address
+    "appleId": "email@example.com",
+    // iTunes Connect Team ID
+    "itcTeamId": "000000000",
+    // Developer Portal Team ID
+    "teamId": "AAAAA000AA"
   }
 }

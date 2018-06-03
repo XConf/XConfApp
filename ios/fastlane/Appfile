@@ -1,8 +1,20 @@
-app_identifier("") # The bundle identifier of your app
-apple_id("") # Your Apple email address
+require 'json'
+require 'time'
 
-itc_team_id("") # iTunes Connect Team ID
-team_id("") # Developer Portal Team ID
+build_config_file_path = File.join(File.dirname(__FILE__), '..', '..', 'build-config.json')
+build_config_file = File.read(build_config_file_path)
+build_config = JSON.parse(build_config_file)
+
+ios_bundle_identifier = build_config['ios']['bundleIdentifier']
+ios_apple_id = build_config['ios']['appleId']
+ios_itc_team_id = build_config['ios']['itcTeamId']
+ios_team_id = build_config['ios']['teamId']
+
+app_identifier(ios_bundle_identifier)
+apple_id(ios_apple_id)
+
+itc_team_id(ios_itc_team_id)
+team_id(ios_team_id)
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile
