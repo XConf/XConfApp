@@ -26,6 +26,11 @@ Build (archive) the app
 fastlane ios beta
 ```
 Push a new build to TestFlight
+### ios ci_build
+```
+fastlane ios ci_build
+```
+
 
 ----
 

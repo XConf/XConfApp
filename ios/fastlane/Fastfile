@@ -37,6 +37,11 @@ platform :ios do
     # For the parameters of upload_to_testflight, see:
     # https://docs.fastlane.tools/actions/upload_to_testflight/#parameters
   end
+
+  lane :ci_build do
+    build
+    upload_to_testflight(changelog: "CI build")
+  end
 end
 
 def testflight_params(options)
