@@ -14,8 +14,6 @@ cache:
     - node_modules
 before_install:
   - '[ ! -z "$BUILD_CONFIG" ] && echo "$BUILD_CONFIG" > "build-config.json" || :'
-  - echo "$BUILD_CONFIG"
-  - cat build-config.json
 install:
   - bin/setup
 before_script:
