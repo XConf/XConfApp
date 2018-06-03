@@ -10,6 +10,8 @@ matrix:
       osx_image: xcode9.3
       env: TEST='build-ios'
 cache:
+  yarn: true
+  bundler: true
   directories:
     - node_modules
 before_install:
