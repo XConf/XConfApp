@@ -21,10 +21,16 @@ platform :ios do
     begin
       sh("../../scripts/generate-and-write-ios-config")
       sh("../../scripts/start-background-packager")
-      sync_code_signing(type: "appstore", readonly: true)
+      begin
+        create_keychain(name: "temp_code_sign", unlock: true, timeout: false, password: "pwd")
+      rescue StandardError
+        UI.important "Falied to create temporary code signing keychain: temp_code_sign. Maybe it already exists."
+      end
+      sync_code_signing(type: "appstore", keychain_name: "temp_code_sign", keychain_password: "pwd", readonly: true)
       build_app(project: "XConf.xcodeproj", scheme: "XConf")
     ensure
       sh("../../scripts/kill-background-packager")
+      delete_keychain(name: "temp_code_sign")
     end
   end
 
