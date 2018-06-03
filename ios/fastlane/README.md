@@ -25,7 +25,7 @@ Build (archive) the app
 ```
 fastlane ios beta
 ```
-Push a new beta build to TestFlight
+Push a new build to TestFlight
 
 ----
 
