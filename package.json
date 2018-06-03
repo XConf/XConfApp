@@ -11,7 +11,7 @@
     "clean": "bsb -clean-world",
     "test": "jest",
     "lint-js": "eslint src",
-    "build-ios": "echo 'Nothing yet.'"
+    "build-ios": "bin/build-ios"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
