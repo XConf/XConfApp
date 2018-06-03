@@ -21,7 +21,7 @@ platform :ios do
     begin
       sh("../../scripts/generate-and-write-ios-config")
       sh("../../scripts/start-background-packager")
-      match(type: "appstore")
+      sync_code_signing(type: "appstore", readonly: true)
       build_app(project: "XConf.xcodeproj", scheme: "XConf")
     ensure
       sh("../../scripts/kill-background-packager")
