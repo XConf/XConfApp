@@ -21,13 +21,9 @@ platform :ios do
     begin
       sh("../../scripts/generate-and-write-ios-config")
       sh("../../scripts/start-background-packager")
-      begin
-        create_keychain(name: "temp_code_sign", unlock: true, timeout: false, password: "pwd")
-      rescue StandardError
-        UI.important "Falied to create temporary code signing keychain: temp_code_sign. Maybe it already exists."
-      end
-      sync_code_signing(type: "appstore", keychain_name: "temp_code_sign", keychain_password: "pwd", readonly: true)
-      build_app(project: "XConf.xcodeproj", scheme: "XConf")
+      create_keychain(name: "temp_code_sign", unlock: true, timeout: false, password: "pwd")
+      sync_code_signing(keychain_name: "temp_code_sign", keychain_password: "pwd", readonly: true)
+      build_app(project: "XConf.xcodeproj", scheme: "XConf", silent: true)
     ensure
       sh("../../scripts/kill-background-packager")
       delete_keychain(name: "temp_code_sign")
@@ -76,4 +72,29 @@ def parse_raw_args(raw_args)
     end
     acc
   end[:hash]
+end
+
+# Override FastlaneCore::PrintTable to prevent actions from printing sensitive data
+class FastlaneCore::PrintTable
+  class << self
+    alias print_values_original print_values
+    alias transform_output_original transform_output
+
+    def print_values(params)
+      hide_keys = [:git_url]
+
+      if params[:hide_keys].is_a? Array
+        params[:hide_keys].concat(hide_keys)
+      else
+        params[:hide_keys] = hide_keys
+      end
+
+      print_values_original(params)
+    end
+
+    def transform_output(rows, transform: :newline)
+      rows.each { |row| row[1] = '********' if row[0] == :git_url }
+      transform_output_original(rows, transform: transform)
+    end
+  end
 end
