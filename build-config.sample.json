@@ -9,6 +9,12 @@
     // iTunes Connect Team ID
     "itcTeamId": "000000000",
     // Developer Portal Team ID
-    "teamId": "AAAAA000AA"
+    "teamId": "AAAAA000AA",
+    // The Git repo that stores signing certificates https://docs.fastlane.tools/actions/match/
+    "certificatesGitUrl": "git@github.com:user/repo.git",
+    // ID of your provisioning profile
+    "provisioningProfileId": "00000000-0000-0000-0000-000000000000",
+    // Specifier of your provisioning profile
+    "provisioningProfileSpecifier": "match AppStore org.reactjs.native.example.XConf"
   }
 }

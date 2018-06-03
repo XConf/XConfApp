@@ -15,6 +15,12 @@ bundle_name = build_config['bundleName']
 bundle_identifier = build_config['ios']['bundleIdentifier']
 bundle_display_name = build_config['displayName']
 
+itc_team_id = build_config['ios']['itcTeamId']
+team_id = build_config['ios']['teamId']
+
+provisioning_profile_id = build_config['ios']['provisioningProfileId']
+provisioning_profile_specifier = build_config['ios']['provisioningProfileSpecifier']
+
 version = package['version']
 version_date_string = package['versionDate']
 bundle_version = Dir.chdir(File.dirname(__FILE__)) { `./cfbundleversion-from-git-hash-and-date "$(git rev-parse --short=7 HEAD)" #{version_date_string}` }
@@ -33,4 +39,8 @@ BUNDLE_IDENTIFIER = #{bundle_identifier}
 BUNDLE_DISPLAY_NAME = #{bundle_display_name}
 BUNDLE_SHORT_VERSION_STRING = #{version}
 BUNDLE_VERSION = #{bundle_version}
+ITC_TEAM_ID = #{itc_team_id}
+TEAM_ID = #{team_id}
+PROVISIONING_PROFILE_ID = #{provisioning_profile_id}
+PROVISIONING_PROFILE_SPECIFIER = #{provisioning_profile_specifier}
 EOF
