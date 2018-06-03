@@ -19,6 +19,7 @@ platform :ios do
   desc "Build (archive) the app"
   lane :build do
     begin
+      sh("../../scripts/generate-and-write-ios-config")
       sh("../../scripts/start-background-packager")
       build_app(project: "XConf.xcodeproj", scheme: "XConf")
     ensure
@@ -29,7 +30,8 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     build
-    # upload_to_testflight(skip_waiting_for_build_processing: true)
     upload_to_testflight
+    # For the parameters of upload_to_testflight, see:
+    # https://docs.fastlane.tools/actions/upload_to_testflight/#parameters
   end
 end

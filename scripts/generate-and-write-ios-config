@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")"
+./generate-ios-config > "../ios/Config.xcconfig"
+
+echo 'Configuration written: ios/Config.xcconfig'

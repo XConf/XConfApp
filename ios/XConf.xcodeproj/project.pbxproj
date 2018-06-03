@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 19C45CCF20C3225F00FCAE09 /* Build configuration list for PBXAggregateTarget "Generate Config" */;
 			buildPhases = (
-				19C45CD420C3228100FCAE09 /* Generate Config */,
+				19C45CD420C3228100FCAE09 /* Generate And Write Config */,
 			);
 			dependencies = (
 			);
@@ -1343,19 +1343,19 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		19C45CD420C3228100FCAE09 /* Generate Config */ = {
+		19C45CD420C3228100FCAE09 /* Generate And Write Config */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Generate Config";
+			name = "Generate And Write Config";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$SRCROOT/../scripts/generate-ios-config\" > \"${SRCROOT}\"/Config.xcconfig";
+			shellScript = "\"$SRCROOT/../scripts/generate-and-write-ios-config\"\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -39,3 +39,11 @@ echo '== Running bundle install under ios/ =='
   bundle install
 )
 echo ''
+
+# Generate initial artifacts
+echo '== Generating initial artifacts =='
+echo 'running scripts/generate-and-write-ios-config'
+scripts/generate-and-write-ios-config
+echo ''
+
+echo 'Dependencies updated'
