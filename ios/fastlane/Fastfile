@@ -36,14 +36,25 @@ platform :ios do
   desc "Push a new build to TestFlight"
   lane :beta do |options|
     build
-    upload_to_testflight(testflight_params(options))
     # For the parameters of upload_to_testflight, see:
     # https://docs.fastlane.tools/actions/upload_to_testflight/#parameters
+    upload_to_testflight(testflight_params(options))
   end
 
   lane :ci_build do
     build
-    upload_to_testflight(changelog: "CI build")
+
+    if ENV['TRAVIS']
+      require_relative 'github_api'
+
+      # Pull request build
+      if ENV['TRAVIS_PULL_REQUEST'] != 'false'
+        pull_request_number = ENV['TRAVIS_PULL_REQUEST']
+        repo = ENV['TRAVIS_PULL_REQUEST_SLUG']
+        changelog = get_changelog_from_pr(repo, pull_request_number)
+        upload_to_testflight(changelog: changelog)
+      end
+    end
   end
 end
 
