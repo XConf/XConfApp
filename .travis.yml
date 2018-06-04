@@ -22,4 +22,4 @@ jobs:
       if: head_branch IN (master, develop) AND (type IS pull_request OR tag IS present)
       os: osx
       osx_image: xcode9.3
-      script: '[[ "$TRAVIS_BRANCH" =~ ^(master|develop)$ ]] && bin/ci-build-ios'
+      script: 'if [[ "$TRAVIS_BRANCH" =~ ^(master|develop)$ ]]; then bin/ci-build-ios; else echo "Skipping build on non-primary branches"; fi'
