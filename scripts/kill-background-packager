@@ -9,6 +9,6 @@ cd "$(dirname "$0")/.."
 
 if [ -f 'background-packager.pid' ]; then
   set +e
-  kill "$(cat 'background-packager.pid')"
-  rm 'background-packager.pid'
+  kill "$(cat 'background-packager.pid')" || echo "Background packager was not running."
+  rm -f 'background-packager.pid'
 fi

@@ -13,6 +13,9 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+require_relative 'override_print_table'
+require_relative 'parse_raw_args'
+
 default_platform(:ios)
 
 platform :ios do
@@ -46,60 +49,9 @@ end
 
 def testflight_params(options)
   params = {}
-
   if options[:raw_args]
     args = parse_raw_args(options[:raw_args])
-
     params[:changelog] = args['-m'] if args['-m']
   end
-
   params
-end
-
-def parse_raw_args(raw_args)
-  command_args = raw_args.split('%%,%%')
-  command_args.reduce(last: '', hash: {}) do |acc, arg|
-    unless arg.length.zero?
-      if acc[:last].start_with?('-') && !arg.start_with?('-')
-        key = acc[:last]
-        if !acc[:hash][key] || acc[:hash][key].is_a?(TrueClass)
-          acc[:hash][key] = arg
-        elsif acc[:hash][key].is_a?(Array)
-          acc[:hash][key].push(arg)
-        else
-          acc[:hash][key] = [acc[:hash][key], arg]
-        end
-      else
-        acc[:hash][arg] = true unless acc[:hash][arg]
-      end
-      acc[:last] = arg
-      acc
-    end
-    acc
-  end[:hash]
-end
-
-# Override FastlaneCore::PrintTable to prevent actions from printing sensitive data
-class FastlaneCore::PrintTable
-  class << self
-    alias print_values_original print_values
-    alias transform_output_original transform_output
-
-    def print_values(params)
-      hide_keys = [:git_url]
-
-      if params[:hide_keys].is_a? Array
-        params[:hide_keys].concat(hide_keys)
-      else
-        params[:hide_keys] = hide_keys
-      end
-
-      print_values_original(params)
-    end
-
-    def transform_output(rows, transform: :newline)
-      rows.each { |row| row[1] = '********' if row[0] == :git_url }
-      transform_output_original(rows, transform: transform)
-    end
-  end
 end

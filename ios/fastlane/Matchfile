@@ -1,15 +1,4 @@
-require 'json'
-require 'time'
-
-begin
-  build_config_file_path = File.join(Dir.pwd, '..', 'build-config.json')
-  build_config_file = File.read(build_config_file_path)
-  build_config = JSON.parse(build_config_file)
-rescue JSON::ParserError
-  error_message = "An error occured while parsing the build config. Hint: if you're setting it's value by a environment variable, you should put single quotes around it. E.g. `BUILD_CONFIG='{\"key\":\"value\"}'`"
-  UI.error error_message
-  raise error_message
-end
+require File.join(Dir.pwd, 'fastlane', 'build_config.rb')
 
 ios_certificates_git_url = build_config['ios']['certificatesGitUrl']
 
