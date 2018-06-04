@@ -45,7 +45,7 @@ platform :ios do
     build
 
     if ENV['TRAVIS']
-      require_relative 'github_api'
+      require_relative '../../scripts/github_api'
 
       # Pull request build
       if ENV['TRAVIS_PULL_REQUEST'] != 'false'
@@ -53,6 +53,7 @@ platform :ios do
         repo = ENV['TRAVIS_PULL_REQUEST_SLUG']
         changelog = get_changelog_from_pr(repo, pull_request_number)
         upload_to_testflight(changelog: changelog)
+        post_comment_on_issue(repo, pull_request_number, "📲 A new build for iOS of this PR is now available for testing. If you are a tester, check it out on TestFlight!")
       end
     end
   end

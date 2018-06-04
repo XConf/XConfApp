@@ -2,7 +2,7 @@ require 'net/http'
 require 'net/https'
 require 'json'
 
-def send_github_request(url, access_token)
+def send_github_request(url, access_token, data = nil)
   uri = URI(url.start_with?("http") ? url : "https://api.github.com#{url}")
 
   # Create client
@@ -10,12 +10,25 @@ def send_github_request(url, access_token)
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
-  # Create Request
-  req =  Net::HTTP::Get.new(uri)
-  # Add headers
-  req.add_field "Accept", "application/vnd.github.symmetra-preview+json"
-  # Add headers
-  req.add_field "Authorization", "token #{access_token}"
+  if data
+    # Create Request
+    req = Net::HTTP::Post.new(uri)
+    # Add headers
+    req.add_field "Accept", "application/vnd.github.symmetra-preview+json"
+    # Add headers
+    req.add_field "Authorization", "token #{access_token}"
+    # Add headers
+    req.add_field "Content-Type", "application/json"
+    # Set body
+    req.body = data.to_json
+  else
+    # Create Request
+    req =  Net::HTTP::Get.new(uri)
+    # Add headers
+    req.add_field "Accept", "application/vnd.github.symmetra-preview+json"
+    # Add headers
+    req.add_field "Authorization", "token #{access_token}"
+  end
 
   # Fetch Request
   res = http.request(req)
@@ -51,4 +64,14 @@ def get_changelog_from_pr(repo, pull_request_number)
   end
 
   changelog
+end
+
+def post_comment_on_issue(repo, issue_number, body)
+  github_access_token = ENV['GITHUB_ACCESS_TOKEN']
+  if !github_access_token
+    puts 'Set the GITHUB_ACCESS_TOKEN environment variable to have comments post!'
+    return
+  end
+
+  send_github_request("/repos/#{repo}/issues/#{issue_number}/comments", github_access_token, { body: body })
 end
