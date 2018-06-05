@@ -53,7 +53,7 @@ platform :ios do
         pull_request_branch = ENV['TRAVIS_PULL_REQUEST_BRANCH']
         travis_job_id = ENV['TRAVIS_JOB_ID']
 
-        github_deployment = create_github_deployment(repo, pull_request_branch, 'test-flight')
+        github_deployment = create_github_deployment(repo, pull_request_branch, 'TestFlight')
         github_deployment.create_status("pending", target_url: "https://travis-ci.com/#{repo}/jobs/#{travis_job_id}")
         begin
           build
