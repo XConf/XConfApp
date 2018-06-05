@@ -81,14 +81,14 @@ class GitHubDeployment
     @url = url
   end
 
-  def create_status(state)
+  def create_status(state, target_url: '')
     github_access_token = ENV['GITHUB_ACCESS_TOKEN']
     if !github_access_token
       puts 'Set the GITHUB_ACCESS_TOKEN environment variable to update deployment status!'
       return
     end
 
-    send_github_request("#{@url}/statuses", github_access_token, { state: state })
+    send_github_request("#{@url}/statuses", github_access_token, { state: state, target_url: target_url })
   end
 end
 

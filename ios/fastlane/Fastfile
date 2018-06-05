@@ -42,8 +42,7 @@ platform :ios do
   end
 
   lane :ci_build do
-    build
-
+    # Travis
     if ENV['TRAVIS']
       require_relative '../../scripts/github_api'
 
@@ -52,9 +51,12 @@ platform :ios do
         repo = ENV['TRAVIS_PULL_REQUEST_SLUG']
         pull_request_number = ENV['TRAVIS_PULL_REQUEST']
         pull_request_branch = ENV['TRAVIS_PULL_REQUEST_BRANCH']
+        travis_job_id = ENV['TRAVIS_JOB_ID']
 
         github_deployment = create_github_deployment(repo, pull_request_branch, 'test-flight')
+        github_deployment.create_status("pending", target_url: "https://travis-ci.com/#{repo}/jobs/#{travis_job_id}")
         begin
+          build
           changelog = get_changelog_from_pr(repo, pull_request_number)
           upload_to_testflight(changelog: changelog)
           github_deployment.create_status("success")
@@ -62,7 +64,15 @@ platform :ios do
         rescue Exception
           github_deployment.create_status("error")
         end
+
+      # Normal build
+      else
+        build
       end
+
+    # Unknown CI
+    else
+      build
     end
   end
 end
