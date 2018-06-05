@@ -49,11 +49,19 @@ platform :ios do
 
       # Pull request build
       if ENV['TRAVIS_PULL_REQUEST'] != 'false'
-        pull_request_number = ENV['TRAVIS_PULL_REQUEST']
         repo = ENV['TRAVIS_PULL_REQUEST_SLUG']
-        changelog = get_changelog_from_pr(repo, pull_request_number)
-        upload_to_testflight(changelog: changelog)
-        post_comment_on_issue(repo, pull_request_number, "📲 A new build for iOS of this PR is now available for testing. If you are a tester, check it out on TestFlight!")
+        pull_request_number = ENV['TRAVIS_PULL_REQUEST']
+        pull_request_branch = ENV['TRAVIS_PULL_REQUEST_BRANCH']
+
+        github_deployment = create_github_deployment(repo, pull_request_branch, 'test-flight')
+        begin
+          changelog = get_changelog_from_pr(repo, pull_request_number)
+          upload_to_testflight(changelog: changelog)
+          github_deployment.create_status("success")
+          post_comment_on_issue(repo, pull_request_number, "📲 A new build for iOS of this PR is now available for testing. If you are a tester, check it out on TestFlight!")
+        rescue Exception
+          github_deployment.create_status("error")
+        end
       end
     end
   end

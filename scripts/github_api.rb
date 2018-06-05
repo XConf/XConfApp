@@ -75,3 +75,31 @@ def post_comment_on_issue(repo, issue_number, body)
 
   send_github_request("/repos/#{repo}/issues/#{issue_number}/comments", github_access_token, { body: body })
 end
+
+class GitHubDeployment
+  def initialize(url)
+    @url = url
+  end
+
+  def create_status(state)
+    github_access_token = ENV['GITHUB_ACCESS_TOKEN']
+    if !github_access_token
+      puts 'Set the GITHUB_ACCESS_TOKEN environment variable to update deployment status!'
+      return
+    end
+
+    send_github_request("#{@url}/statuses", github_access_token, { state: state })
+  end
+end
+
+def create_github_deployment(repo, ref, environment)
+  github_access_token = ENV['GITHUB_ACCESS_TOKEN']
+  if !github_access_token
+    puts 'Set the GITHUB_ACCESS_TOKEN environment variable to update deployment status!'
+    return
+  end
+
+  response = send_github_request("/repos/#{repo}/deployments", github_access_token, { ref: ref, environment: environment, required_contexts: [] })
+
+  GitHubDeployment.new(response['url'])
+end
