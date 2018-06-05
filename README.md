@@ -18,19 +18,21 @@ bin/setup
 
 ## Run
 
-Start the Reason compiler by running:
-
-```bash
-yarn run watch
-```
-
-and Metro Bundler:
+Start the Reason compiler and React Native packager by running:
 
 ```bash
 yarn start
 ```
 
-then, run `react-native run-ios` or `react-native run-android`.
+then, run `bin/run-ios` or `bin/run-android` to start the development iOS or Android app in the simulator.
+
+## Test
+
+Go through all the test suites by running:
+
+```bash
+bin/test
+```
 
 ## Update Dependencies
 

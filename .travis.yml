@@ -15,10 +15,13 @@ install:
 jobs:
   include:
     - stage: test
+      env: TEST=lint-js
       script: yarn run lint-js
     - stage: test
-      script: echo test
+      env: TEST=test-js
+      script: yarn run test-js
     - stage: build
+      env: BUILD=build-ios
       if: head_branch IN (master, develop) AND (type IS pull_request OR tag IS present)
       os: osx
       osx_image: xcode9.3

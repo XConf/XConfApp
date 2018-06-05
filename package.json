@@ -4,13 +4,15 @@
   "versionDate": "2018-05-01",
   "private": true,
   "scripts": {
-    "start": "concurrently \"yarn run bsb-watch\" \"yarn run start-packager\" --names=\"BSB,PAK\" --prefix-colors=\"magenta.dim,cyan.dim\" --kill-others --raw",
-    "start-background-packager": "concurrently \"yarn run bsb-watch\" \"yarn run start-packager\" --names=\"BSB,PAK\" --prefix-colors=\"magenta.dim,cyan.dim\" --kill-others",
-    "start-packager": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "concurrently \"yarn run bsb-watch\" \"yarn run packager\" --names=\"BSB,PAK\" --prefix-colors=\"magenta.dim,cyan.dim\" --kill-others --raw",
+    "start-background-packager": "concurrently \"yarn run bsb-watch\" \"yarn run packager\" --names=\"BSB,PAK\" --prefix-colors=\"magenta.dim,cyan.dim\" --kill-others",
     "bsb-watch": "bsb -make-world -clean-world -w",
+    "packager": "node node_modules/react-native/local-cli/cli.js start",
+    "run-ios": "react-native run-ios",
+    "run-android": "react-native run-android",
     "clean": "bsb -clean-world",
-    "test": "jest",
     "lint-js": "eslint src",
+    "test-js": "echo 'No test yet'",
     "build-ios": "bin/build-ios"
   },
   "dependencies": {

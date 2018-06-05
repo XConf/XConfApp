@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Run all the tests.
+
+# Exit if any subcommand fails
+set -e
+
+# Switch to the project directory
+cd "$(dirname "$0")/.."
+
+# Run tests
+
+echo '== lint-js =='
+yarn run lint-js
+echo ''
+
+echo '== test-js =='
+yarn run test-js
+echo ''

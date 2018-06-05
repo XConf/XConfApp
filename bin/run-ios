@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Run the iOS app.
+
+# Exit if any subcommand fails
+set -e
+
+# Switch to the project directory
+cd "$(dirname "$0")/.."
+
+# Run run-ios
+yarn run run-ios
