@@ -8,6 +8,7 @@ set -e
 cd "$(dirname "$0")/.."
 
 # Detect Node.js version
+command -v node > /dev/null || (echo "Error: Node.js is not installed on this machine - cannot find a executable \`node\`." && exit 2)
 required_node_version="$(grep "nodejs" < .tool-versions | cut -d ' ' -f2)"
 required_node_version_int=$(echo "$required_node_version" | awk 'match($0, /[0-9]+/) {print substr($0,RSTART,RLENGTH)}')
 node_version=$(node -v)
@@ -18,6 +19,7 @@ if [ ! "$node_version_int" -ge "$required_node_version_int" ]; then
 fi
 
 # Detect Ruby version
+command -v ruby > /dev/null || (echo "Error: Ruby is not installed on this machine - cannot find a executable \`ruby\`." && exit 2)
 required_ruby_version="$(grep "ruby" < .tool-versions | cut -d ' ' -f2)"
 required_ruby_version_int=$(echo "$required_ruby_version" | awk 'match($0, /[0-9]+/) {print substr($0,RSTART,RLENGTH)}')
 ruby_version=$(ruby -v | cut -d ' ' -f2)
@@ -26,9 +28,11 @@ if [ ! "$ruby_version_int" -ge "$required_ruby_version_int" ]; then
   echo "You're using an obsolete version of Ruby: $ruby_version. The recommend version is $required_ruby_version. Please upgrade."
   exit -1
 fi
+command -v bundler > /dev/null || gem install bundler
 
 # Setup Node.js dependencies via yarn install
 echo '== Running yarn install =='
+command -v yarn > /dev/null || (echo "Error: yarn is not installed on this machine. Get it with the help on https://yarnpkg.com/ to continue." && exit 2)
 yarn install
 echo ''
 
