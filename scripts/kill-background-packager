@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Kills the packager in background, if pid file exists.
+
+# Exit if any subcommand fails
+set -e
+
+# Switch to the project directory
+cd "$(dirname "$0")/.."
+
+if [ -f 'background-packager.pid' ]; then
+  set +e
+  kill "$(cat 'background-packager.pid')" || echo "Background packager was not running."
+  rm -f 'background-packager.pid'
+fi

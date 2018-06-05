@@ -1,0 +1,87 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+require_relative 'override_print_table'
+require_relative 'parse_raw_args'
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build (archive) the app"
+  lane :build do
+    begin
+      sh("../../scripts/generate-and-write-ios-config")
+      sh("../../scripts/start-background-packager")
+      create_keychain(name: "temp_code_sign", unlock: true, timeout: false, password: "pwd")
+      sync_code_signing(keychain_name: "temp_code_sign", keychain_password: "pwd", readonly: true)
+      build_app(project: "XConf.xcodeproj", scheme: "XConf", silent: true)
+    ensure
+      sh("../../scripts/kill-background-packager")
+      delete_keychain(name: "temp_code_sign")
+    end
+  end
+
+  desc "Push a new build to TestFlight"
+  lane :beta do |options|
+    build
+    # For the parameters of upload_to_testflight, see:
+    # https://docs.fastlane.tools/actions/upload_to_testflight/#parameters
+    upload_to_testflight(testflight_params(options))
+  end
+
+  lane :ci_build do
+    # Travis
+    if ENV['TRAVIS']
+      require_relative '../../scripts/github_api'
+
+      # Pull request build
+      if ENV['TRAVIS_PULL_REQUEST'] != 'false'
+        repo = ENV['TRAVIS_PULL_REQUEST_SLUG']
+        pull_request_number = ENV['TRAVIS_PULL_REQUEST']
+        pull_request_branch = ENV['TRAVIS_PULL_REQUEST_BRANCH']
+        travis_job_id = ENV['TRAVIS_JOB_ID']
+
+        github_deployment = create_github_deployment(repo, pull_request_branch, 'TestFlight')
+        github_deployment.create_status("pending", target_url: "https://travis-ci.com/#{repo}/jobs/#{travis_job_id}")
+        begin
+          build
+          changelog = get_changelog_from_pr(repo, pull_request_number)
+          upload_to_testflight(changelog: changelog)
+          github_deployment.create_status("success")
+          post_comment_on_issue(repo, pull_request_number, "📲 A new build for iOS of this PR is now available for testing. If you are a tester, check it out on TestFlight!")
+        rescue Exception
+          github_deployment.create_status("error")
+        end
+
+      # Normal build
+      else
+        build
+      end
+
+    # Unknown CI
+    else
+      build
+    end
+  end
+end
+
+def testflight_params(options)
+  params = {}
+  if options[:raw_args]
+    args = parse_raw_args(options[:raw_args])
+    params[:changelog] = args['-m'] if args['-m']
+  end
+  params
+end

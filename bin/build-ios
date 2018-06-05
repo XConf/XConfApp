@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Build the iOS app.
+
+# Exit if any subcommand fails
+set -e
+
+# Switch to the project directory
+cd "$(dirname "$0")/.."
+
+# Go to the iOS directory
+cd ios/
+
+# Run fastlane build
+bundle exec fastlane build "$@"

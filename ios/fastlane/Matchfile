@@ -1,0 +1,13 @@
+require File.join(Dir.pwd, 'fastlane', 'build_config.rb')
+
+ios_certificates_git_url = build_config['ios']['certificatesGitUrl']
+
+git_url(ios_certificates_git_url)
+
+type("appstore") # The default type, can be: appstore, adhoc, enterprise or development
+
+# app_identifier(["tools.fastlane.app", "tools.fastlane.app2"])
+# username("user@fastlane.tools") # Your Apple Developer Portal username
+
+# For all available options run `fastlane match --help`
+# Remove the # in the beginning of the line to enable the other options

@@ -1,15 +1,19 @@
 {
   "name": "XConf",
-  "version": "0.0.1",
+  "version": "1.0.2",
+  "versionDate": "2018-05-01",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "build": "bsb -make-world -clean-world",
-    "watch": "bsb -make-world -clean-world -w",
+    "start": "concurrently \"yarn run bsb-watch\" \"yarn run packager\" --names=\"BSB,PAK\" --prefix-colors=\"magenta.dim,cyan.dim\" --kill-others --raw",
+    "start-background-packager": "concurrently \"yarn run bsb-watch\" \"yarn run packager\" --names=\"BSB,PAK\" --prefix-colors=\"magenta.dim,cyan.dim\" --kill-others",
+    "bsb-watch": "bsb -make-world -clean-world -w",
+    "packager": "node node_modules/react-native/local-cli/cli.js start",
+    "run-ios": "react-native run-ios",
+    "run-android": "react-native run-android",
     "clean": "bsb -clean-world",
-    "test": "jest",
     "lint-js": "eslint src",
-    "build-ios": "echo 'Nothing yet.'"
+    "test-js": "echo 'No test yet'",
+    "build-ios": "bin/build-ios"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
@@ -22,6 +26,7 @@
     "bs-platform": "^3.0.0",
     "bs-react-native": "^0.5.0",
     "bs-react-native-vector-icons": "^1.6.0",
+    "concurrently": "^3.5.1",
     "date-fns": "^1.29.0",
     "fast-deep-equal": "^1.1.0",
     "graphql": "^0.13.2",

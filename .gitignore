@@ -2,6 +2,10 @@
 #
 .DS_Store
 
+# Config
+#
+/build-config.json
+
 # Xcode
 #
 build/
@@ -21,6 +25,8 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+*.app.dSYM.zip
+Config.xcconfig
 
 # Android/IntelliJ
 #
@@ -61,3 +67,8 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+
+# Script generated files
+/background-packager.pid
+/background-packager.log
+/background-packager-error.log

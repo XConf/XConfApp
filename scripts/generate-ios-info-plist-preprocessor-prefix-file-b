@@ -1,0 +1,23 @@
+#!/bin/bash
+# Modified from https://gist.github.com/hborders/c4a283ae374ee169188c1028d646086f
+
+set -euo pipefail
+cd "$(dirname "$0")"
+
+BUNDLE_SHORT_VERSION_STRING="$(ruby -e "require 'json'; puts JSON.parse(STDIN.read)['version']" < ../package.json)"
+BUNDLE_SHORT_VERSION_DATE="$(ruby -e "require 'json'; puts JSON.parse(STDIN.read)['versionDate']" < ../package.json)"
+
+MINUTES_SINCE_DATE="$(./minutes-since-date "$BUNDLE_SHORT_VERSION_DATE")"
+
+# decimalized git hash is guaranteed to be 10 characters or fewer because
+# the biggest short=7 git hash we can get is FFFFFFF and
+# $ ./decimalize-git-hash.bash FFFFFFF | wc -c
+# > 10
+DECIMALIZED_GIT_HASH="$(./decimalize-git-hash "$(git rev-parse --short=7 HEAD)")"
+
+BUNDLE_VERSION="${MINUTES_SINCE_DATE}"."${DECIMALIZED_GIT_HASH}"
+
+cat << EOF
+#define BundleShortVersionString ${BUNDLE_SHORT_VERSION_STRING}
+#define BundleVersion ${BUNDLE_VERSION}
+EOF

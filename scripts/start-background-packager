@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Starts the packager in background, if not running.
+
+# Exit if any subcommand fails
+set -e
+
+# Switch to the project directory
+cd "$(dirname "$0")/.."
+
+export RCT_METRO_PORT="${RCT_METRO_PORT:=8081}"
+if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then
+  if ! curl -s "http://localhost:${RCT_METRO_PORT}/status" | grep -q "packager-status:running" ; then
+    echo "Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly"
+    exit 2
+  fi
+else
+  if [ -f 'background-packager.pid' ]; then
+    echo "PID file: background-packager.pid already exists, another background packager may have started but not ready" && exit 2
+  else
+    start() {
+      yarn run start-background-packager > background-packager.log 2> background-packager-error.log &
+      echo "$!"
+    }
+
+    echo "Starting background packager with \"yarn run start-background-packager\""
+    start > 'background-packager.pid' || (echo "Can't start packager automatically" && exit 2)
+  fi
+fi

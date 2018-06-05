@@ -7,9 +7,6 @@ set -e
 # Switch to the project directory
 cd "$(dirname "$0")/.."
 
-# Update dependencies
-bin/update
-
 # Copy sample config files
 echo '== Copying sample config files =='
 copy_sample_file() {
@@ -17,13 +14,16 @@ copy_sample_file() {
   target_file=${2:-"${sample_file/.sample/}"}
   if [ ! -f "$target_file" ]; then
     echo "Copying $sample_file → $target_file"
-    cp config.sample.js config.js
+    cp "$sample_file" "$target_file"
   else
     echo "File $target_file already exists"
   fi
 }
-# copy_sample_file "config.sample.js"
+copy_sample_file "build-config.sample.json"
 echo ''
+
+# Update dependencies
+bin/update
 
 # Only if this isn't CI
 # if [ -z "$CI" ]; then
