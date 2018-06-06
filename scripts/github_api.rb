@@ -39,9 +39,9 @@ rescue StandardError => e
 end
 
 def get_changelog_from_pr(repo, pull_request_number)
-  github_access_token = ENV['GITHUB_ACCESS_TOKEN']
+  github_access_token = ENV['GH_TOKEN']
   if !github_access_token
-    puts 'Set the GITHUB_ACCESS_TOKEN environment variable to get more information in the changelog!'
+    puts 'Set the GH_TOKEN environment variable to get more information in the changelog!'
     return "Build of pull request ##{pull_request_number}."
   end
 
@@ -67,9 +67,9 @@ def get_changelog_from_pr(repo, pull_request_number)
 end
 
 def post_comment_on_issue(repo, issue_number, body)
-  github_access_token = ENV['GITHUB_ACCESS_TOKEN']
+  github_access_token = ENV['GH_TOKEN']
   if !github_access_token
-    puts 'Set the GITHUB_ACCESS_TOKEN environment variable to have comments post!'
+    puts 'Set the GH_TOKEN environment variable to have comments post!'
     return
   end
 
@@ -82,9 +82,9 @@ class GitHubDeployment
   end
 
   def create_status(state, target_url: '')
-    github_access_token = ENV['GITHUB_ACCESS_TOKEN']
+    github_access_token = ENV['GH_TOKEN']
     if !github_access_token
-      puts 'Set the GITHUB_ACCESS_TOKEN environment variable to update deployment status!'
+      puts 'Set the GH_TOKEN environment variable to update deployment status!'
       return
     end
 
@@ -93,9 +93,9 @@ class GitHubDeployment
 end
 
 def create_github_deployment(repo, ref, environment)
-  github_access_token = ENV['GITHUB_ACCESS_TOKEN']
+  github_access_token = ENV['GH_TOKEN']
   if !github_access_token
-    puts 'Set the GITHUB_ACCESS_TOKEN environment variable to update deployment status!'
+    puts 'Set the GH_TOKEN environment variable to update deployment status!'
     return
   end
 
