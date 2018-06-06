@@ -28,9 +28,9 @@ let make = (~onMapPress: unit => unit, ~onScheduleItemPress, _children) => {
   render: self =>
     <View style=Style.(style([flex(1.), marginTop(Pt(-8.))]))>
       <StackNavigator.Header style="default-nops">
-        <StackNavigator.Header.Left>
+        /*<StackNavigator.Header.Left>
           <Button title="Map" onPress=onMapPress />
-        </StackNavigator.Header.Left>
+        </StackNavigator.Header.Left>*/
         <StackNavigator.Header.TitleText value="Schedule" />
       </StackNavigator.Header>
       <ConferenceScheduleContainer
