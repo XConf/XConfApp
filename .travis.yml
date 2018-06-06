@@ -10,8 +10,13 @@ cache:
     - node_modules
 before_install:
   - '[ ! -z "$BUILD_CONFIG" ] && echo "$BUILD_CONFIG" > "build-config.json" || :'
+  - yarn global add greenkeeper-lockfile@1
 install:
   - bin/setup
+before_script:
+  - greenkeeper-lockfile-update
+after_script:
+  - greenkeeper-lockfile-upload
 jobs:
   include:
     - stage: test
