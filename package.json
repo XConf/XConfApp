@@ -61,5 +61,8 @@
     "assets": [
       "./assets/fonts/"
     ]
+  },
+  "greenkeeper": {
+    "ignore": ["react-navigation"]
   }
 }
