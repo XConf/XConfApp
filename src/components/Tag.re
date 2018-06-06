@@ -17,14 +17,14 @@ let styles =
             paddingHorizontal(Pt(6.)),
             justifyContent(Center),
             alignItems(Center),
-            backgroundColor(Theme.Color.lighterGrey),
+            backgroundColor(String(Theme.Color.lighterGrey)),
           ]),
         "tagText":
           style([
             fontFamily("Roboto"),
             fontWeight(`_200),
             fontSize(Float(12.)),
-            color(Theme.Color.darkGrey),
+            color(String(Theme.Color.darkGrey)),
           ]),
         "rubyTag":
           style([
@@ -35,14 +35,14 @@ let styles =
             paddingHorizontal(Pt(6.)),
             justifyContent(Center),
             alignItems(Center),
-            backgroundColor("#fff2f0"),
+            backgroundColor(String("#fff2f0")),
           ]),
         "rubyTagText":
           style([
             fontFamily("Roboto"),
             fontWeight(`_200),
             fontSize(Float(12.)),
-            color("#eb6047"),
+            color(String("#eb6047")),
           ]),
         "elixirTag":
           style([
@@ -53,14 +53,14 @@ let styles =
             paddingHorizontal(Pt(6.)),
             justifyContent(Center),
             alignItems(Center),
-            backgroundColor("#f8f0ff"),
+            backgroundColor(String("#f8f0ff")),
           ]),
         "elixirTagText":
           style([
             fontFamily("Roboto"),
             fontWeight(`_200),
             fontSize(Float(12.)),
-            color("#9a72c0"),
+            color(String("#9a72c0")),
           ]),
       }
     ),

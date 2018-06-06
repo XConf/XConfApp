@@ -38,7 +38,7 @@ let styles =
           style([
             flex(1.),
             paddingVertical(Pt(4.)),
-            backgroundColor(Theme.Color.background),
+            backgroundColor(String(Theme.Color.background)),
           ]),
         "scrollViewContent":
           style([
@@ -54,7 +54,7 @@ let styles =
             fontWeight(`_300),
             lineHeight(14.),
             letterSpacing(-0.55),
-            color(Theme.Color.darkerGrey),
+            color(String(Theme.Color.darkerGrey)),
           ]),
         "titleText":
           style([
@@ -63,7 +63,7 @@ let styles =
             lineHeight(24.),
             fontFamily("Roboto"),
             fontWeight(`_400),
-            color(Theme.Color.black),
+            color(String(Theme.Color.black)),
           ]),
         "text":
           style([
@@ -71,7 +71,7 @@ let styles =
             fontSize(Float(14.)),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkerGrey),
+            color(String(Theme.Color.darkerGrey)),
           ]),
         "sideText":
           style([
@@ -79,7 +79,7 @@ let styles =
             fontSize(Float(14.)),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkGrey),
+            color(String(Theme.Color.darkGrey)),
           ]),
         "sessionTags":
           style([
@@ -93,7 +93,7 @@ let styles =
             lineHeight(20.),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkerGrey),
+            color(String(Theme.Color.darkerGrey)),
           ]),
         "wordSpeakerText":
           style([
@@ -102,7 +102,7 @@ let styles =
             fontSize(Float(12.)),
             fontFamily("Roboto Mono"),
             fontWeight(`_400),
-            color(Theme.Color.black),
+            color(String(Theme.Color.black)),
           ]),
         "sessionSpeakerNameText":
           style([
@@ -110,7 +110,7 @@ let styles =
             fontSize(Float(15.)),
             fontFamily("Roboto"),
             fontWeight(`_500),
-            color(Theme.Color.darkerGrey),
+            color(String(Theme.Color.darkerGrey)),
           ]),
         "sessionSpeakerTitleText":
           style([
@@ -118,7 +118,7 @@ let styles =
             fontSize(Float(13.)),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkGrey),
+            color(String(Theme.Color.darkGrey)),
           ]),
       }
     ),

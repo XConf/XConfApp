@@ -47,7 +47,7 @@ let styles =
       {
         "scrollView": style([
           flex(1.),
-          backgroundColor(Theme.Color.background),
+          backgroundColor(String(Theme.Color.background)),
         ]),
         "scrollViewContent": style([
           /*paddingBottom(Pt(16.)),*/
@@ -66,7 +66,7 @@ let styles =
             lineHeight(24.),
             fontFamily("Roboto"),
             fontWeight(`_400),
-            color(Theme.Color.black),
+            color(String(Theme.Color.black)),
           ]),
         "conferenceDateText":
           style([
@@ -74,7 +74,7 @@ let styles =
             fontSize(Float(14.)),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkGrey),
+            color(String(Theme.Color.darkGrey)),
           ]),
         "conferenceLocationNameText":
           style([
@@ -82,7 +82,7 @@ let styles =
             fontSize(Float(14.)),
             fontFamily("Roboto"),
             fontWeight(`_400),
-            color(Theme.Color.darkGrey),
+            color(String(Theme.Color.darkGrey)),
           ]),
         "conferenceLocationAddressText":
           style([
@@ -90,7 +90,7 @@ let styles =
             fontSize(Float(14.)),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkGrey),
+            color(String(Theme.Color.darkGrey)),
           ]),
       }
     ),

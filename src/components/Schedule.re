@@ -27,7 +27,7 @@ let styles =
           style([
             flex(1.),
             paddingVertical(Pt(4.)),
-            backgroundColor(Theme.Color.background),
+            backgroundColor(String(Theme.Color.background)),
           ]),
         "scrollViewContent":
           style([
@@ -52,7 +52,7 @@ let styles =
             left(Pt(ScheduleTimeLabel.ptWidth +. 3.5)),
             width(Pt(1.)),
             height(Pt(10000.)),
-            backgroundColor(Theme.Color.lightGrey),
+            backgroundColor(String(Theme.Color.lightGrey)),
           ]),
       }
     ),

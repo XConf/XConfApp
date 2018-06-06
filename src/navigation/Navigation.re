@@ -149,8 +149,8 @@ let make = (_children) => {
         updateState=((updator) => self.send(UpdateTabNavigationState(updator)))>
         <AppTabNavigator.Tab
           title="Schedule"
-          tabBarIcon=((~focused, ~tintColor: string) => switch (BsReactNative.Platform.os) {
-          | IOS =>
+          tabBarIcon=((~focused, ~tintColor: string) => switch (BsReactNative.Platform.os()) {
+          | IOS(_) =>
             <View style=Style.(style([marginTop(Pt(4.))]))>
               <RNIcons.Ionicons
                 name=(focused ? "ios-calendar" : "ios-calendar-outline")
@@ -180,8 +180,8 @@ let make = (_children) => {
         </AppTabNavigator.Tab>
         <AppTabNavigator.Tab
           title="Information"
-          tabBarIcon=((~focused, ~tintColor: string) => switch (BsReactNative.Platform.os) {
-          | IOS =>
+          tabBarIcon=((~focused, ~tintColor: string) => switch (BsReactNative.Platform.os()) {
+          | IOS(_) =>
             <View style=Style.(style([marginTop(Pt(4.))]))>
               <RNIcons.Ionicons
                 name=(focused ? "ios-information-circle" : "ios-information-circle-outline")
