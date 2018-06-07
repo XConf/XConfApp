@@ -70,6 +70,8 @@ def get_changelog_from_pr(repo, pull_request_number)
     end
   end
 
+  changelog = changelog.gsub('→', '->')
+
   changelog
 end
 
