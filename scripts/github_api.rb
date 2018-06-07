@@ -58,7 +58,7 @@ def get_changelog_from_pr(repo, pull_request_number)
     changelog += "\n"
     if pull_request_data['body'] && !pull_request_data['body'].strip.length.zero?
       md_renderer = Redcarpet::Markdown.new(Redcarpet::Render::StripDown)
-      pull_request_data_body = md_renderer.render(pull_request_data['body'].strip.gsub(/<\/?[^>]*>/, ''))
+      pull_request_data_body = md_renderer.render(pull_request_data['body'].strip.gsub(/<\/?[^>]*>/, '').gsub(/:[a-zA-z-_]+:\s+/, ''))
       pull_request_data_body = "#{pull_request_data_body[0...2000]}... (truncated)" if pull_request_data_body.length > 2000
       changelog += "\n#{pull_request_data_body}\n"
     end
@@ -71,6 +71,7 @@ def get_changelog_from_pr(repo, pull_request_number)
   end
 
   changelog = changelog.gsub('→', '->')
+  changelog = changelog.gsub(/[\u{1F300}-\u{1F5FF}|\u{1F1E6}-\u{1F1FF}|\u{2700}-\u{27BF}|\u{1F900}-\u{1F9FF}|\u{1F600}-\u{1F64F}|\u{1F680}-\u{1F6FF}|\u{2600}-\u{26FF}]\s*/, '')
 
   changelog
 end
