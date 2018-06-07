@@ -101,6 +101,7 @@ GEM
     os (0.9.6)
     plist (3.4.0)
     public_suffix (2.0.5)
+    redcarpet (3.4.0)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -147,6 +148,7 @@ PLATFORMS
 
 DEPENDENCIES
   fastlane
+  redcarpet
 
 BUNDLED WITH
    1.16.1

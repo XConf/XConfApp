@@ -17,7 +17,7 @@ let styles =
             left(Pt(3.5)),
             marginBottom(Pt(-14.)),
             width(Pt(1.)),
-            backgroundColor(Theme.Color.lightGrey),
+            backgroundColor(String(Theme.Color.lightGrey)),
           ]),
         "timeLineDot":
           style([
@@ -27,8 +27,8 @@ let styles =
             width(Pt(6.)),
             height(Pt(6.)),
             borderWidth(1.),
-            borderColor(Theme.Color.lightGrey),
-            backgroundColor(Theme.Color.background),
+            borderColor(String(Theme.Color.lightGrey)),
+            backgroundColor(String(Theme.Color.background)),
             borderRadius(100.),
           ]),
         "content":
@@ -43,7 +43,7 @@ let styles =
             fontSize(Float(16.)),
             fontFamily("Roboto"),
             fontWeight(`_400),
-            color(Theme.Color.black),
+            color(String(Theme.Color.black)),
           ]),
         "text":
           style([
@@ -51,7 +51,7 @@ let styles =
             fontSize(Float(14.)),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkerGrey),
+            color(String(Theme.Color.darkerGrey)),
           ]),
         "sideText":
           style([
@@ -59,7 +59,7 @@ let styles =
             fontSize(Float(14.)),
             fontFamily("Roboto"),
             fontWeight(`_300),
-            color(Theme.Color.darkGrey),
+            color(String(Theme.Color.darkGrey)),
           ]),
         "tags":
           style([
