@@ -1,6 +1,8 @@
 require 'net/http'
 require 'net/https'
 require 'json'
+require 'redcarpet'
+require 'redcarpet/render_strip'
 
 def send_github_request(url, access_token, data = nil)
   uri = URI(url.start_with?("http") ? url : "https://api.github.com#{url}")
@@ -54,7 +56,12 @@ def get_changelog_from_pr(repo, pull_request_number)
     changelog += "by @#{pull_request_data['user']['login']}"
     changelog += ", labels: #{pull_request_data['labels'].map { |label| label['name'] }.join(', ')}\n" if pull_request_data['labels'] && !pull_request_data['labels'].length.zero?
     changelog += "\n"
-    changelog += "\n#{pull_request_data['body']}\n" if pull_request_data['body'] && !pull_request_data['body'].length.zero?
+    if pull_request_data['body'] && !pull_request_data['body'].strip.length.zero?
+      md_renderer = Redcarpet::Markdown.new(Redcarpet::Render::StripDown)
+      pull_request_data_body = md_renderer.render(pull_request_data['body'].strip.gsub(/<\/?[^>]*>/, ''))
+      pull_request_data_body = "#{pull_request_data_body[0...2000]}... (truncated)" if pull_request_data_body.length > 2000
+      changelog += "\n#{pull_request_data_body}\n"
+    end
     commits_data = send_github_request(pull_request_data['commits_url'], github_access_token)
     if commits_data
       changelog += "\n---\n\nCommits:\n\n"
@@ -102,4 +109,19 @@ def create_github_deployment(repo, ref, environment)
   response = send_github_request("/repos/#{repo}/deployments", github_access_token, { ref: ref, environment: environment, required_contexts: [] })
 
   GitHubDeployment.new(response['url'])
+end
+
+module Redcarpet
+  module Render
+    class StripDown
+      def list_item(content, list_type)
+        case list_type
+        when :ordered
+          "- #{content}\n"
+        when :unordered
+          "- #{content}\n"
+        end
+      end
+    end
+  end
 end
