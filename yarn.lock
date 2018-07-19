@@ -5174,9 +5174,9 @@ realpath-native@^1.0.0:
   dependencies:
     util.promisify "^1.0.0"
 
-reason-apollo@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/reason-apollo/-/reason-apollo-0.9.1.tgz#a699bb4b44dbaa667dcb5ca84912045ea67540f0"
+reason-apollo@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/reason-apollo/-/reason-apollo-0.12.0.tgz#573ad3515d87c06108e9733d59808422cfa4931e"
 
 reason-react@^0.4.2:
   version "0.4.2"
