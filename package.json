@@ -23,7 +23,7 @@
     "apollo-link-error": "^1.0.7",
     "apollo-link-http": "^1.5.3",
     "bs-date-fns": "^0.1.4",
-    "bs-platform": "^3.1.5",
+    "bs-platform": "^4.0.4",
     "bs-react-native": "^0.8.0",
     "bs-react-native-vector-icons": "^1.6.0",
     "concurrently": "^3.5.1",
