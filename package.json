@@ -45,7 +45,7 @@
     "reason-react": "^0.4.2"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
+    "babel-eslint": "^9.0.0",
     "babel-jest": "23.0.1",
     "babel-preset-react-native": "4.0.0",
     "eslint": "^4.19.1",
