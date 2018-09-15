@@ -21,7 +21,7 @@
     "apollo-link": "^1.2.1",
     "apollo-link-context": "^1.0.7",
     "apollo-link-error": "^1.0.7",
-    "apollo-link-http": "^1.5.3",
+    "apollo-link-http": "^1.5.5",
     "bs-date-fns": "^0.1.4",
     "bs-platform": "^3.1.5",
     "bs-react-native": "^0.8.0",
