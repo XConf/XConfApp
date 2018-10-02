@@ -1644,9 +1644,9 @@ bs-react-native-vector-icons@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/bs-react-native-vector-icons/-/bs-react-native-vector-icons-1.6.0.tgz#c26a4785a77ac25d006a8a4994fc79889c344aab"
 
-bs-react-native@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/bs-react-native/-/bs-react-native-0.8.0.tgz#1e68b75ed78aad858548456fd985632b8642acfe"
+bs-react-native@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/bs-react-native/-/bs-react-native-0.10.0.tgz#4a9167cbe4c858008a9e56a0f745ba723c74101c"
 
 bser@^2.0.0:
   version "2.0.0"
