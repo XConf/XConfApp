@@ -34,7 +34,7 @@
     "graphql_ppx": "^0.2.1",
     "prop-types": "^15.6.1",
     "proxy-polyfill": "^0.3.0",
-    "react": "16.4.0",
+    "react": "16.6.0",
     "react-apollo": "^2.1.4",
     "react-native": "0.55.4",
     "react-native-linear-gradient": "^2.4.0",
