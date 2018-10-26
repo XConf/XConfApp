@@ -16,7 +16,7 @@
     "build-ios": "bin/build-ios"
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.1.12",
+    "apollo-cache-inmemory": "^1.3.7",
     "apollo-client": "^2.2.8",
     "apollo-link": "^1.2.1",
     "apollo-link-context": "^1.0.7",
