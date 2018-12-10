@@ -2014,9 +2014,14 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-date-fns@^1.23.0, date-fns@^1.29.0:
+date-fns@^1.23.0:
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
+
+date-fns@^1.30.0:
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.0.tgz#1214c7e17ece95effd37043e7be3ff8e2edc6c7f"
+  integrity sha512-C1QqFGl0fa1wzRmQmilDB9w0NIYJ96UVR8Jbr2SWz4UUlQBu215AM3QOsAmQtSL4QCtmnplr2v2O5yEMSbRGBg==
 
 dateformat@^2.0.0:
   version "2.2.0"
