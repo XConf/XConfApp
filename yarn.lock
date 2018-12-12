@@ -1636,9 +1636,10 @@ bs-date-fns@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/bs-date-fns/-/bs-date-fns-0.1.4.tgz#9b621e97118f1205c73749e8b07f566fc967e5d9"
 
-bs-platform@^3.1.5:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-3.1.5.tgz#fb34ee4702bc9163848d5537096c4f31ebaeed40"
+bs-platform@^4.0.10:
+  version "4.0.10"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-4.0.10.tgz#d353c7a5db16d945258a212946da3c3635e4a6cc"
+  integrity sha512-HPbIDocV+Uz3Jvzy8hj8PQgkvQWbG8OfSTHjZpcKiLksfllrK5I4GxWiK3jDL4dieqfx5crNcnbTSGraPKSbIA==
 
 bs-react-native-vector-icons@^1.6.0:
   version "1.6.0"
