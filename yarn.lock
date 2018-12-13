@@ -704,11 +704,12 @@ apollo-link-dedup@^1.0.0:
   dependencies:
     apollo-link "^1.2.1"
 
-apollo-link-error@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/apollo-link-error/-/apollo-link-error-1.0.7.tgz#df6d7b13e9b73f9a615547b65ec9a4c930ca7f18"
+apollo-link-error@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/apollo-link-error/-/apollo-link-error-1.1.3.tgz#05563c682caced2665974fe03c572e34cb3184ed"
+  integrity sha512-VkKPcOA+8I9AuhnueKbZdo7AV64c2uPxgeirdGwEJRS3PZe/2Od9X6Z2VaVW6qdUzELT665DpNkrnZr9+MHx7Q==
   dependencies:
-    apollo-link "^1.2.1"
+    apollo-link "^1.2.5"
 
 apollo-link-http-common@^0.2.3:
   version "0.2.3"
@@ -730,6 +731,14 @@ apollo-link@^1.0.0, apollo-link@^1.2.1:
     "@types/node" "^9.4.6"
     apollo-utilities "^1.0.0"
     zen-observable-ts "^0.8.6"
+
+apollo-link@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.5.tgz#f54932d6b8f1412a35e088bc199a116bce3f1f16"
+  integrity sha512-GJHEE4B06oEB58mpRRwW6ISyvgX2aCqCLjpcE3M/6/4e+ZVeX7fRGpMJJDq2zZ8n7qWdrEuY315JfxzpsJmUhA==
+  dependencies:
+    apollo-utilities "^1.0.0"
+    zen-observable-ts "^0.8.12"
 
 apollo-utilities@^1.0.0, apollo-utilities@^1.0.11:
   version "1.0.11"
@@ -6397,6 +6406,13 @@ yargs@~3.10.0:
     decamelize "^1.0.0"
     window-size "0.1.0"
 
+zen-observable-ts@^0.8.12:
+  version "0.8.12"
+  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.8.12.tgz#38810d98645285c074775ab26b69992cc847c830"
+  integrity sha512-wwqbD6K6CqDd1T67UFg4hgDqnu2YAnFJDCPYmwN/N6Yfa+2QgoSp+nJomh+FWUdOc1A+553/ElvfoW8Vc/vsLg==
+  dependencies:
+    zen-observable "^0.8.0"
+
 zen-observable-ts@^0.8.6:
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.8.8.tgz#1a586dc204fa5632a88057f879500e0d2ba06869"
@@ -6406,3 +6422,8 @@ zen-observable-ts@^0.8.6:
 zen-observable@^0.7.0:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.7.1.tgz#f84075c0ee085594d3566e1d6454207f126411b3"
+
+zen-observable@^0.8.0:
+  version "0.8.11"
+  resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.11.tgz#d3415885eeeb42ee5abb9821c95bb518fcd6d199"
+  integrity sha512-N3xXQVr4L61rZvGMpWe8XoCGX8vhU35dPyQ4fm5CY/KDlG0F75un14hjbckPXTDuKUY6V0dqR2giT6xN8Y4GEQ==
