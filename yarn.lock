@@ -5178,9 +5178,10 @@ reason-apollo@^0.9.1:
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/reason-apollo/-/reason-apollo-0.9.1.tgz#a699bb4b44dbaa667dcb5ca84912045ea67540f0"
 
-reason-react@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.4.2.tgz#690d34e3e91a2585cdc5f58384b6c8ff653c32c1"
+reason-react@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.6.0.tgz#e9a7d6a10958161c3a12ef7fec1b6662edaae94a"
+  integrity sha512-FKzBDXE96KPyUbeRo2ToqUe9rl4IKgwegtjCXvyx0bzJXCKLqwiiN3OiOTH/siJS+/IZRZhBAHnd/R3VkRMsMQ==
   dependencies:
     react ">=15.0.0 || >=16.0.0"
     react-dom ">=15.0.0 || >=16.0.0"
