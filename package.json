@@ -36,7 +36,7 @@
     "proxy-polyfill": "^0.3.0",
     "react": "16.4.0",
     "react-apollo": "^2.1.4",
-    "react-native": "0.55.4",
+    "react-native": "0.59.6",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^1.5.7",
