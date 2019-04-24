@@ -1640,9 +1640,10 @@ bs-platform@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-3.1.5.tgz#fb34ee4702bc9163848d5537096c4f31ebaeed40"
 
-bs-react-native-vector-icons@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/bs-react-native-vector-icons/-/bs-react-native-vector-icons-1.6.0.tgz#c26a4785a77ac25d006a8a4994fc79889c344aab"
+bs-react-native-vector-icons@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/bs-react-native-vector-icons/-/bs-react-native-vector-icons-3.0.0.tgz#e022e01674067516638c784246adbbcde7e230ae"
+  integrity sha512-+qWdJlDOnk9iLboPGsoz0ekBbuZoYrbb1k/vFAxfPlSOVubnJAbTuXw8RdYvp9o3HiLzpncBnrmHkZG7VQjstw==
 
 bs-react-native@^0.8.0:
   version "0.8.0"
