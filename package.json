@@ -20,7 +20,7 @@
     "apollo-client": "^2.2.8",
     "apollo-link": "^1.2.1",
     "apollo-link-context": "^1.0.18",
-    "apollo-link-error": "^1.0.7",
+    "apollo-link-error": "^1.1.11",
     "apollo-link-http": "^1.5.3",
     "bs-date-fns": "^0.1.4",
     "bs-platform": "^3.1.5",
