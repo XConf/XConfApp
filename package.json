@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.6.3",
-    "apollo-client": "^2.2.8",
+    "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.1",
     "apollo-link-context": "^1.0.7",
     "apollo-link-error": "^1.0.7",
