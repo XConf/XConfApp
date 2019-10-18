@@ -27,7 +27,7 @@
     "bs-react-native": "^0.8.0",
     "bs-react-native-vector-icons": "^1.6.0",
     "concurrently": "^3.5.1",
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.5.1",
     "fast-deep-equal": "^2.0.1",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
