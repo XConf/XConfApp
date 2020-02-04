@@ -30,7 +30,7 @@
     "date-fns": "^1.29.0",
     "fast-deep-equal": "^2.0.1",
     "graphql": "^0.13.2",
-    "graphql-tag": "^2.8.0",
+    "graphql-tag": "^2.10.2",
     "graphql_ppx": "^0.2.1",
     "prop-types": "^15.6.1",
     "proxy-polyfill": "^0.3.0",
